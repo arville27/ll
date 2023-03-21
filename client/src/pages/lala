@@ -1,0 +1,66 @@
+// import { Input } from '@mantine/core';
+// import { IconAt } from '@tabler/icons-react';
+// import { HeaderSimple } from '../components/HeaderSimple';
+// import { TableStudents } from '../components/TableStudents';
+// import Image from 'next/image';
+// import LittleLearnerLogo from '../assets/logo.png';
+// import { FormEvent, useEffect, useRef, useState } from 'react';
+
+// function App() {
+//   const [student, setStudent] = useState('');
+//   const [data, setData] = useState([]);
+//   const inputRef = useRef(null);
+
+//   useEffect(() => {
+//     document.addEventListener('keypress', () => inputRef.current.focus());
+//   }, []);
+
+//   function submitHandler(e: FormEvent<HTMLFormElement>) {
+//     e.preventDefault();
+//     setData([...data, { name: student, clockIn: new Date().getTime() }]);
+//     setStudent('');
+//   }
+
+//   return (
+//     <div className="h-screen grid grid-rows-[auto_1fr_auto]">
+//       <HeaderSimple
+//         links={[
+//           { label: 'Scan', link: '/' },
+//           { label: 'Settings', link: '/settings' },
+//         ]}
+//       />
+//       <div className="container mx-auto">
+//         <div className="flex items-center flex-col">
+//           <Image
+//             className="mb-5"
+//             priority
+//             src={LittleLearnerLogo}
+//             height={192}
+//             width={192}
+//             alt="Little Learner Logo"
+//           />
+//           <div className="w-[33rem]">
+//             <form onSubmit={submitHandler}>
+//               <Input
+//                 ref={inputRef}
+//                 value={student}
+//                 onChange={(e) => setStudent(e.target.value)}
+//                 icon={<IconAt />}
+//                 placeholder="Student ID"
+//                 radius="xl"
+//                 size="md"
+//               />
+//             </form>
+//           </div>
+//         </div>
+//       </div>
+//       <div className="w-full flex justify-center">
+//         <div className="w-full justify-center flex">
+//           <TableStudents data={data} />
+//         </div>
+//       </div>
+//     </div>
+//   );
+// }
+
+// export default App;
