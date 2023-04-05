@@ -1,11 +1,10 @@
+import LittleLearnerLogo from '@/assets/logo.png';
+import Layout from '@/components/Layout';
+import { TableStudents } from '@/components/TableStudents';
 import { Input } from '@mantine/core';
 import { IconAt } from '@tabler/icons-react';
-import { HeaderSimple } from '../components/HeaderSimple';
-import { TableStudents } from '../components/TableStudents';
 import Image from 'next/image';
-import LittleLearnerLogo from '../assets/logo.png';
 import { FormEvent, useEffect, useRef, useState } from 'react';
-import Layout from '../components/Layout';
 
 function App() {
   const [student, setStudent] = useState('');
@@ -22,17 +21,9 @@ function App() {
     setStudent('');
   }
 
-  const footer = (
-    <div className="w-full flex justify-center">
-      <div className="w-full justify-center flex">
-        <TableStudents data={data} />
-      </div>
-    </div>
-  );
-
   return (
-    <Layout footer={footer}>
-      <div className="flex items-center flex-col">
+    <Layout>
+      <div className="flex items-center flex-col mt-20">
         <Image
           className="mb-5"
           priority
@@ -46,6 +37,7 @@ function App() {
             <Input
               ref={inputRef}
               value={student}
+              autoComplete="none"
               onChange={(e) => setStudent(e.target.value)}
               icon={<IconAt />}
               placeholder="Student ID"
@@ -53,6 +45,9 @@ function App() {
               size="md"
             />
           </form>
+        </div>
+        <div className="w-full flex justify-center mt-10">
+          <TableStudents data={data} />
         </div>
       </div>
     </Layout>

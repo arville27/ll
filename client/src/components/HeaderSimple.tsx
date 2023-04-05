@@ -1,18 +1,7 @@
-import { useState } from 'react';
-import {
-  createStyles,
-  Header,
-  Container,
-  Group,
-  Burger,
-  Text,
-  Anchor,
-} from '@mantine/core';
-import { useDisclosure } from '@mantine/hooks';
+import { createStyles, Header, Container, Group, Text } from '@mantine/core';
 import { ThemeSwitch } from './ThemeSwitch';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { link } from 'fs';
 
 const useStyles = createStyles((theme) => ({
   header: {
@@ -64,25 +53,26 @@ interface HeaderSimpleProps {
 }
 
 export function HeaderSimple({ links }: HeaderSimpleProps) {
-  const [active, setActive] = useState(links[0].link);
+  const router = useRouter();
   const { classes, cx } = useStyles();
 
-  // const items = links.map((item) => (
-  //   <Link
-  //     key={item.link}
-  //     href={item.link}
-  //     onClick={() => setActive(item.link)}
-  //     className={cx(classes.link, { [classes.linkActive]: active === item.link })}>
-  //     {item.label}
-  //   </Link>
-  // ));
+  const items = links.map((item) => (
+    <Link
+      key={item.link}
+      href={item.link}
+      className={cx(classes.link, {
+        [classes.linkActive]: router.pathname === item.link,
+      })}>
+      {item.label}
+    </Link>
+  ));
 
   return (
-    <Header height={60} mb={120}>
+    <Header height={60}>
       <Container className={classes.header}>
         <Text className={classes.logo}>Little learners</Text>
         <Group spacing={8} className={classes.links}>
-          {/* {items} */}
+          {items}
           <ThemeSwitch />
         </Group>
       </Container>
