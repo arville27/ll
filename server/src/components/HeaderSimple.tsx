@@ -13,9 +13,7 @@ const useStyles = createStyles((theme) => ({
 
   logo: {
     backgroundColor:
-      theme.colorScheme === 'dark'
-        ? theme.colors.dark[6]
-        : theme.colors.gray[0],
+      theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.colors.gray[0],
     padding: '8px 12px',
   },
 
@@ -31,29 +29,21 @@ const useStyles = createStyles((theme) => ({
     padding: '8px 12px',
     borderRadius: theme.radius.sm,
     textDecoration: 'none',
-    color:
-      theme.colorScheme === 'dark'
-        ? theme.colors.dark[0]
-        : theme.colors.gray[7],
+    color: theme.colorScheme === 'dark' ? theme.colors.dark[0] : theme.colors.gray[7],
     fontSize: theme.fontSizes.sm,
     fontWeight: 500,
 
     '&:hover': {
       backgroundColor:
-        theme.colorScheme === 'dark'
-          ? theme.colors.dark[6]
-          : theme.colors.gray[0],
+        theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.colors.gray[0],
     },
   },
 
   linkActive: {
     '&, &:hover': {
-      backgroundColor: theme.fn.variant({
-        variant: 'light',
-        color: theme.primaryColor,
-      }).background,
-      color: theme.fn.variant({ variant: 'light', color: theme.primaryColor })
-        .color,
+      backgroundColor: theme.fn.variant({ variant: 'light', color: theme.primaryColor })
+        .background,
+      color: theme.fn.variant({ variant: 'light', color: theme.primaryColor }).color,
     },
   },
 }));
@@ -72,8 +62,7 @@ export function HeaderSimple({ links }: HeaderSimpleProps) {
       href={item.link}
       className={cx(classes.link, {
         [classes.linkActive]: router.pathname === item.link,
-      })}
-    >
+      })}>
       {item.label}
     </Link>
   ));

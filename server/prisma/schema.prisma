@@ -12,15 +12,15 @@ datasource db {
 
 model Student {
   id             Int                    @id @default(autoincrement())
+  uid      String                 @unique
   name           String
-  email          String                 @unique
-  attendanceLogs StudentAttendanceLog[]
+  birthDate      DateTime
+  attendanceLogs AttendanceLog[]
 }
 
-model StudentAttendanceLog {
+model AttendanceLog {
   id        Int      @id @default(autoincrement())
   date      DateTime
-  isPresent Boolean
-  student   Student? @relation(fields: [studentId], references: [id])
-  studentId Int?
+  studentId Int
+  student   Student @relation(fields: [studentId], references: [id])
 }
