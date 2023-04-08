@@ -30,7 +30,7 @@ function App() {
 
   return (
     <Layout>
-      <div className="grid grid-rows-2 lg:grid-rows-none lg:grid-cols-[1fr_0.5fr] h-full">
+      <div className="grid grid-rows-2 lg:grid-rows-none lg:grid-cols-[1fr_0.6fr] h-full">
         <Stack justify="center" align="center">
           <IconScan opacity={1} width={192} height={192} />
           <div className="w-[24rem]">

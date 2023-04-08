@@ -29,7 +29,7 @@ const useStyles = createStyles((theme) => ({
   },
 
   contentLimit: {
-    maxWidth: 150,
+    maxWidth: 135,
     textOverflow: 'ellipsis',
     overflow: 'hidden',
   },

@@ -7,7 +7,7 @@
     "withGlobalTauri": false
   },
   "package": {
-    "productName": "ll-client",
+    "productName": "Little Learner Attendance System",
     "version": "0.0.0"
   },
   "tauri": {
@@ -60,10 +60,10 @@
     "windows": [
       {
         "fullscreen": false,
-        "height": 600,
         "resizable": true,
-        "title": "ll-client",
-        "width": 800
+        "title": "Little Learner Attendance System",
+        "minHeight": 600,
+        "minWidth": 1280
       }
     ]
   }
