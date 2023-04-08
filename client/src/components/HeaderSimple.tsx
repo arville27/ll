@@ -2,6 +2,8 @@ import { createStyles, Header, Container, Group, Text } from '@mantine/core';
 import { ThemeSwitch } from './ThemeSwitch';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import LittleLearnerLogo from '@/assets/logo.png';
+import Image from 'next/image';
 
 const useStyles = createStyles((theme) => ({
   header: {
@@ -12,11 +14,7 @@ const useStyles = createStyles((theme) => ({
   },
 
   logo: {
-    backgroundColor:
-      theme.colorScheme === 'dark'
-        ? theme.colors.dark[6]
-        : theme.colors.gray[0],
-    padding: '8px 12px',
+    color: theme.colorScheme === 'dark' ? theme.colors.dark[0] : theme.colors.gray[7],
   },
 
   links: {
@@ -31,18 +29,13 @@ const useStyles = createStyles((theme) => ({
     padding: '8px 12px',
     borderRadius: theme.radius.sm,
     textDecoration: 'none',
-    color:
-      theme.colorScheme === 'dark'
-        ? theme.colors.dark[0]
-        : theme.colors.gray[7],
+    color: theme.colorScheme === 'dark' ? theme.colors.dark[0] : theme.colors.gray[7],
     fontSize: theme.fontSizes.sm,
     fontWeight: 500,
 
     '&:hover': {
       backgroundColor:
-        theme.colorScheme === 'dark'
-          ? theme.colors.dark[6]
-          : theme.colors.gray[0],
+        theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.colors.gray[0],
     },
   },
 
@@ -52,8 +45,7 @@ const useStyles = createStyles((theme) => ({
         variant: 'light',
         color: theme.primaryColor,
       }).background,
-      color: theme.fn.variant({ variant: 'light', color: theme.primaryColor })
-        .color,
+      color: theme.fn.variant({ variant: 'light', color: theme.primaryColor }).color,
     },
   },
 }));
@@ -72,16 +64,26 @@ export function HeaderSimple({ links }: HeaderSimpleProps) {
       href={item.link}
       className={cx(classes.link, {
         [classes.linkActive]: router.pathname === item.link,
-      })}
-    >
+      })}>
       {item.label}
     </Link>
   ));
 
   return (
     <Header height={60}>
-      <Container className={classes.header}>
-        <Text className={classes.logo}>Little learners</Text>
+      <Container size="xl" className={classes.header}>
+        <Group>
+          <Image
+            priority
+            src={LittleLearnerLogo}
+            height={40}
+            width={40}
+            alt="Little Learner Logo"
+          />
+          <Text className={`${classes.logo} fw-600 tracking-wide text-md`}>
+            Little Learners
+          </Text>
+        </Group>
         <Group spacing={8} className={classes.links}>
           {items}
           <ThemeSwitch />

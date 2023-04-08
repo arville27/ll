@@ -12,7 +12,8 @@ const useStyles = createStyles((theme) => ({
   header: {
     position: 'sticky',
     top: 0,
-    backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.white,
+    backgroundColor:
+      theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.colors.gray[0],
     transition: 'box-shadow 150ms ease',
 
     '&::after': {
@@ -27,6 +28,12 @@ const useStyles = createStyles((theme) => ({
     },
   },
 
+  contentLimit: {
+    maxWidth: 150,
+    textOverflow: 'ellipsis',
+    overflow: 'hidden',
+  },
+
   scrolled: {
     boxShadow: theme.shadows.sm,
   },
@@ -36,24 +43,24 @@ export function TableStudents({ data }: TableStudentsProps) {
   const { classes, cx } = useStyles();
   const [scrolled, setScrolled] = useState(false);
 
-  const rows = data.map((row) => {
+  const rows = data.map((row, i) => {
     return (
-      <tr key={row.name}>
-        <td>
+      <tr key={i}>
+        <td className={classes.contentLimit}>
           <Anchor<'a'> size="sm" onClick={(event) => event.preventDefault()}>
             {row.name}
           </Anchor>
         </td>
-        <td>{new Date(row.clockIn).toLocaleString()}</td>
+        <td className={classes.contentLimit}>{new Date(row.clockIn).toLocaleString()}</td>
       </tr>
     );
   });
 
   return (
     <ScrollArea
-      sx={{ height: 300, maxWidth: 700 }}
+      sx={{ height: '100%', paddingRight: 25 }}
       onScrollPositionChange={({ y }) => setScrolled(y !== 0)}>
-      <Table sx={{ minWidth: 400, maxWidth: 700 }} verticalSpacing="xs">
+      <Table sx={{ minWidth: 300, maxWidth: 700 }} verticalSpacing="xs" highlightOnHover>
         <thead className={cx(classes.header, { [classes.scrolled]: scrolled })}>
           <tr>
             <th>Student's name</th>
