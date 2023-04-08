@@ -1,4 +1,5 @@
-import '@/styles/globals.css';
+import { trpc } from '@/hooks/trpc';
+import '@/style.css';
 import {
   ColorScheme,
   ColorSchemeProvider,
@@ -6,8 +7,8 @@ import {
 } from '@mantine/core';
 import type { AppProps } from 'next/app';
 import { useState } from 'react';
-import { trpc } from '../hooks/trpc';
 
+// This default export is required in a new `pages/_app.js` file.
 function MyApp({ Component, pageProps }: AppProps) {
   const [colorScheme, setColorScheme] = useState<ColorScheme>('light');
   const toggleColorScheme = (value?: ColorScheme) =>
@@ -21,7 +22,17 @@ function MyApp({ Component, pageProps }: AppProps) {
       <MantineProvider
         withGlobalStyles
         withNormalizeCSS
-        theme={{ colorScheme }}
+        theme={{
+          colorScheme,
+          globalStyles: (theme) => ({
+            body: {
+              backgroundColor:
+                theme.colorScheme === 'dark'
+                  ? theme.colors.dark[7]
+                  : theme.colors.white,
+            },
+          }),
+        }}
       >
         <Component {...pageProps} />
       </MantineProvider>
