@@ -9,19 +9,10 @@ const useStyles = createStyles((theme) => ({
   },
 
   item: {
-    '& + &': {
-      paddingTop: theme.spacing.sm,
-      marginTop: theme.spacing.sm,
-      borderTop: `1rem solid ${
-        theme.colorScheme === 'dark' ? theme.colors.dark[4] : theme.colors.gray[2]
-      }`,
-    },
-  },
-
-  switch: {
-    '& *': {
-      cursor: 'pointer',
-    },
+    paddingTop: theme.spacing.sm,
+    borderTop: `1px solid ${
+      theme.colorScheme === 'dark' ? theme.colors.dark[4] : theme.colors.gray[2]
+    }`,
   },
 
   title: {
@@ -66,7 +57,7 @@ function SettingsPage() {
                 w={300}
               />
             </Group>
-            <Group position="apart">
+            <Group position="apart" className={classes.item}>
               <div>
                 <Text>Kill your friend</Text>
                 <Text size="xs" color="dimmed">
