@@ -1,0 +1,13 @@
+{
+  "name": "ll",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "turbo run dev"
+  },
+  "devDependencies": {
+    "turborepo": "^0.0.1"
+  }
+}

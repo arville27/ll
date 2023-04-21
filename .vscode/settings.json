@@ -1,3 +1,7 @@
 {
-  "unocss.root": ["client", "server"]
+  "unocss.root": [
+    "apps/client",
+    "apps/server",
+    "packages/ui"
+  ]
 }

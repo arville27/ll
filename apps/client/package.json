@@ -1,0 +1,38 @@
+{
+  "name": "@ll/client",
+  "private": true,
+  "version": "0.0.0",
+  "scripts": {
+    "dev": "next dev -p 1420",
+    "build": "next build && next export -o dist",
+    "tauri": "tauri"
+  },
+  "dependencies": {
+    "@emotion/react": "^11.10.6",
+    "@emotion/server": "^11.10.0",
+    "@ll/server": "*",
+    "@mantine/core": "^5.10.5",
+    "@mantine/hooks": "^5.10.5",
+    "@mantine/next": "^5.10.5",
+    "@tabler/icons-react": "^2.6.0",
+    "@tauri-apps/api": "^1.2.0",
+    "@trpc/next": "^10.21.1-alpha.2",
+    "next": "^13.0.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "sharp": "^0.32.0",
+    "superjson": "^1.12.2",
+    "zustand": "^4.3.4"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^1.2.2",
+    "@types/node": "^18.7.11",
+    "@types/react": "^18.0.17",
+    "@types/react-dom": "^18.0.6",
+    "@unocss/postcss": "^0.50.6",
+    "next-transpile-modules": "^10.0.0",
+    "postcss": "^8.4.21",
+    "typescript": "^4.7.4",
+    "unocss": "^0.50.6"
+  }
+}
