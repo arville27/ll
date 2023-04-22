@@ -56,7 +56,7 @@ export function TableStudents({ data }: TableStudentsProps) {
       <Table sx={{ minWidth: 400, maxWidth: 700 }} verticalSpacing="xs">
         <thead className={cx(classes.header, { [classes.scrolled]: scrolled })}>
           <tr>
-            <th>Student's name</th>
+            <th>Students name</th>
             <th>Clock In</th>
           </tr>
         </thead>

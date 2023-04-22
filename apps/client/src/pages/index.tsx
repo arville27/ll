@@ -10,7 +10,7 @@ function App() {
   const [data, setData] = useState([]);
   const inputRef = useRef(null);
   const theme = useMantineTheme();
-  const addAttendanceMutation = trpc.addAttendanceLog.useMutation();
+  const addAttendanceMutation = trpc.attendance.addAttendanceLog.useMutation();
 
   useEffect(() => {
     function handleKeypress() {

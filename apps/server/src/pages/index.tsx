@@ -4,7 +4,7 @@ import { trpc } from '@/hooks/trpc';
 import { TableStudents } from '@/components/TableStudents';
 
 export default function Home() {
-  const { data: todayAttendanceLogs } = trpc.getTodayAttendanceLog.useQuery();
+  const { data: todayAttendanceLogs } = trpc.attendance.getTodayAttendanceLog.useQuery();
 
   if (!todayAttendanceLogs) {
     return <div>Loading...</div>;
