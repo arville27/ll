@@ -1,5 +1,5 @@
 import { Inter } from 'next/font/google';
-import { Layout } from '@ll/common';
+import Layout from '@/components/Layout';
 import { trpc } from '@/hooks/trpc';
 import { TableStudents } from '@/components/TableStudents';
 
