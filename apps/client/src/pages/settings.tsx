@@ -1,7 +1,7 @@
-import Layout from '@/components/Layout';
-import { createStyles, Card, Group, Text, Input, Stack, Button } from '@mantine/core';
-import { useState } from 'react';
+import { Layout } from '@ll/common';
+import { Button, Card, Group, Input, Stack, Text, createStyles } from '@mantine/core';
 import { IconSettings } from '@tabler/icons-react';
+import { useState } from 'react';
 
 const useStyles = createStyles((theme) => ({
   card: {
@@ -25,7 +25,14 @@ function SettingsPage() {
   const [customServerUrl, setCustomServerUrl] = useState('');
 
   return (
-    <Layout className="flex justify-center">
+    <Layout
+      navbarProp={{
+        links: [
+          { label: 'Scan', link: '/' },
+          { label: 'Settings', link: '/settings' },
+        ],
+      }}
+      className="flex justify-center">
       <div className="mt-20">
         <Group mb="lg">
           <IconSettings />

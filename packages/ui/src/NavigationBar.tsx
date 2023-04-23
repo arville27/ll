@@ -1,7 +1,9 @@
-import { createStyles, Header, Container, Group, Text } from '@mantine/core';
-import { ThemeSwitch } from './ThemeSwitch';
+import littleLearnerLogo from './assets/logo.png';
+import { Container, Group, Header, Text, createStyles } from '@mantine/core';
+import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import { ThemeSwitch } from './ThemeSwitch';
 
 const useStyles = createStyles((theme) => ({
   header: {
@@ -12,9 +14,7 @@ const useStyles = createStyles((theme) => ({
   },
 
   logo: {
-    backgroundColor:
-      theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.colors.gray[0],
-    padding: '8px 12px',
+    color: theme.colorScheme === 'dark' ? theme.colors.dark[0] : theme.colors.gray[7],
   },
 
   links: {
@@ -41,18 +41,20 @@ const useStyles = createStyles((theme) => ({
 
   linkActive: {
     '&, &:hover': {
-      backgroundColor: theme.fn.variant({ variant: 'light', color: theme.primaryColor })
-        .background,
+      backgroundColor: theme.fn.variant({
+        variant: 'light',
+        color: theme.primaryColor,
+      }).background,
       color: theme.fn.variant({ variant: 'light', color: theme.primaryColor }).color,
     },
   },
 }));
 
-interface HeaderSimpleProps {
+export interface NavigationBarProps {
   links: { link: string; label: string }[];
 }
 
-export function HeaderSimple({ links }: HeaderSimpleProps) {
+export function NavigationBar({ links }: NavigationBarProps) {
   const router = useRouter();
   const { classes, cx } = useStyles();
 
@@ -69,8 +71,19 @@ export function HeaderSimple({ links }: HeaderSimpleProps) {
 
   return (
     <Header height={60}>
-      <Container className={classes.header}>
-        <Text className={classes.logo}>Little learners</Text>
+      <Container size="xl" className={classes.header}>
+        <Group>
+          <Image
+            priority
+            src={littleLearnerLogo}
+            height={40}
+            width={40}
+            alt="Little Learner Logo"
+          />
+          <Text className={`${classes.logo} fw-600 tracking-wide text-md`}>
+            Little Learners
+          </Text>
+        </Group>
         <Group spacing={8} className={classes.links}>
           {items}
           <ThemeSwitch />

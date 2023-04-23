@@ -1,9 +1,9 @@
 /** @type {import('next').NextConfig} */
-const withTM = require('next-transpile-modules')(['@ll/common']);
 
-const nextConfig = withTM({
+const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
-});
+  transpilePackages: ['@ll/common'],
+};
 
 module.exports = nextConfig;

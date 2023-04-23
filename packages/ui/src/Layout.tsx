@@ -1,27 +1,22 @@
 import { HTMLAttributes, PropsWithChildren, ReactNode } from 'react';
-import { HeaderSimple } from './HeaderSimple';
+import { NavigationBar, NavigationBarProps } from './NavigationBar';
 
-const links = [
-  { label: 'Scan', link: '/' },
-  { label: 'Settings', link: '/settings' },
-];
-
-interface Props extends HTMLAttributes<HTMLElement> {
+export interface LayoutProps extends HTMLAttributes<HTMLElement> {
   footer?: ReactNode;
+  navbarProp: NavigationBarProps;
 }
 
-const Layout: React.FC<PropsWithChildren<Props>> = ({
+export const Layout: React.FC<PropsWithChildren<LayoutProps>> = ({
   footer,
   children,
+  navbarProp,
   ...layoutAttribute
 }) => {
   return (
     <div className="h-screen grid grid-rows-[auto_1fr_auto]">
-      <HeaderSimple links={links} />
+      <NavigationBar {...navbarProp} />
       <main {...layoutAttribute}>{children}</main>
       {footer && <footer className="w-full flex justify-center">{footer}</footer>}
     </div>
   );
 };
-
-export default Layout;

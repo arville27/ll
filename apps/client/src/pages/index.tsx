@@ -1,16 +1,19 @@
-import Layout from '@/components/Layout';
 import { TableStudents } from '@/components/TableStudents';
-import { Input, Card, Group, Text, Stack, useMantineTheme } from '@mantine/core';
+import { trpc } from '@/hooks/trpc';
+import { Layout } from '@ll/common';
+import { Card, Group, Input, Stack, Text, useMantineTheme } from '@mantine/core';
 import { IconList, IconScan } from '@tabler/icons-react';
 import { FormEvent, useEffect, useRef, useState } from 'react';
-import { trpc } from '@/hooks/trpc';
 
 function App() {
   const [student, setStudent] = useState('');
-  const [data, setData] = useState([]);
   const inputRef = useRef(null);
   const theme = useMantineTheme();
-  const addAttendanceMutation = trpc.attendance.addAttendanceLog.useMutation();
+  const { data: todayAttendanceLog, refetch } =
+    trpc.attendance.getTodayAttendanceLog.useQuery();
+  const addAttendanceMutation = trpc.attendance.addAttendanceLog.useMutation({
+    onSettled: () => refetch(),
+  });
 
   useEffect(() => {
     function handleKeypress() {
@@ -24,15 +27,20 @@ function App() {
     };
   }, []);
 
-  async function submitHandler(e: FormEvent<HTMLFormElement>) {
+  function submitHandler(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    const result = await addAttendanceMutation.mutateAsync({ uid: student });
-    // setData([{ name: student, clockIn: new Date().getTime() }, ...data]);
+    addAttendanceMutation.mutateAsync({ uid: student });
     setStudent('');
   }
 
   return (
-    <Layout>
+    <Layout
+      navbarProp={{
+        links: [
+          { label: 'Scan', link: '/' },
+          { label: 'Settings', link: '/settings' },
+        ],
+      }}>
       <div className="grid grid-rows-2 lg:grid-rows-none lg:grid-cols-[1fr_0.6fr] h-full">
         <Stack justify="center" align="center">
           <IconScan opacity={1} width={192} height={192} />
@@ -63,7 +71,7 @@ function App() {
               Today attendance
             </Text>
           </Group>
-          {Boolean(data.length) ? (
+          {Boolean(todayAttendanceLog) && todayAttendanceLog.length > 0 ? (
             <Card
               withBorder
               sx={{
@@ -73,7 +81,12 @@ function App() {
                     ? theme.colors.dark[6]
                     : theme.colors.gray[0],
               }}>
-              <TableStudents data={data} />
+              <TableStudents
+                data={todayAttendanceLog.map((log) => ({
+                  clockIn: log.date.getTime(),
+                  name: log.student.name,
+                }))}
+              />
             </Card>
           ) : (
             <Text fz="sm" c="dimmed">

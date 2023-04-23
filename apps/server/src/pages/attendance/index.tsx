@@ -1,8 +1,15 @@
-import Layout from '@/components/Layout';
+import { Layout } from '@ll/common';
 
-export default function Attendance() {
+export default function AttendancePage() {
   return (
-    <Layout>
+    <Layout
+      navbarProp={{
+        links: [
+          { label: 'Home', link: '/' },
+          { label: 'Students', link: '/student' },
+          { label: 'Attendance Logs', link: '/attendance' },
+        ],
+      }}>
       <div>Hello</div>
     </Layout>
   );

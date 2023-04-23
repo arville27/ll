@@ -1,9 +1,8 @@
-import { Inter } from 'next/font/google';
-import Layout from '@/components/Layout';
-import { trpc } from '@/hooks/trpc';
 import { TableStudents } from '@/components/TableStudents';
+import { trpc } from '@/hooks/trpc';
+import { Layout } from '@ll/common';
 
-export default function Home() {
+export default function HomePage() {
   const { data: todayAttendanceLogs } = trpc.attendance.getTodayAttendanceLog.useQuery();
 
   if (!todayAttendanceLogs) {
@@ -16,16 +15,19 @@ export default function Home() {
     items = <div>No Data</div>;
   } else {
     items = todayAttendanceLogs.map((log) =>
-      // <div key={log.id}>
-      //   <div>{log.student.name}</div>
-      //   <div>{log.date.toString()}</div>
-      // </div>
       logs.push({ name: log.student.name, clockIn: log.date.getTime() })
     );
   }
 
   return (
-    <Layout>
+    <Layout
+      navbarProp={{
+        links: [
+          { label: 'Home', link: '/' },
+          { label: 'Students', link: '/student' },
+          { label: 'Attendance Logs', link: '/attendance' },
+        ],
+      }}>
       <div className="w-full flex justify-center mt-10">
         <TableStudents data={logs} />
       </div>
