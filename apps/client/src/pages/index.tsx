@@ -36,10 +36,7 @@ function App() {
   return (
     <Layout
       navbarProp={{
-        links: [
-          { label: 'Scan', link: '/' },
-          { label: 'Settings', link: '/settings' },
-        ],
+        links: [{ label: 'Scan', link: '/' }],
       }}>
       <div className="grid grid-rows-2 lg:grid-rows-none lg:grid-cols-[1fr_0.6fr] h-full">
         <Stack justify="center" align="center">

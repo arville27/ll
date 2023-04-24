@@ -1,7 +1,7 @@
 import { Layout } from '@ll/common';
 import { Button, Card, Group, Input, Stack, Text, createStyles } from '@mantine/core';
 import { IconSettings } from '@tabler/icons-react';
-import { useState } from 'react';
+import { useUserSettingsStore } from '@/hooks/store/useUserSettingsStore';
 
 const useStyles = createStyles((theme) => ({
   card: {
@@ -22,7 +22,10 @@ const useStyles = createStyles((theme) => ({
 
 function SettingsPage() {
   const { classes } = useStyles();
-  const [customServerUrl, setCustomServerUrl] = useState('');
+  const { serverUrl, setServerUrl } = useUserSettingsStore((state) => ({
+    serverUrl: state.serverUrl,
+    setServerUrl: state.setServerUrl,
+  }));
 
   return (
     <Layout
@@ -55,9 +58,9 @@ function SettingsPage() {
                 </Text>
               </div>
               <Input
-                value={customServerUrl}
+                value={serverUrl}
                 autoComplete="none"
-                onChange={(e) => setCustomServerUrl(e.target.value)}
+                onChange={(e) => setServerUrl(e.target.value)}
                 placeholder="localhost:3000"
                 radius="xl"
                 size="sm"

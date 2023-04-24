@@ -3,7 +3,8 @@
   "private": true,
   "version": "0.0.0",
   "scripts": {
-    "dev": "next dev -p 1420",
+    "dev": "tauri dev",
+    "dev:server": "next dev -p 1420",
     "build": "next build",
     "tauri": "tauri"
   },
@@ -23,7 +24,9 @@
     "react-dom": "^18.2.0",
     "sharp": "^0.32.0",
     "superjson": "^1.12.2",
-    "zustand": "^4.3.4"
+    "tauri-plugin-store-api": "github:tauri-apps/tauri-plugin-store",
+    "zod": "^3.21.4",
+    "zustand": "^4.3.7"
   },
   "devDependencies": {
     "@tauri-apps/cli": "^1.2.2",
