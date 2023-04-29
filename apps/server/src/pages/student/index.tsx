@@ -1,31 +1,42 @@
 import { AddStudent } from '@/components/AddStudent';
+import CustomConfirmation from '@/components/CustomConfirmation';
 import CustomModal from '@/components/CustomModal';
+import MainLayout from '@/components/MainLayout';
 import { StudentCard } from '@/components/StudentCard';
 import { trpc } from '@/hooks/trpc';
 import { useSearchKeyStore } from '@/store/useSearchKeyStore';
 import { useSelectedStudentStore } from '@/store/useSelectedStudent';
-import { Layout } from '@ll/common';
-import { Button, Card, Group, Stack, Text, TextInput, createStyles } from '@mantine/core';
+import {
+  ActionIcon,
+  Button,
+  Card,
+  Group,
+  Stack,
+  Text,
+  TextInput,
+  useMantineTheme,
+  LoadingOverlay,
+} from '@mantine/core';
 import { useDebouncedValue, useDisclosure } from '@mantine/hooks';
-import { IconPlus, IconSchool, IconSearch } from '@tabler/icons-react';
-
-const useStyles = createStyles((theme) => ({
-  card: {
-    backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.white,
-  },
-  title: {
-    lineHeight: 1,
-  },
-}));
+import { notifications } from '@mantine/notifications';
+import {
+  IconCheck,
+  IconPlus,
+  IconSchool,
+  IconSearch,
+} from '@tabler/icons-react';
 
 export default function StudentPage() {
-  const { classes } = useStyles();
+  const theme = useMantineTheme();
 
   const searchKey = useSearchKeyStore((state) => state.searchKey);
   const setSearchKey = useSearchKeyStore((state) => state.setSearchKey);
-  const setSelectedStudent = useSelectedStudentStore((state) => state.setSelectedStudent);
+  const setSelectedStudent = useSelectedStudentStore(
+    (state) => state.setSelectedStudent
+  );
 
-  const [opened, { open, close }] = useDisclosure(false);
+  const [openedModal, disclosureModal] = useDisclosure(false);
+  const [openedDeleteConfirm, disclosureDeleteConfirm] = useDisclosure(false);
 
   const [debouncedSearchKey] = useDebouncedValue(searchKey, 300);
 
@@ -38,65 +49,108 @@ export default function StudentPage() {
     }
   );
 
-  const selectedStudent = useSelectedStudentStore((state) => state.selectedStudent);
+  const selectedStudent = useSelectedStudentStore(
+    (state) => state.selectedStudent
+  );
+
+  const deleteStudentMutation = trpc.student.deleteStudentByUid.useMutation({
+    onSettled: () => refetch(),
+  });
 
   return (
-    <Layout
-      navbarProp={{
-        links: [
-          { label: 'Home', link: '/' },
-          { label: 'Students', link: '/student' },
-          { label: 'Attendance Logs', link: '/attendance' },
-        ],
-      }}
-      className="flex justify-center">
-      <Stack className="w-[70%] mt-20 ">
+    <MainLayout className="relative h-full w-full pt-12">
+      <LoadingOverlay visible={!data} />
+      <Stack spacing="xl" className="mx-auto px-5 max-w-[50rem]">
         <Group position="apart">
           <Group>
             <IconSchool />
-            <Text fz="xl" fw={500} className={classes.title}>
+            <Text fz="xl" fw={500} className="leading-none">
               Student List
             </Text>
           </Group>
-          <Button leftIcon={<IconPlus size="1.2rem" />} onClick={open}>
+          <Button
+            className="hidden sm:block"
+            leftIcon={<IconPlus size="1.1rem" />}
+            onClick={disclosureModal.open}
+          >
             New
           </Button>
+          <ActionIcon
+            className="sm:hidden"
+            size="lg"
+            color="blue"
+            variant="filled"
+            onClick={disclosureModal.open}
+          >
+            <IconPlus size="1.1rem" />
+          </ActionIcon>
         </Group>
 
-        <Card withBorder radius="md" p="xl" className={classes.card} w="100%">
-          <TextInput
-            className="text-xl"
-            icon={<IconSearch />}
-            m="lg"
-            onChange={(e) => {
-              setSearchKey(e.target.value);
-            }}
-            placeholder="Search by uid or name"
-            radius="xl"
-            size="md"
-          />
+        <TextInput
+          className="text-xl"
+          icon={<IconSearch />}
+          onChange={(e) => {
+            setSearchKey(e.target.value);
+          }}
+          placeholder="Search by uid or name"
+          radius="xl"
+          size="md"
+        />
 
-          <Stack spacing="xs" className="flex-col-reverse">
-            {data &&
-              data.map((student) => (
-                <StudentCard
-                  key={student.uid}
-                  data={student}
-                  refetch={refetch}
-                  editAction={open}
-                />
-              ))}
-          </Stack>
-        </Card>
+        <Stack className="mb-8" spacing="md">
+          {data && data.length > 0 ? (
+            data.map((student) => (
+              <StudentCard
+                key={student.uid}
+                data={student}
+                refetch={refetch}
+                editAction={disclosureModal.open}
+                deleteAction={disclosureDeleteConfirm.open}
+              />
+            ))
+          ) : (
+            <Text>No Student</Text>
+          )}
+        </Stack>
       </Stack>
+
       <CustomModal
-        displayValue={opened}
+        displayValue={openedModal}
         closeAction={() => {
+          disclosureModal.close();
           setSelectedStudent(null);
-          close();
-        }}>
-        <AddStudent refetch={refetch}></AddStudent>
+        }}
+      >
+        <AddStudent
+          refetch={refetch}
+          closeAction={() => {
+            disclosureModal.close();
+            setSelectedStudent(null);
+          }}
+        ></AddStudent>
       </CustomModal>
-    </Layout>
+
+      <CustomConfirmation
+        displayValue={openedDeleteConfirm}
+        title="Delete Confirmation"
+        message="Are you sure want to delete this student?"
+        closeAction={disclosureDeleteConfirm.close}
+        acceptAction={() => {
+          if (selectedStudent) {
+            deleteStudentMutation
+              .mutateAsync({ uid: selectedStudent.uid })
+              .then(() =>
+                notifications.show({
+                  title: <span className="text-green-6">Success</span>,
+                  message: 'Removed student',
+                  color: 'green',
+                  bg: theme.colors.green[0],
+                  icon: <IconCheck />,
+                })
+              );
+          }
+        }}
+      />
+    </MainLayout>
   );
 }

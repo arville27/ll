@@ -9,7 +9,6 @@ export const attendanceRouter = router({
       })
     )
     .mutation(async ({ input, ctx }) => {
-      // const student = ctx.prisma.student.find
       const result = await ctx.prisma.attendanceLog.create({
         data: {
           date: new Date(),
@@ -22,22 +21,35 @@ export const attendanceRouter = router({
         data: result,
       };
     }),
-  getTodayAttendanceLog: procedure.query(async ({ ctx }) => {
-    const today = new Date();
-    const todayWithoutTime = new Date(
-      today.getFullYear(),
-      today.getMonth(),
-      today.getDate()
-    );
-    return await ctx.prisma.attendanceLog.findMany({
-      where: {
-        date: {
-          gte: todayWithoutTime,
+  getAttendanceLog: procedure
+    .input(
+      z.object({
+        date: z.optional(z.date()),
+      })
+    )
+    .query(async ({ input, ctx }) => {
+      if (!input.date) input.date = new Date();
+      const theDay = new Date(
+        input.date.getFullYear(),
+        input.date.getMonth(),
+        input.date.getDate()
+      );
+      const nextDay = new Date(
+        input.date.getFullYear(),
+        input.date.getMonth(),
+        input.date.getDate() + 1
+      );
+
+      return await ctx.prisma.attendanceLog.findMany({
+        where: {
+          date: {
+            gte: theDay,
+            lt: nextDay,
+          },
         },
-      },
-      include: {
-        student: true,
-      },
-    });
-  }),
+        include: {
+          student: true,
+        },
+      });
+    }),
 });

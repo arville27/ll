@@ -1,11 +1,20 @@
 import { Layout } from '@ll/common';
-import { Button, Card, Group, Input, Stack, Text, createStyles } from '@mantine/core';
+import {
+  Button,
+  Card,
+  Group,
+  Input,
+  Stack,
+  Text,
+  createStyles,
+} from '@mantine/core';
 import { IconSettings } from '@tabler/icons-react';
 import { useUserSettingsStore } from '@/hooks/store/useUserSettingsStore';
 
 const useStyles = createStyles((theme) => ({
   card: {
-    backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.white,
+    backgroundColor:
+      theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.white,
   },
 
   item: {
@@ -35,7 +44,8 @@ function SettingsPage() {
           { label: 'Settings', link: '/settings' },
         ],
       }}
-      className="flex justify-center">
+      className="flex justify-center"
+    >
       <div className="mt-20">
         <Group mb="lg">
           <IconSettings />

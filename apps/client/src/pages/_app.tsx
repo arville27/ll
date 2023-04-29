@@ -5,7 +5,7 @@ import { ColorSchemeProvider, MantineProvider } from '@mantine/core';
 import { useUserSettingsStore } from '@/hooks/store/useUserSettingsStore';
 import { trpc } from '@/hooks/trpc';
 const UserSettingsStoreProvider = dynamic(
-  () => import('@/hooks/UserSettingsStoreProvider'),
+  () => import('@/components/UserSettingsStoreProvider'),
   {
     ssr: false,
   }

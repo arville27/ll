@@ -1,8 +1,8 @@
 import { Modal, createStyles } from '@mantine/core';
-import { useDisclosure } from '@mantine/hooks';
-import { HTMLAttributes, PropsWithChildren } from 'react';
+import { HTMLAttributes, PropsWithChildren, ReactNode } from 'react';
 
 interface Props extends HTMLAttributes<HTMLElement> {
+  modalTitle?: ReactNode;
   displayValue: boolean;
   closeAction: () => void;
 }
@@ -10,16 +10,22 @@ interface Props extends HTMLAttributes<HTMLElement> {
 const useStyles = createStyles((theme) => ({
   modalHeader: {
     backgroundColor:
-      theme.colorScheme === 'dark' ? theme.colors.dark[8] : theme.colors.indigo[1],
+      theme.colorScheme === 'dark'
+        ? theme.colors.dark[7]
+        : theme.colors.gray[0],
+    zIndex: 0,
   },
   modalBody: {
     backgroundColor:
-      theme.colorScheme === 'dark' ? theme.colors.dark[8] : theme.colors.indigo[1],
+      theme.colorScheme === 'dark'
+        ? theme.colors.dark[7]
+        : theme.colors.gray[0],
   },
 }));
 
 const CustomModal: React.FC<PropsWithChildren<Props>> = ({
   children,
+  modalTitle,
   displayValue,
   closeAction,
   ...layoutAttribute
@@ -28,13 +34,14 @@ const CustomModal: React.FC<PropsWithChildren<Props>> = ({
 
   return (
     <Modal
+      title={modalTitle}
       opened={displayValue}
       onClose={closeAction}
       overlayProps={{
         blur: 1,
       }}
       centered
-      radius="lg"
+      radius="md"
       transitionProps={{
         transition: 'fade',
         duration: 200,
@@ -44,7 +51,8 @@ const CustomModal: React.FC<PropsWithChildren<Props>> = ({
         header: classes.modalHeader,
         body: classes.modalBody,
       }}
-      {...layoutAttribute}>
+      {...layoutAttribute}
+    >
       {children}
     </Modal>
   );

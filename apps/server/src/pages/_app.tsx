@@ -1,6 +1,11 @@
 import { trpc } from '@/hooks/trpc';
 import '@/style.css';
-import { ColorScheme, ColorSchemeProvider, MantineProvider } from '@mantine/core';
+import {
+  ColorScheme,
+  ColorSchemeProvider,
+  MantineProvider,
+  em,
+} from '@mantine/core';
 import type { AppProps } from 'next/app';
 import { useState } from 'react';
 
@@ -11,7 +16,10 @@ function MyApp({ Component, pageProps }: AppProps) {
     setColorScheme(value || (colorScheme === 'dark' ? 'light' : 'dark'));
 
   return (
-    <ColorSchemeProvider colorScheme={colorScheme} toggleColorScheme={toggleColorScheme}>
+    <ColorSchemeProvider
+      colorScheme={colorScheme}
+      toggleColorScheme={toggleColorScheme}
+    >
       <MantineProvider
         withGlobalStyles
         withNormalizeCSS
@@ -20,10 +28,20 @@ function MyApp({ Component, pageProps }: AppProps) {
           globalStyles: (theme) => ({
             body: {
               backgroundColor:
-                theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.colors.white,
+                theme.colorScheme === 'dark'
+                  ? theme.colors.dark[7]
+                  : theme.colors.gray[0],
             },
           }),
-        }}>
+          breakpoints: {
+            sm: em('640px'),
+            md: em('768px'),
+            lg: em('1034px'),
+            xl: em('1280px'),
+            '2xl': em('1536px'),
+          },
+        }}
+      >
         <Component {...pageProps} />
       </MantineProvider>
     </ColorSchemeProvider>

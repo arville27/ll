@@ -32,13 +32,14 @@ export const studentRouter = router({
       })
     )
     .mutation(async ({ input, ctx }) => {
+      const { id, uid, name, birthDate } = input;
       const result = ctx.prisma.student.update({
+        where: { id },
         data: {
-          uid: input.uid,
-          name: input.name,
-          birthDate: new Date(input.birthDate),
+          uid,
+          name,
+          birthDate: new Date(birthDate),
         },
-        where: { uid: input.uid },
       });
       return {
         data: await result,

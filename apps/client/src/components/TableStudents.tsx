@@ -1,4 +1,11 @@
-import { Table, Anchor, ScrollArea, createStyles } from '@mantine/core';
+import {
+  Table,
+  Anchor,
+  ScrollArea,
+  createStyles,
+  Tooltip,
+  Text,
+} from '@mantine/core';
 import { useState } from 'react';
 
 interface TableStudentsProps {
@@ -13,7 +20,9 @@ const useStyles = createStyles((theme) => ({
     position: 'sticky',
     top: 0,
     backgroundColor:
-      theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.colors.gray[0],
+      theme.colorScheme === 'dark'
+        ? theme.colors.dark[5]
+        : theme.colors.gray[0],
     transition: 'box-shadow 150ms ease',
 
     '&::after': {
@@ -23,7 +32,9 @@ const useStyles = createStyles((theme) => ({
       right: 0,
       bottom: 0,
       borderBottom: `1px solid ${
-        theme.colorScheme === 'dark' ? theme.colors.dark[3] : theme.colors.gray[2]
+        theme.colorScheme === 'dark'
+          ? theme.colors.dark[3]
+          : theme.colors.gray[2]
       }`,
     },
   },
@@ -32,6 +43,7 @@ const useStyles = createStyles((theme) => ({
     maxWidth: 135,
     textOverflow: 'ellipsis',
     overflow: 'hidden',
+    whiteSpace: 'nowrap',
   },
 
   scrolled: {
@@ -46,12 +58,20 @@ export function TableStudents({ data }: TableStudentsProps) {
   const rows = data.map((row, i) => {
     return (
       <tr key={i}>
-        <td className={classes.contentLimit}>
-          <Anchor<'a'> size="sm" onClick={(event) => event.preventDefault()}>
-            {row.name}
-          </Anchor>
+        <td className="max-w-[135px]">
+          <Tooltip
+            position="top-start"
+            label={row.name}
+            classNames={{
+              tooltip: 'text-wrap whitespace-normal max-w-4/5',
+            }}
+          >
+            <div className="truncate">{row.name}</div>
+          </Tooltip>
         </td>
-        <td className={classes.contentLimit}>{new Date(row.clockIn).toLocaleString()}</td>
+        <td className={classes.contentLimit}>
+          {new Date(row.clockIn).toLocaleTimeString()}
+        </td>
       </tr>
     );
   });
@@ -59,8 +79,13 @@ export function TableStudents({ data }: TableStudentsProps) {
   return (
     <ScrollArea
       sx={{ height: '100%', paddingRight: 25 }}
-      onScrollPositionChange={({ y }) => setScrolled(y !== 0)}>
-      <Table sx={{ minWidth: 300, maxWidth: 700 }} verticalSpacing="xs" highlightOnHover>
+      onScrollPositionChange={({ y }) => setScrolled(y !== 0)}
+    >
+      <Table
+        sx={{ minWidth: 300, maxWidth: 700 }}
+        verticalSpacing="xs"
+        highlightOnHover
+      >
         <thead className={cx(classes.header, { [classes.scrolled]: scrolled })}>
           <tr>
             <th>Student's name</th>
