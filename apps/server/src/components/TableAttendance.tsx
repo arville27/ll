@@ -1,9 +1,9 @@
 import { Table, ScrollArea, createStyles, Tooltip, Text } from '@mantine/core';
-import { AttendanceLog } from '@prisma/client';
+import { AttendanceLog, Student } from '@prisma/client';
 import { useState } from 'react';
 
 interface TableAttendanceProps {
-  data: AttendanceLog[];
+  data: (AttendanceLog & { student: Student })[];
   showDate?: boolean;
   tableWidth?: number | string;
   tableHeight?: number | string;
