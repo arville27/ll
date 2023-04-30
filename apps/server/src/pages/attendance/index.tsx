@@ -9,13 +9,19 @@ import { useState } from 'react';
 export default function AttendancePage() {
   const theme = useMantineTheme();
 
-  const [date, setDate] = useState<DateValue>();
-
-  const { data } = trpc.attendance.getAttendanceLog.useQuery({
-    date: date ? date : undefined,
-  });
-
   const today = new Date();
+
+  const [startDate, setStartDate] = useState<Date>(today);
+  const [endDate, setEndDate] = useState<Date>(today);
+
+  const { data } = trpc.getAttendanceLog.useQuery(
+    startDate
+      ? {
+          startDate: startDate,
+          endDate: endDate,
+        }
+      : undefined
+  );
 
   return (
     <MainLayout className='relative h-full w-full pt-12'>
@@ -53,26 +59,55 @@ export default function AttendancePage() {
               Attendance Log
             </Text>
           </Group>
-          <DateInput
-            icon={<IconCalendarEvent size={18} />}
-            value={today}
-            maxDate={today}
-            onChange={(e) => setDate(e)}
-            placeholder='Date'
-            radius='md'
-            size='sm'
-            variant='filled'
-            styles={{
-              input: {
-                backgroundColor:
-                  theme.colorScheme === 'dark' ? theme.colors.dark[8] : theme.white,
-                border:
-                  theme.colorScheme === 'dark'
-                    ? `solid 1px ${theme.colors.gray[7]}`
-                    : `solid 1px ${theme.colors.gray[5]}`,
-              },
-            }}
-          />
+          <Group>
+            <DateInput
+              label='Start date'
+              icon={<IconCalendarEvent size={18} />}
+              value={startDate}
+              maxDate={today}
+              onChange={(e) => {
+                if (e) setStartDate(e);
+              }}
+              placeholder='Date'
+              radius='md'
+              size='sm'
+              variant='filled'
+              styles={{
+                input: {
+                  backgroundColor:
+                    theme.colorScheme === 'dark' ? theme.colors.dark[8] : theme.white,
+                  border:
+                    theme.colorScheme === 'dark'
+                      ? `solid 1px ${theme.colors.gray[7]}`
+                      : `solid 1px ${theme.colors.gray[5]}`,
+                },
+              }}
+            />
+            <DateInput
+              label='End date'
+              icon={<IconCalendarEvent size={18} />}
+              value={endDate}
+              minDate={startDate!}
+              maxDate={today}
+              onChange={(e) => {
+                if (e) setEndDate(e);
+              }}
+              placeholder='Date'
+              radius='md'
+              size='sm'
+              variant='filled'
+              styles={{
+                input: {
+                  backgroundColor:
+                    theme.colorScheme === 'dark' ? theme.colors.dark[8] : theme.white,
+                  border:
+                    theme.colorScheme === 'dark'
+                      ? `solid 1px ${theme.colors.gray[7]}`
+                      : `solid 1px ${theme.colors.gray[5]}`,
+                },
+              }}
+            />
+          </Group>
         </Group>
 
         <Card

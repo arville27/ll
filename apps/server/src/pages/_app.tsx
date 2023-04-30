@@ -5,21 +5,26 @@ import {
   ColorSchemeProvider,
   MantineProvider,
   em,
+  LoadingOverlay,
 } from '@mantine/core';
 import type { AppProps } from 'next/app';
 import { useState } from 'react';
+import { useThemeStore } from '@/store/useThemeStore';
 
 // This default export is required in a new `pages/_app.js` file.
 function MyApp({ Component, pageProps }: AppProps) {
-  const [colorScheme, setColorScheme] = useState<ColorScheme>('light');
-  const toggleColorScheme = (value?: ColorScheme) =>
-    setColorScheme(value || (colorScheme === 'dark' ? 'light' : 'dark'));
+  const { hydrated, colorScheme, toggleColorScheme } = useThemeStore((state) => ({
+    hydrated: state.hydrated,
+    colorScheme: state.theme,
+    toggleColorScheme: state.toggleTheme,
+  }));
+
+  if (!hydrated) {
+    return <LoadingOverlay visible />;
+  }
 
   return (
-    <ColorSchemeProvider
-      colorScheme={colorScheme}
-      toggleColorScheme={toggleColorScheme}
-    >
+    <ColorSchemeProvider colorScheme={colorScheme} toggleColorScheme={toggleColorScheme}>
       <MantineProvider
         withGlobalStyles
         withNormalizeCSS
@@ -34,14 +39,13 @@ function MyApp({ Component, pageProps }: AppProps) {
             },
           }),
           breakpoints: {
-            sm: em('640px'),
-            md: em('768px'),
-            lg: em('1034px'),
-            xl: em('1280px'),
+            'sm': em('640px'),
+            'md': em('768px'),
+            'lg': em('1034px'),
+            'xl': em('1280px'),
             '2xl': em('1536px'),
           },
-        }}
-      >
+        }}>
         <Component {...pageProps} />
       </MantineProvider>
     </ColorSchemeProvider>

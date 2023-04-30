@@ -45,7 +45,7 @@ export function TableAttendance({
     return (
       <tr key={row.id}>
         <td className='w-fit'>{index + 1}</td>
-        <td className='w-fit'>{`${row.date.toLocaleTimeString('en-US', {
+        <td className='w-fit whitespace-nowrap'>{`${row.date.toLocaleTimeString('en-US', {
           hour: 'numeric',
           minute: 'numeric',
           hour12: true,

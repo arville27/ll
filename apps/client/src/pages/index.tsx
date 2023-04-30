@@ -10,10 +10,8 @@ function App() {
   const [student, setStudent] = useState('');
   const inputRef = useRef(null);
   const theme = useMantineTheme();
-  const { data: todayAttendanceLog, refetch } = trpc.attendance.getAttendanceLog.useQuery(
-    {}
-  );
-  const addAttendanceMutation = trpc.attendance.addAttendanceLog.useMutation({
+  const { data: todayAttendanceLog, refetch } = trpc.getAttendanceLog.useQuery();
+  const addAttendanceMutation = trpc.addAttendanceLog.useMutation({
     onSettled: () => refetch(),
   });
 
@@ -48,8 +46,7 @@ function App() {
             title: <span className='text-red-6'>Failed to add student attendance</span>,
             message: e.message,
             color: 'red',
-            bg:
-              theme.colorScheme === 'dark' ? theme.colors.dark[9] : theme.colors.green[0],
+            bg: theme.colorScheme === 'dark' ? theme.colors.dark[9] : theme.colors.red[0],
           });
         },
       }

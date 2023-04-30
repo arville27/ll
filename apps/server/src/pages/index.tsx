@@ -1,19 +1,11 @@
 import MainLayout from '@/components/MainLayout';
 import { TableAttendance } from '@/components/TableAttendance';
 import { trpc } from '@/hooks/trpc';
-import {
-  Card,
-  Group,
-  Text,
-  useMantineTheme,
-  Stack,
-  LoadingOverlay,
-  Skeleton,
-} from '@mantine/core';
+import { Card, Group, LoadingOverlay, Stack, Text, useMantineTheme } from '@mantine/core';
 import { Icon24Hours } from '@tabler/icons-react';
 
 export default function AttendancePage() {
-  const { data } = trpc.attendance.getAttendanceLog.useQuery({});
+  const { data } = trpc.getAttendanceLog.useQuery();
   const theme = useMantineTheme();
 
   return (
@@ -41,9 +33,9 @@ export default function AttendancePage() {
             backgroundColor:
               theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.white,
           }}
-          className='shadow-md self-center w-full max-w-full h-screen mb-12'>
+          className='shadow-md self-center w-full max-w-full mb-12'>
           {data && data.length > 0 ? (
-            <TableAttendance tableHeight='100%' data={data}></TableAttendance>
+            <TableAttendance tableHeight='fit' data={data}></TableAttendance>
           ) : (
             <Text className='flex justify-center'>
               No attendance logs on current date

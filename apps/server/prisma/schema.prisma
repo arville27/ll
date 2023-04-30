@@ -16,6 +16,8 @@ model Student {
   name           String
   birthDate      DateTime
   attendanceLogs AttendanceLog[]
+  createdAt      DateTime
+  updatedAt      DateTime
 }
 
 model AttendanceLog {
@@ -23,4 +25,5 @@ model AttendanceLog {
   date      DateTime
   studentId Int
   student   Student @relation(fields: [studentId], references: [id])
+  createdAt DateTime
 }
