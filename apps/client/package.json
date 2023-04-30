@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "tauri dev",
     "dev:server": "next dev -p 1420",
-    "build": "next build",
+    "build": "tauri build",
+    "build:web": "next build",
     "tauri": "tauri"
   },
   "dependencies": {
