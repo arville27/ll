@@ -1,9 +1,9 @@
-import '@/style.css';
-import dynamic from 'next/dynamic';
-import type { AppProps } from 'next/app';
-import { ColorSchemeProvider, MantineProvider } from '@mantine/core';
 import { useUserSettingsStore } from '@/hooks/store/useUserSettingsStore';
 import { trpc } from '@/hooks/trpc';
+import '@/style.css';
+import { ColorSchemeProvider, MantineProvider } from '@mantine/core';
+import type { AppProps } from 'next/app';
+import dynamic from 'next/dynamic';
 const UserSettingsStoreProvider = dynamic(
   () => import('@/components/UserSettingsStoreProvider'),
   {

@@ -1,6 +1,6 @@
 import { Store } from 'tauri-plugin-store-api';
-import { create } from 'zustand';
 import { z } from 'zod';
+import { create } from 'zustand';
 
 const tauriStore = new Store('.settings.conf');
 

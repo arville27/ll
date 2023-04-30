@@ -1,20 +1,11 @@
-import { Layout } from '@ll/common';
-import {
-  Button,
-  Card,
-  Group,
-  Input,
-  Stack,
-  Text,
-  createStyles,
-} from '@mantine/core';
-import { IconSettings } from '@tabler/icons-react';
 import { useUserSettingsStore } from '@/hooks/store/useUserSettingsStore';
+import { Layout } from '@ll/common';
+import { Button, Card, Group, Input, Stack, Text, createStyles } from '@mantine/core';
+import { IconSettings } from '@tabler/icons-react';
 
 const useStyles = createStyles((theme) => ({
   card: {
-    backgroundColor:
-      theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.white,
+    backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.white,
   },
 
   item: {
@@ -44,43 +35,42 @@ function SettingsPage() {
           { label: 'Settings', link: '/settings' },
         ],
       }}
-      className="flex justify-center"
-    >
-      <div className="mt-20">
-        <Group mb="lg">
+      className='flex justify-center'>
+      <div className='mt-20'>
+        <Group mb='lg'>
           <IconSettings />
           <Stack spacing={5}>
-            <Text fz="lg" fw={500} className={classes.title}>
+            <Text fz='lg' fw={500} className={classes.title}>
               Settings
             </Text>
-            <Text fz="xs" c="dimmed">
+            <Text fz='xs' c='dimmed'>
               It's just a setting page bro..
             </Text>
           </Stack>
         </Group>
-        <Card withBorder radius="md" p="xl" className={classes.card} w={600}>
+        <Card withBorder radius='md' p='xl' className={classes.card} w={600}>
           <Stack>
-            <Group position="apart">
+            <Group position='apart'>
               <div>
                 <Text>Custom server</Text>
-                <Text size="xs" color="dimmed">
+                <Text size='xs' color='dimmed'>
                   Use custom server
                 </Text>
               </div>
               <Input
                 value={serverUrl}
-                autoComplete="none"
+                autoComplete='none'
                 onChange={(e) => setServerUrl(e.target.value)}
-                placeholder="localhost:3000"
-                radius="xl"
-                size="sm"
+                placeholder='localhost:3000'
+                radius='xl'
+                size='sm'
                 w={300}
               />
             </Group>
-            <Group position="apart" className={classes.item}>
+            <Group position='apart' className={classes.item}>
               <div>
                 <Text>Kill your friend</Text>
-                <Text size="xs" color="dimmed">
+                <Text size='xs' color='dimmed'>
                   Don't click this button
                 </Text>
               </div>
