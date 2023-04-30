@@ -1,4 +1,4 @@
-import { procedure } from '@/server/trpc';
+import { procedure } from '../../trpc';
 import { z } from 'zod';
 
 export const deleteStudentByIdProcedure = procedure

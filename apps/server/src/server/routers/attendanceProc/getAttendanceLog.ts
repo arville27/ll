@@ -1,4 +1,4 @@
-import { PrismaClientType } from '@/server/db';
+import { PrismaClientType } from '../../db';
 import { z } from 'zod';
 import { procedure } from '../../trpc';
 

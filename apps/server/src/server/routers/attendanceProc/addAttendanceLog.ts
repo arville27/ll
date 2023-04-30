@@ -1,8 +1,8 @@
-import { PrismaClientType } from '@/server/db';
+import { PrismaClientType } from '../../db';
 import { z } from 'zod';
 import { getAttendanceLog } from './getAttendanceLog';
 import { TRPCError } from '@trpc/server';
-import { procedure } from '@/server/trpc';
+import { procedure } from '../../trpc';
 
 export const addAttendanceLogInputSchema = z.object({
   uid: z.string(),

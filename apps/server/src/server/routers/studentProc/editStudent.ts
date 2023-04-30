@@ -1,4 +1,4 @@
-import { procedure } from '@/server/trpc';
+import { procedure } from '../../trpc';
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 
