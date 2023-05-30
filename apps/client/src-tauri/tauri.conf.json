@@ -7,8 +7,8 @@
     "withGlobalTauri": false
   },
   "package": {
-    "productName": "Little Learner Attendance System",
-    "version": "0.0.0"
+    "productName": "Little Learners Attendance System",
+    "version": "1.0.0"
   },
   "tauri": {
     "allowlist": {
@@ -20,7 +20,7 @@
     },
     "bundle": {
       "active": true,
-      "category": "DeveloperTool",
+      "category": "POSTool",
       "copyright": "",
       "deb": {
         "depends": []
@@ -34,7 +34,7 @@
         "icons/icon.ico"
       ],
       "identifier": "net.arville.ll-client",
-      "longDescription": "",
+      "longDescription": "Little learners attendance system client",
       "macOS": {
         "entitlements": null,
         "exceptionDomain": "",
@@ -64,7 +64,7 @@
       {
         "fullscreen": false,
         "resizable": true,
-        "title": "Little Learner Attendance System",
+        "title": "Little Learners Attendance System",
         "minHeight": 600,
         "minWidth": 1280
       }
