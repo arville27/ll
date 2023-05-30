@@ -1,78 +1,22 @@
+import { ScanInput } from '@/components/ScanInput';
 import { TableStudents } from '@/components/TableStudents';
 import { trpc } from '@/hooks/trpc';
 import { Layout } from '@ll/common';
-import { Card, Group, Input, Stack, Text, useMantineTheme } from '@mantine/core';
-import { notifications } from '@mantine/notifications';
+import { Card, Group, Stack, Text, useMantineTheme } from '@mantine/core';
 import { IconList, IconScan } from '@tabler/icons-react';
-import { FormEvent, useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 
 function App() {
-  const [student, setStudent] = useState('');
-  const inputRef = useRef(null);
+  const [keyword, setKeyword] = useState('');
   const theme = useMantineTheme();
   const { data: todayAttendanceLog, refetch } = trpc.getAttendanceLog.useQuery();
-  const addAttendanceMutation = trpc.addAttendanceLog.useMutation({
-    onSettled: () => refetch(),
-  });
-
-  useEffect(() => {
-    function handleKeypress() {
-      inputRef.current.focus();
-    }
-
-    document.addEventListener('keypress', handleKeypress);
-
-    return () => {
-      document.removeEventListener('keypress', handleKeypress);
-    };
-  }, []);
-
-  function submitHandler(e: FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    addAttendanceMutation.mutate(
-      { uid: student },
-      {
-        onSuccess: () => {
-          notifications.show({
-            title: <span className='text-green-6'>Success</span>,
-            message: 'Added student attendance ',
-            color: 'green',
-            bg:
-              theme.colorScheme === 'dark' ? theme.colors.dark[9] : theme.colors.green[0],
-          });
-        },
-        onError: (e) => {
-          notifications.show({
-            title: <span className='text-red-6'>Failed to add student attendance</span>,
-            message: e.message,
-            color: 'red',
-            bg: theme.colorScheme === 'dark' ? theme.colors.dark[9] : theme.colors.red[0],
-          });
-        },
-      }
-    );
-    setStudent('');
-  }
 
   return (
     <Layout navbarProp={{ links: [] }}>
       <div className='grid grid-rows-2 lg:grid-rows-none lg:grid-cols-[1fr_0.6fr] h-full'>
-        <Stack justify='center' align='center'>
-          <IconScan opacity={1} width={192} height={192} />
-          <div className='w-[24rem]'>
-            <form onSubmit={submitHandler}>
-              <Input
-                ref={inputRef}
-                value={student}
-                autoComplete='none'
-                onChange={(e) => setStudent(e.target.value)}
-                icon={<IconScan />}
-                placeholder='Student ID'
-                radius='xl'
-                size='md'
-              />
-            </form>
-          </div>
+        <Stack align='center' className='mt-40'>
+          <IconScan size={192} />
+          <ScanInput keyword={keyword} setKeyword={setKeyword} refetch={refetch} />
         </Stack>
         <Stack
           className='px-14 pt-12'

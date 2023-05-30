@@ -5,7 +5,7 @@ import Head from 'next/head';
 
 export interface LayoutProps extends HTMLAttributes<HTMLElement> {
   footer?: ReactNode;
-  pageTitle: string;
+  pageTitle?: string;
   navbarProp: NavigationBarProps;
 }
 
