@@ -75,7 +75,7 @@ export function TableAttendance({
           <tr>
             <th></th>
             <th className='whitespace-nowrap'>Clock in</th>
-            <th>UID</th>
+            <th>ID</th>
             <th>Student name</th>
             {showDate && <th>Date</th>}
           </tr>

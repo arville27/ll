@@ -4,7 +4,7 @@ import { useSelectedStudentStore } from '@/store/useSelectedStudent';
 import { Button, Stack, Text, TextInput, useMantineTheme } from '@mantine/core';
 import { DateInput } from '@mantine/dates';
 import { notifications } from '@mantine/notifications';
-import { IconCalendarEvent, IconCheck, IconId, IconIdBadge } from '@tabler/icons-react';
+import { IconCalendarEvent, IconId, IconIdBadge } from '@tabler/icons-react';
 import { useState } from 'react';
 
 class StudentInput {
@@ -62,7 +62,7 @@ export function AddStudent({
     if (input.uid.length === 0 || input.name.length === 0 || !input.birthDate) {
       notifications.show({
         title: <span className='text-red-6'>Invalid Input</span>,
-        message: 'UID, name, or birth date must be filled',
+        message: 'ID, name, or birth date must be filled',
         color: 'red',
         bg: theme.colorScheme === 'dark' ? theme.colors.dark[9] : theme.colors.red[0],
       });
@@ -128,10 +128,10 @@ export function AddStudent({
 
       <Stack align='stretch' spacing='md' w='100%'>
         <TextInput
-          data-autoFocus
+          data-autofocus
           defaultValue={input.uid}
           icon={<IconIdBadge size={18} />}
-          label='UID'
+          label='ID'
           onChange={(e) => setInput({ ...input, uid: e.target.value })}
           placeholder='Student ID'
           radius='md'

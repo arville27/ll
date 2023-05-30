@@ -81,7 +81,7 @@ export default function StudentPage() {
           onChange={(e) => {
             setSearchKey(e.target.value);
           }}
-          placeholder='Search by uid or name'
+          placeholder='Search by id or name'
           radius='xl'
           size='md'
         />
