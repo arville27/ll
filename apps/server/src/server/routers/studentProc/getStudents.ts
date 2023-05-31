@@ -10,24 +10,40 @@ export const getStudentsProcedure = procedure
     )
   )
   .query(async ({ input, ctx }) => {
-    if (!input || input.searchKey.length <= 0) return await ctx.prisma.student.findMany();
+    if (!input || input.searchKey.length <= 0)
+      return await ctx.prisma.student.findMany({
+        include: {
+          studentClass: true,
+        },
+      });
 
-    const whereClause = {
+    return await ctx.prisma.student.findMany({
       where: {
         OR: [
           {
             name: {
-              contains: input.searchKey ?? '',
+              contains: input.searchKey,
             },
           },
           {
             uid: {
-              contains: input.searchKey ?? '',
+              contains: input.searchKey,
+            },
+          },
+          {
+            studentClass: {
+              className: {
+                contains: input.searchKey,
+              },
             },
           },
         ],
       },
-    };
-
-    return await ctx.prisma.student.findMany(whereClause);
+      include: {
+        studentClass: true,
+      },
+      orderBy: {
+        name: 'asc',
+      },
+    });
   });

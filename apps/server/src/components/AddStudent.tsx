@@ -1,24 +1,30 @@
 import { trpc } from '@/hooks/trpc';
 import { useSearchKeyStore } from '@/store/useSearchKeyStore';
 import { useSelectedStudentStore } from '@/store/useSelectedStudent';
-import { Button, Stack, Text, TextInput, useMantineTheme } from '@mantine/core';
+import { Button, Select, Stack, Text, TextInput, useMantineTheme } from '@mantine/core';
 import { DateInput } from '@mantine/dates';
 import { notifications } from '@mantine/notifications';
-import { IconCalendarEvent, IconId, IconIdBadge } from '@tabler/icons-react';
+import {
+  IconCalendarEvent,
+  IconChalkboard,
+  IconId,
+  IconIdBadge,
+} from '@tabler/icons-react';
 import { useState } from 'react';
 
 class StudentInput {
-  id: number | undefined;
+  id = '';
   uid = '';
   name = '';
   birthDate: Date | null = null;
+  studentClassId = '';
 }
 
-interface Payload {
-  id?: number;
+interface AddStudentPayload {
   uid: string;
   name: string;
   birthDate: number;
+  studentClassId: number;
 }
 
 export function AddStudent({
@@ -29,14 +35,29 @@ export function AddStudent({
   closeAction: () => void;
 }) {
   const theme = useMantineTheme();
-
   const setSearchKey = useSearchKeyStore((state) => state.setSearchKey);
   const selectedStudent = useSelectedStudentStore((state) => state.selectedStudent);
-  const setSelectedStudent = useSelectedStudentStore((state) => state.setSelectedStudent);
 
   const [input, setInput] = useState<StudentInput>(
-    selectedStudent ? { ...selectedStudent } : new StudentInput()
+    selectedStudent
+      ? {
+          id: String(selectedStudent.id),
+          uid: selectedStudent.uid,
+          name: selectedStudent.name,
+          birthDate: selectedStudent.birthDate,
+          studentClassId: String(selectedStudent.studentClassId),
+        }
+      : new StudentInput()
   );
+
+  const { data: classes, refetch: classesRefetch } = trpc.getStudentClasses.useQuery();
+
+  const addClassMutation = trpc.addStudentClass.useMutation({
+    onSettled: () => {
+      // Refetch class list
+      classesRefetch();
+    },
+  });
 
   const addStudentMutation = trpc.addStudent.useMutation({
     onSettled: () => {
@@ -58,8 +79,20 @@ export function AddStudent({
     },
   });
 
+  const classOptions = classes
+    ? classes.map((studentClass) => ({
+        value: studentClass.id + '',
+        label: studentClass.className,
+      }))
+    : [];
+
   function submitHandler() {
-    if (input.uid.length === 0 || input.name.length === 0 || !input.birthDate) {
+    if (
+      input.uid.length === 0 ||
+      input.name.length === 0 ||
+      !input.birthDate ||
+      !input.studentClassId
+    ) {
       notifications.show({
         title: <span className='text-red-6'>Invalid Input</span>,
         message: 'ID, name, or birth date must be filled',
@@ -69,9 +102,10 @@ export function AddStudent({
       return;
     }
 
-    const payloadAdd: Payload = {
+    const payloadAdd: AddStudentPayload = {
       ...input,
       birthDate: input.birthDate.getTime(),
+      studentClassId: Number(input.studentClassId),
     };
 
     if (!selectedStudent) {
@@ -95,7 +129,7 @@ export function AddStudent({
         },
       });
     } else if (input.id) {
-      const payloadEdit = { ...payloadAdd, id: input.id };
+      const payloadEdit = { ...payloadAdd, id: Number(input.id) };
       editStudentMutation.mutateAsync(payloadEdit, {
         onSuccess: () => {
           notifications.show({
@@ -108,7 +142,7 @@ export function AddStudent({
         },
         onError: (e) => {
           notifications.show({
-            title: <span className='text-red-6'>Failed to Edit Student</span>,
+            title: <span className='text-red-6'>Failed to Add Class</span>,
             message: e.message,
             color: 'red',
             bg: theme.colorScheme === 'dark' ? theme.colors.dark[9] : theme.colors.red[0],
@@ -129,7 +163,7 @@ export function AddStudent({
       <Stack align='stretch' spacing='md' w='100%'>
         <TextInput
           data-autofocus
-          defaultValue={input.uid}
+          value={input.uid}
           icon={<IconIdBadge size={18} />}
           label='ID'
           onChange={(e) => setInput({ ...input, uid: e.target.value })}
@@ -142,18 +176,90 @@ export function AddStudent({
           defaultValue={input.name}
           icon={<IconId size={18} />}
           label='Name'
-          onChange={(e) => setInput({ ...input, name: e.target.value })}
+          onChange={(e) => {
+            let name = e.target.value;
+            setInput({
+              ...input,
+              name: name,
+              uid:
+                name && input.birthDate
+                  ? `${input.birthDate.getDate()}${input.birthDate.getMonth()}${input.birthDate
+                      .getFullYear()
+                      .toString()
+                      .substring(-2)}${name}`
+                  : '',
+            });
+            console.log(name);
+            console.log(input);
+          }}
           placeholder='Name'
           radius='md'
           required
           size='sm'
+        />
+        <Select
+          defaultValue={input.studentClassId}
+          icon={<IconChalkboard size={18} />}
+          label='Class'
+          data={classOptions}
+          placeholder='Class'
+          searchable
+          creatable
+          clearable
+          getCreateLabel={(query) => `+ Create ${query}`}
+          onCreate={(query) => {
+            const item = { class: query };
+            addClassMutation.mutateAsync(item, {
+              onSuccess: () => {
+                notifications.show({
+                  title: <span className='text-green-6'>Success</span>,
+                  message: 'Added new class ',
+                  color: 'green',
+                  bg:
+                    theme.colorScheme === 'dark'
+                      ? theme.colors.dark[9]
+                      : theme.colors.green[0],
+                });
+              },
+              onError: (e) => {
+                notifications.show({
+                  title: (
+                    <span className='text-red-6'>Failed to add student attendance</span>
+                  ),
+                  message: e.message,
+                  color: 'red',
+                  bg:
+                    theme.colorScheme === 'dark'
+                      ? theme.colors.dark[9]
+                      : theme.colors.red[0],
+                });
+              },
+            });
+            return query;
+          }}
+          onChange={(e) => {
+            if (e) setInput({ ...input, studentClassId: e });
+          }}
+          maxDropdownHeight={160}
         />
         <DateInput
           defaultValue={input.birthDate}
           icon={<IconCalendarEvent size={18} />}
           label='Birth Date'
           maxDate={new Date()}
-          onChange={(e) => setInput({ ...input, birthDate: e })}
+          onChange={(date) =>
+            setInput({
+              ...input,
+              birthDate: date,
+              uid:
+                input.name && date
+                  ? `${date.getDate()}${date.getMonth()}${date
+                      .getFullYear()
+                      .toString()
+                      .substring(-2)}${input.name}`
+                  : '',
+            })
+          }
           placeholder='Birth Date'
           radius='md'
           required

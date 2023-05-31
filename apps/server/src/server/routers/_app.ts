@@ -5,6 +5,8 @@ import { addStudentProcedure } from './studentProc/addStudent';
 import { editStudentProcedure } from './studentProc/editStudent';
 import { deleteStudentByIdProcedure } from './studentProc/deleteStudentById';
 import { getStudentsProcedure } from './studentProc/getStudents';
+import { addStudentClassProcedure } from './studentClassProc/addStudentClass';
+import { getStudentClassesProcedure } from './studentClassProc/getStudentClasses';
 
 export const appRouter = router({
   // AttendanceProcedure
@@ -15,6 +17,9 @@ export const appRouter = router({
   editStudent: editStudentProcedure,
   deleteStudentById: deleteStudentByIdProcedure,
   getStudents: getStudentsProcedure,
+  // ClassProcedute
+  addStudentClass: addStudentClassProcedure,
+  getStudentClasses: getStudentClassesProcedure,
 });
 // export type definition of API
 export type AppRouter = typeof appRouter;

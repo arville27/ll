@@ -16,9 +16,11 @@ model Student {
   uid            String          @unique
   name           String
   birthDate      DateTime
+  studentClassId Int             
+  studentClass   StudentClass    @relation(fields: [studentClassId], references: [id], onDelete: Cascade)            
   attendanceLogs AttendanceLog[]
   createdAt      DateTime        @default(now())
-  updatedAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
 }
 
 model AttendanceLog {
@@ -27,4 +29,12 @@ model AttendanceLog {
   studentId Int
   student   Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
+}
+
+model StudentClass {
+  id        Int       @id @default(autoincrement())
+  className String
+  students  Student[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
 }

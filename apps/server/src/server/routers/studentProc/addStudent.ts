@@ -8,6 +8,7 @@ export const addStudentProcedure = procedure
       name: z.string(),
       birthDate: z.number().lte(new Date().getTime()),
       uid: z.string(),
+      studentClassId: z.number(),
     })
   )
   .mutation(async ({ input, ctx }) => {
@@ -23,6 +24,7 @@ export const addStudentProcedure = procedure
         uid: input.uid,
         name: input.name,
         birthDate: new Date(input.birthDate),
+        studentClassId: input.studentClassId,
       },
     });
     return await result;
