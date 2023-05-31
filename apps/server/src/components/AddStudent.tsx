@@ -1,4 +1,5 @@
 import { trpc } from '@/hooks/trpc';
+import { addStudentInput } from '@/server/routers/studentProc/addStudent';
 import { useSearchKeyStore } from '@/store/useSearchKeyStore';
 import { useSelectedStudentStore } from '@/store/useSelectedStudent';
 import { Button, Select, Stack, Text, TextInput, useMantineTheme } from '@mantine/core';
@@ -19,13 +20,6 @@ class StudentInput {
   name = '';
   birthDate: Date | null = null;
   studentClassId = '';
-}
-
-interface AddStudentPayload {
-  uid: string;
-  name: string;
-  birthDate: number;
-  studentClassId: number;
 }
 
 export function AddStudent({
@@ -103,7 +97,7 @@ export function AddStudent({
       return;
     }
 
-    const payloadAdd: AddStudentPayload = {
+    const payloadAdd: addStudentInput = {
       ...input,
       birthDate: input.birthDate.getTime(),
       studentClassId: Number(input.studentClassId),

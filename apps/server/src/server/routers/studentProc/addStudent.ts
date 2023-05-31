@@ -2,15 +2,17 @@ import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 import { procedure } from '../../trpc';
 
+export const addStudentSchema = z.object({
+  name: z.string(),
+  birthDate: z.number().lte(new Date().getTime()),
+  uid: z.string(),
+  studentClassId: z.number(),
+});
+
+export type addStudentInput = z.infer<typeof addStudentSchema>;
+
 export const addStudentProcedure = procedure
-  .input(
-    z.object({
-      name: z.string(),
-      birthDate: z.number().lte(new Date().getTime()),
-      uid: z.string(),
-      studentClassId: z.number(),
-    })
-  )
+  .input(addStudentSchema)
   .mutation(async ({ input, ctx }) => {
     const isExistedUid = await ctx.prisma.student.findUnique({
       where: { uid: input.uid },

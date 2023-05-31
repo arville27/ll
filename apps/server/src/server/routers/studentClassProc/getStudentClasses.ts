@@ -2,18 +2,19 @@ import { PrismaClientType } from '../../db';
 import { z } from 'zod';
 import { procedure } from '../../trpc';
 
-export const getStudentClassesInputSchema = z.optional(
+export const getStudentClassesSchema = z.optional(
   z.object({
     searchKey: z.string(),
   })
 );
-type GetClassInput = z.infer<typeof getStudentClassesInputSchema>;
+
+export type GetStudentClassInput = z.infer<typeof getStudentClassesSchema>;
 
 export async function getClass({
   input,
   prisma,
 }: {
-  input: GetClassInput;
+  input: GetStudentClassInput;
   prisma: PrismaClientType;
 }) {
   return await prisma.studentClass.findMany({
@@ -29,5 +30,5 @@ export async function getClass({
 }
 
 export const getStudentClassesProcedure = procedure
-  .input(getStudentClassesInputSchema)
+  .input(getStudentClassesSchema)
   .query(({ input, ctx }) => getClass({ input, prisma: ctx.prisma }));

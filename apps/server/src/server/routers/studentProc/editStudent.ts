@@ -10,7 +10,7 @@ export const editStudentInputSchema = z.object({
   studentClassId: z.number(),
 });
 
-export type editStudentInputType = z.infer<typeof editStudentInputSchema>;
+export type editStudentInput = z.infer<typeof editStudentInputSchema>;
 
 export const editStudentProcedure = procedure
   .input(editStudentInputSchema)
