@@ -10,6 +10,7 @@ import {
   IconId,
   IconIdBadge,
 } from '@tabler/icons-react';
+import format from 'date-fns/format';
 import { useState } from 'react';
 
 class StudentInput {
@@ -52,7 +53,7 @@ export function AddStudent({
 
   const { data: classes, refetch: classesRefetch } = trpc.getStudentClasses.useQuery();
 
-  const addClassMutation = trpc.addStudentClass.useMutation({
+  const addStudentClassMutation = trpc.addStudentClass.useMutation({
     onSettled: () => {
       // Refetch class list
       classesRefetch();
@@ -109,7 +110,7 @@ export function AddStudent({
     };
 
     if (!selectedStudent) {
-      addStudentMutation.mutateAsync(payloadAdd, {
+      addStudentMutation.mutate(payloadAdd, {
         onSuccess: (res) => {
           notifications.show({
             title: <span className='text-green-6'>Success</span>,
@@ -130,7 +131,7 @@ export function AddStudent({
       });
     } else if (input.id) {
       const payloadEdit = { ...payloadAdd, id: Number(input.id) };
-      editStudentMutation.mutateAsync(payloadEdit, {
+      editStudentMutation.mutate(payloadEdit, {
         onSuccess: () => {
           notifications.show({
             title: <span className='text-green-6'>Success</span>,
@@ -150,7 +151,6 @@ export function AddStudent({
         },
       });
     }
-
     closeAction();
   }
 
@@ -163,54 +163,60 @@ export function AddStudent({
       <Stack align='stretch' spacing='md' w='100%'>
         <TextInput
           data-autofocus
-          value={input.uid}
-          icon={<IconIdBadge size={18} />}
-          label='ID'
-          onChange={(e) => setInput({ ...input, uid: e.target.value })}
-          placeholder='Student ID'
-          radius='md'
-          required
-          size='sm'
-        />
-        <TextInput
-          defaultValue={input.name}
+          value={input.name}
           icon={<IconId size={18} />}
           label='Name'
           onChange={(e) => {
             let name = e.target.value;
             setInput({
               ...input,
-              name: name,
+              name,
               uid:
                 name && input.birthDate
-                  ? `${input.birthDate.getDate()}${input.birthDate.getMonth()}${input.birthDate
-                      .getFullYear()
-                      .toString()
-                      .substring(-2)}${name}`
+                  ? `${format(input.birthDate, 'ddMMyy')}${name.split(' ')[0]}`
                   : '',
             });
-            console.log(name);
-            console.log(input);
           }}
-          placeholder='Name'
+          placeholder='Input name'
+          radius='md'
+          required
+          size='sm'
+        />
+        <DateInput
+          value={input.birthDate}
+          icon={<IconCalendarEvent size={18} />}
+          label='Birth Date'
+          maxDate={new Date()}
+          onChange={(birthDate) =>
+            setInput({
+              ...input,
+              birthDate,
+              uid:
+                input.name && birthDate
+                  ? `${format(birthDate, 'ddMMyy')}${input.name.split(' ')[0]}`
+                  : '',
+            })
+          }
+          onKeyDown={(e) => e.preventDefault()}
+          placeholder='Select birth date'
           radius='md'
           required
           size='sm'
         />
         <Select
-          defaultValue={input.studentClassId}
+          value={input.studentClassId}
           icon={<IconChalkboard size={18} />}
           label='Class'
           data={classOptions}
-          placeholder='Class'
+          placeholder='Select class'
           searchable
           creatable
-          clearable
           getCreateLabel={(query) => `+ Create ${query}`}
           onCreate={(query) => {
             const item = { class: query };
-            addClassMutation.mutateAsync(item, {
-              onSuccess: () => {
+            addStudentClassMutation.mutate(item, {
+              onSuccess: (res) => {
+                setInput({ ...input, studentClassId: String(res.id) });
                 notifications.show({
                   title: <span className='text-green-6'>Success</span>,
                   message: 'Added new class ',
@@ -241,29 +247,19 @@ export function AddStudent({
             if (e) setInput({ ...input, studentClassId: e });
           }}
           maxDropdownHeight={160}
+          required
         />
-        <DateInput
-          defaultValue={input.birthDate}
-          icon={<IconCalendarEvent size={18} />}
-          label='Birth Date'
-          maxDate={new Date()}
-          onChange={(date) =>
-            setInput({
-              ...input,
-              birthDate: date,
-              uid:
-                input.name && date
-                  ? `${date.getDate()}${date.getMonth()}${date
-                      .getFullYear()
-                      .toString()
-                      .substring(-2)}${input.name}`
-                  : '',
-            })
-          }
-          placeholder='Birth Date'
+        <TextInput
+          value={input.uid}
+          icon={<IconIdBadge size={18} />}
+          label='ID'
+          description='Notes : Editable'
+          onChange={(e) => setInput({ ...input, uid: e.target.value })}
+          placeholder='Autogenerate ID'
           radius='md'
           required
           size='sm'
+          inputWrapperOrder={['label', 'input', 'description', 'error']}
         />
       </Stack>
 

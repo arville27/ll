@@ -1,6 +1,6 @@
 import { useSelectedStudentStore } from '@/store/useSelectedStudent';
 import {
-  Box,
+  Badge,
   Button,
   Card,
   Flex,
@@ -11,16 +11,14 @@ import {
   useMantineTheme,
 } from '@mantine/core';
 import { Student } from '@prisma/client';
-import { IconCake, IconEdit, IconSquareRoundedX, IconUser } from '@tabler/icons-react';
+import { IconCake, IconEdit, IconSquareRoundedX } from '@tabler/icons-react';
 
 export function StudentCard({
   data,
-  refetch,
   editAction,
   deleteAction,
 }: {
   data: Student;
-  refetch: () => void;
   editAction: () => void;
   deleteAction: () => void;
 }) {
@@ -37,31 +35,33 @@ export function StudentCard({
       }}
       className='shadow-sm'>
       <Group key={data.uid} onClick={() => setSelectedStudent(data)} spacing='md' noWrap>
-        <Box
-          sx={{
-            backgroundColor:
-              theme.colorScheme === 'dark' ? theme.colors.dark[5] : theme.colors.blue[2],
-          }}
-          className='shrink-0 w-[5rem] aspect-square rounded-full justify-center items-center hidden sm:flex'>
-          <IconUser size={50} />
-        </Box>
-
         <Flex className='w-full flex-col gap-1 overflow-hidden'>
-          <Stack spacing='none'>
-            <Tooltip
-              label={data.name}
-              position='top-start'
-              classNames={{
-                tooltip: 'text-wrap whitespace-normal max-w-4/5',
-              }}>
-              <Text lineClamp={1} className='overflow-hidden text-ellipsis' lh='1.25'>
-                {data.name}
+          <Flex className='justify-between'>
+            <Stack spacing='none'>
+              <Group spacing='xs' align='center'>
+                <Tooltip
+                  label={data.name}
+                  position='top-start'
+                  classNames={{
+                    tooltip: 'text-wrap whitespace-normal max-w-4/5',
+                  }}>
+                  <Text
+                    lineClamp={1}
+                    className='overflow-hidden text-ellipsis font-semibold'
+                    color='blue'
+                    lh='1.25'>
+                    {data.name}
+                  </Text>
+                </Tooltip>
+              </Group>
+              <Text fz='xs' px='3px'>
+                #{data.uid}
               </Text>
-            </Tooltip>
-            <Text fz='sm' px='3px'>
-              #{data.uid}
-            </Text>
-          </Stack>
+            </Stack>
+            <Badge size='sm' radius='md'>
+              {data.studentClass.className}
+            </Badge>
+          </Flex>
 
           <Flex className='flex-col sm:flex-row' justify='space-between' gap='sm'>
             <Group spacing='xs' align='center'>
