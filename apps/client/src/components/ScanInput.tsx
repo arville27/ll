@@ -1,27 +1,33 @@
 import { Student } from '.prisma/client';
 import { trpc } from '@/hooks/trpc';
 import { Box, Input, ScrollArea, useMantineTheme } from '@mantine/core';
-import { useDebouncedValue } from '@mantine/hooks';
+import { useDebouncedValue, useFocusTrap, useMergedRef } from '@mantine/hooks';
 import { notifications } from '@mantine/notifications';
 import { IconHash, IconScan } from '@tabler/icons-react';
-import { useEffect, useRef } from 'react';
+import { MutableRefObject, useEffect, useRef } from 'react';
 
 function AutoCompleteItem({
   student,
   index,
-  onClick,
+  onAction,
 }: {
   student: Student;
   index: number;
-  onClick: () => void;
+  onAction: () => void;
 }) {
   const theme = useMantineTheme();
 
   return (
     <Box
+      id={`autocomplete-item-${index}`}
       tabIndex={index}
-      onClick={onClick}
-      key={index}
+      onClick={onAction}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          onAction();
+        }
+      }}
       className='py-2 px-4 rounded-lg flex justify-between m-1 mb-2 cursor-pointer'
       sx={{
         'backgroundColor':
@@ -53,6 +59,7 @@ export function ScanInput({
   setKeyword: (keyword: string) => void;
   refetch: () => void;
 }) {
+  const focusTrapRef = useFocusTrap(true);
   const addAttendanceMutation = trpc.addAttendanceLog.useMutation({
     onSettled: () => refetch(),
   });
@@ -68,7 +75,7 @@ export function ScanInput({
   );
 
   useEffect(() => {
-    function handleKeypress() {
+    function handleKeypress(e: KeyboardEvent) {
       inputRef.current.focus();
     }
 
@@ -122,14 +129,14 @@ export function ScanInput({
           radius='xl'
           size='md'
         />
-        <ScrollArea className='mt-3 relative h-60 px-6'>
+        <ScrollArea className='mt-3 relative h-60 px-6' ref={focusTrapRef}>
           {Boolean(autocompleteData) &&
             autocompleteData.map((student, index) => (
               <AutoCompleteItem
                 key={student.id}
                 index={index}
                 student={student}
-                onClick={() => submitStudentUid(student.uid)}
+                onAction={() => submitStudentUid(student.uid)}
               />
             ))}
         </ScrollArea>
