@@ -3,39 +3,49 @@ import CustomConfirmation from '@/components/CustomConfirmation';
 import CustomModal from '@/components/CustomModal';
 import MainLayout from '@/components/MainLayout';
 import { StudentCard } from '@/components/StudentCard';
+import { StudentOrderByEnum } from '@/enums/orderByEnum';
+import { OrderDirEnum } from '@/enums/orderDirEnum';
 import { trpc } from '@/hooks/trpc';
 import { useSearchKeyStore } from '@/store/useSearchKeyStore';
 import { useSelectedStudentStore } from '@/store/useSelectedStudent';
 import {
   ActionIcon,
   Button,
-  Card,
   Group,
+  LoadingOverlay,
+  Pagination,
+  Select,
   Stack,
   Text,
   TextInput,
   useMantineTheme,
-  LoadingOverlay,
 } from '@mantine/core';
 import { useDebouncedValue, useDisclosure } from '@mantine/hooks';
 import { notifications } from '@mantine/notifications';
 import { IconCheck, IconPlus, IconSchool, IconSearch } from '@tabler/icons-react';
+import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
 
 export default function StudentPage() {
   const theme = useMantineTheme();
+  const router = useRouter();
 
-  const searchKey = useSearchKeyStore((state) => state.searchKey);
-  const setSearchKey = useSearchKeyStore((state) => state.setSearchKey);
-  const setSelectedStudent = useSelectedStudentStore((state) => state.setSelectedStudent);
+  const { searchKey, setSearchKey } = useSearchKeyStore((state) => state);
+  const { setSelectedStudent } = useSelectedStudentStore((state) => state);
+  const [debouncedSearchKey] = useDebouncedValue(searchKey, 300);
+  const [page, setPage] = useState(1);
+  const [orderBy, setOrderBy] = useState<string>(StudentOrderByEnum.NAME);
+  const [orderDir, setOrderDir] = useState<string>(OrderDirEnum.ASC);
 
   const [openedModal, disclosureModal] = useDisclosure(false);
   const [openedDeleteConfirm, disclosureDeleteConfirm] = useDisclosure(false);
 
-  const [debouncedSearchKey] = useDebouncedValue(searchKey, 300);
-
   const { data, refetch } = trpc.getStudents.useQuery(
     {
       searchKey: debouncedSearchKey,
+      page: page,
+      orderBy: orderBy,
+      orderDir: orderDir,
     },
     {
       refetchOnWindowFocus: false,
@@ -47,6 +57,13 @@ export default function StudentPage() {
   const deleteStudentMutation = trpc.deleteStudentById.useMutation({
     onSettled: () => refetch(),
   });
+
+  useEffect(() => {
+    const { q, orderby, orderdir } = router.query;
+    setSearchKey(String(q ?? ''));
+    if (orderby) setOrderBy((orderBy) => String(orderby));
+    if (orderdir) setOrderDir((orderDir) => String(orderdir));
+  }, []);
 
   return (
     <MainLayout className='relative h-full w-full pt-12'>
@@ -75,30 +92,96 @@ export default function StudentPage() {
           </ActionIcon>
         </Group>
 
-        <TextInput
-          className='text-xl'
-          icon={<IconSearch />}
-          onChange={(e) => {
-            setSearchKey(e.target.value);
-          }}
-          placeholder='Search by id, name, class'
-          radius='xl'
-          size='md'
-        />
+        <Stack spacing='none'>
+          <TextInput
+            className='text-xl'
+            icon={<IconSearch />}
+            value={searchKey}
+            onChange={(e) => {
+              setSearchKey(e.target.value);
+              router.push({
+                query: {
+                  ...router.query,
+                  q: e.target.value,
+                },
+              });
+              setPage(1);
+            }}
+            placeholder='Search by id, name, class'
+            radius='md'
+            size='sm'
+          />
+
+          <Group className='self-end'>
+            <Select
+              className='max-w-[7rem]'
+              value={orderBy}
+              label='Sort by'
+              data={[
+                { value: StudentOrderByEnum.UID, label: 'ID' },
+                { value: StudentOrderByEnum.NAME, label: 'Name' },
+                { value: StudentOrderByEnum.BIRTH_DATE, label: 'Birth date' },
+                { value: StudentOrderByEnum.CLASSNAME, label: 'Class name' },
+              ]}
+              size='xs'
+              onChange={(e) => {
+                if (e) {
+                  setOrderBy(e);
+                  router.push({
+                    query: {
+                      ...router.query,
+                      orderby: e,
+                    },
+                  });
+                  setPage(1);
+                }
+              }}
+            />
+            <Select
+              className='max-w-[5rem]'
+              value={orderDir}
+              label='Order'
+              data={[
+                { value: OrderDirEnum.ASC, label: 'A - Z' },
+                { value: OrderDirEnum.DESC, label: 'Z - A' },
+              ]}
+              size='xs'
+              onChange={(e) => {
+                if (e) {
+                  setOrderDir(e);
+                  router.push({
+                    query: {
+                      ...router.query,
+                      orderdir: e,
+                    },
+                  });
+                  setPage(1);
+                }
+              }}
+            />
+          </Group>
+        </Stack>
 
         <Stack className='mb-8' spacing='md'>
-          {data && data.length > 0 ? (
-            data.map((student) => (
-              <StudentCard
-                key={student.uid}
-                data={student}
-                refetch={refetch}
-                editAction={disclosureModal.open}
-                deleteAction={disclosureDeleteConfirm.open}
-              />
-            ))
+          {data && data.records.length > 0 ? (
+            <>
+              {data.records.map((student) => (
+                <StudentCard
+                  key={student.uid}
+                  data={student}
+                  editAction={disclosureModal.open}
+                  deleteAction={disclosureDeleteConfirm.open}
+                />
+              ))}
+
+              <Pagination
+                className='self-end'
+                value={page}
+                onChange={(e) => setPage(e)}
+                total={data.pageTotal}></Pagination>
+            </>
           ) : (
-            <Text>No Student</Text>
+            <Text className='text-center font-semibold'>No students found</Text>
           )}
         </Stack>
       </Stack>
