@@ -1,26 +1,31 @@
 import { Student } from '.prisma/client';
 import { trpc } from '@/hooks/trpc';
-import { Box, Input, ScrollArea, useMantineTheme } from '@mantine/core';
-import { useDebouncedValue, useFocusTrap, useMergedRef } from '@mantine/hooks';
+import {
+  Badge,
+  Box,
+  Input,
+  ScrollArea,
+  Stack,
+  Text,
+  UnstyledButton,
+  useMantineTheme,
+} from '@mantine/core';
+import { useDebouncedValue, useFocusTrap } from '@mantine/hooks';
 import { notifications } from '@mantine/notifications';
 import { IconHash, IconScan } from '@tabler/icons-react';
-import { MutableRefObject, useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 
 function AutoCompleteItem({
   student,
-  index,
   onAction,
 }: {
   student: Student;
-  index: number;
   onAction: () => void;
 }) {
   const theme = useMantineTheme();
 
   return (
-    <Box
-      id={`autocomplete-item-${index}`}
-      tabIndex={index}
+    <UnstyledButton
       onClick={onAction}
       onKeyDown={(e) => {
         if (e.key === 'Enter') {
@@ -28,7 +33,7 @@ function AutoCompleteItem({
           onAction();
         }
       }}
-      className='py-2 px-4 rounded-lg flex justify-between m-1 mb-2 cursor-pointer'
+      className='py-2 px-4 rounded-lg flex justify-between m-1 mb-2 w-[95%]'
       sx={{
         'backgroundColor':
           theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.colors.gray[1],
@@ -38,15 +43,17 @@ function AutoCompleteItem({
         },
         'outlineColor': theme.colors.blue[5],
       }}>
-      <div>
+      <Stack className='gap-1'>
         <div>{student.name}</div>
-        <Box c='dimmed' className='text-sm flex items-center gap-2'>
-          <IconHash size={12} />
-          {student.uid}
+        <Box className='text-sm flex items-center gap-1'>
+          <IconHash size={14} />
+          <Text c='dimmed' fz='xs'>
+            {student.uid}
+          </Text>
         </Box>
-      </div>
-      <div>BPK 7</div>
-    </Box>
+      </Stack>
+      <Badge>BPK 7</Badge>
+    </UnstyledButton>
   );
 }
 
@@ -129,12 +136,11 @@ export function ScanInput({
           radius='xl'
           size='md'
         />
-        <ScrollArea className='mt-3 relative h-60 px-6' ref={focusTrapRef}>
+        <ScrollArea className='mt-3 relative h-60 px-2' ref={focusTrapRef}>
           {Boolean(autocompleteData) &&
             autocompleteData.map((student, index) => (
               <AutoCompleteItem
                 key={student.id}
-                index={index}
                 student={student}
                 onAction={() => submitStudentUid(student.uid)}
               />

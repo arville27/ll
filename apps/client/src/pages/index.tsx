@@ -2,19 +2,22 @@ import { ScanInput } from '@/components/ScanInput';
 import { TableStudents } from '@/components/TableStudents';
 import { trpc } from '@/hooks/trpc';
 import { Layout } from '@ll/common';
-import { Card, Group, Stack, Text, useMantineTheme } from '@mantine/core';
-import { IconList, IconScan } from '@tabler/icons-react';
+import { Card, Group, Input, Stack, Text, useMantineTheme } from '@mantine/core';
+import { useDebouncedValue } from '@mantine/hooks';
+import { IconList, IconScan, IconSearch } from '@tabler/icons-react';
 import { useState } from 'react';
 
 function App() {
   const [keyword, setKeyword] = useState('');
+  const [filterKeyword, setFilterKeyword] = useState('');
+  const [filterKeywordDebounced] = useDebouncedValue(filterKeyword, 300);
   const theme = useMantineTheme();
   const { data: todayAttendanceLog, refetch } = trpc.getAttendanceLog.useQuery();
 
   return (
     <Layout navbarProp={{ links: [] }}>
       <div className='grid grid-rows-2 lg:grid-rows-none lg:grid-cols-[1fr_0.6fr] h-full'>
-        <Stack align='center' className='mt-40'>
+        <Stack align='center' className='mt-52'>
           <IconScan size={192} />
           <ScanInput keyword={keyword} setKeyword={setKeyword} refetch={refetch} />
         </Stack>
@@ -30,6 +33,13 @@ function App() {
               Today attendance
             </Text>
           </Group>
+          <Input
+            value={filterKeyword}
+            onChange={(e) => setFilterKeyword(e.target.value)}
+            radius='xl'
+            icon={<IconSearch size={16} />}
+            placeholder='Filter by student name'
+          />
           {Boolean(todayAttendanceLog) && todayAttendanceLog.length > 0 ? (
             <Card
               withBorder
@@ -42,10 +52,14 @@ function App() {
                     : theme.colors.gray[0],
               }}>
               <TableStudents
-                data={todayAttendanceLog.map((log) => ({
-                  clockIn: log.date.getTime(),
-                  name: log.student.name,
-                }))}
+                data={todayAttendanceLog
+                  .filter((log) =>
+                    log.student.name.toLowerCase().includes(filterKeywordDebounced)
+                  )
+                  .map((log) => ({
+                    clockIn: log.date.getTime(),
+                    name: log.student.name,
+                  }))}
               />
             </Card>
           ) : (
