@@ -1,0 +1,28 @@
+{
+  "name": "@ll/importer",
+  "version": "1.0.0",
+  "description": "",
+  "private": true,
+  "main": "src/index.ts",
+  "scripts": {
+    "import": "ts-node -r tsconfig-paths/register -r dotenv/config . import"
+  },
+  "keywords": [],
+  "author": "arville27",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^20.2.5",
+    "dotenv": "^16.1.1",
+    "ts-node": "^10.9.1",
+    "tsconfig-paths": "^4.2.0",
+    "typescript": "^5.0.4"
+  },
+  "dependencies": {
+    "@ll/server": "*",
+    "@trpc/client": "^10.28.2",
+    "@trpc/server": "^10.28.2",
+    "date-fns": "^2.30.0",
+    "node-xlsx": "^0.23.0",
+    "superjson": "^1.12.2"
+  }
+}

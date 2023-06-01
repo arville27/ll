@@ -19,8 +19,8 @@ export const createTRPCContext = (_opts: CreateNextContextOptions) => {
 // since it's not very descriptive.
 // For instance, the use of a t variable
 // is common in i18n libraries.
-import superjson from "superjson";
-import { ZodError } from "zod";
+import superjson from 'superjson';
+import { ZodError } from 'zod';
 
 const t = initTRPC.context<typeof createTRPCContext>().create({
   transformer: superjson,
@@ -29,8 +29,7 @@ const t = initTRPC.context<typeof createTRPCContext>().create({
       ...shape,
       data: {
         ...shape.data,
-        zodError:
-          error.cause instanceof ZodError ? error.cause.flatten() : null,
+        zodError: error.cause instanceof ZodError ? error.cause.flatten() : null,
       },
     };
   },
