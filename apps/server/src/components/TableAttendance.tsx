@@ -1,5 +1,6 @@
-import { Table, ScrollArea, createStyles, Tooltip, Text } from '@mantine/core';
+import { ScrollArea, Table, Tooltip, createStyles } from '@mantine/core';
 import { AttendanceLog, Student, StudentClass } from '@prisma/client';
+import * as dfs from 'date-fns';
 import { useState } from 'react';
 
 interface TableAttendanceProps {
@@ -45,11 +46,7 @@ export function TableAttendance({
     return (
       <tr key={row.id}>
         <td className='w-fit'>{index + 1}</td>
-        <td className='w-fit whitespace-nowrap'>{`${row.date.toLocaleTimeString('en-US', {
-          hour: 'numeric',
-          minute: 'numeric',
-          hour12: true,
-        })}`}</td>
+        <td className='w-fit whitespace-nowrap'>{dfs.format(row.date, 'HH:mm')}</td>
         <td className='w-fit'>{row.student.uid}</td>
         <td className='w-fit'>
           <Tooltip
@@ -62,7 +59,7 @@ export function TableAttendance({
           </Tooltip>
         </td>
         <td className='w-fit'>{row.student.studentClass.className}</td>
-        {showDate && <td className='w-fit'>{row.date.toLocaleDateString()}</td>}
+        {showDate && <td className='w-fit'>{dfs.format(row.date, 'HH:mm')}</td>}
       </tr>
     );
   });

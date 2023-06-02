@@ -1,4 +1,5 @@
 import { ScrollArea, Table, Tooltip, createStyles } from '@mantine/core';
+import * as dfs from 'date-fns';
 import { useState } from 'react';
 
 interface TableStudentsProps {
@@ -61,7 +62,7 @@ export function TableStudents({ data }: TableStudentsProps) {
           </Tooltip>
         </td>
         <td className={classes.contentLimit}>{row.student.studentClass.className}</td>
-        <td className={classes.contentLimit}>{row.date.toLocaleTimeString()}</td>
+        <td className={classes.contentLimit}>{dfs.format(row.date, 'HH:mm')}</td>
       </tr>
     );
   });
