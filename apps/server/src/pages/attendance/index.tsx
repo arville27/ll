@@ -33,7 +33,7 @@ function SummaryCard({ count, itemName }: { count: number; itemName: string }) {
   return (
     <Card
       withBorder
-      className='self-end px-6 py-4 rounded-xl shadow-md'
+      className='self-end px-6 py-4 rounded-xl shadow-sm'
       sx={{
         backgroundColor:
           theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.white,
