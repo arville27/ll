@@ -10,11 +10,13 @@ import {
 } from './studentProc/getStudents';
 import { addStudentClassProcedure } from './studentClassProc/addStudentClass';
 import { getStudentClassesProcedure } from './studentClassProc/getStudentClasses';
+import { getAttendanceLogPerStudentProcedure } from './attendanceProc/getAttendanceLogPerStudent';
 
 export const appRouter = router({
   // AttendanceProcedure
   getAttendanceLog: getAttendanceLogProcedure,
   addAttendanceLog: addAttendanceLogProcedure,
+  getAttendanceLogPerStudent: getAttendanceLogPerStudentProcedure,
   // StudentProcedure
   addStudent: addStudentProcedure,
   editStudent: editStudentProcedure,

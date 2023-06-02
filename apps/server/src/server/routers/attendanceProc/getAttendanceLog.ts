@@ -43,7 +43,11 @@ export async function getAttendanceLog({
       },
     },
     include: {
-      student: true,
+      student: {
+        include: {
+          studentClass: true,
+        },
+      },
     },
   });
 }

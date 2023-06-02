@@ -36,7 +36,6 @@ import { useEffect, useRef, useState } from 'react';
 export default function StudentPage() {
   const theme = useMantineTheme();
   const router = useRouter();
-  const mounted = useRef(false);
 
   const { searchKey, setSearchKey } = useSearchKeyStore((state) => state);
   const { setSelectedStudent } = useSelectedStudentStore((state) => state);
