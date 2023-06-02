@@ -33,7 +33,7 @@ model AttendanceLog {
 
 model StudentClass {
   id        Int       @id @default(autoincrement())
-  className String
+  className String    @unique
   students  Student[]
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt

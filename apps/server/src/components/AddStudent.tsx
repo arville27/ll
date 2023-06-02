@@ -45,7 +45,7 @@ export function AddStudent({
       : new StudentInput()
   );
 
-  const { data: classes, refetch: classesRefetch } = trpc.getStudentClasses.useQuery();
+  const { data: classes, refetch: classesRefetch } = trpc.getStudentClasses.useQuery({});
 
   const addStudentClassMutation = trpc.addStudentClass.useMutation({
     onSettled: () => {
@@ -207,7 +207,7 @@ export function AddStudent({
           creatable
           getCreateLabel={(query) => `+ Create ${query}`}
           onCreate={(query) => {
-            const item = { class: query };
+            const item = { className: query };
             addStudentClassMutation.mutate(item, {
               onSuccess: (res) => {
                 setInput({ ...input, studentClassId: String(res.id) });

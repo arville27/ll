@@ -102,7 +102,7 @@ export default function StudentPage() {
         <Stack spacing='none'>
           <TextInput
             className='text-xl'
-            icon={<IconSearch />}
+            icon={<IconSearch size={14} />}
             value={searchKey}
             onChange={(e) => {
               setSearchKey(e.target.value);
@@ -185,7 +185,8 @@ export default function StudentPage() {
                 className='self-end'
                 value={page}
                 onChange={(e) => setPage(e)}
-                total={data.pageTotal}></Pagination>
+                total={data.pageTotal}
+              />
             </>
           ) : (
             <Box className='text-center'>
@@ -207,7 +208,8 @@ export default function StudentPage() {
           closeAction={() => {
             disclosureModal.close();
             setSelectedStudent(null);
-          }}></AddStudent>
+          }}
+        />
       </CustomModal>
 
       <CustomConfirmation
@@ -225,8 +227,10 @@ export default function StudentPage() {
                     title: <span className='text-green-6'>Success</span>,
                     message: `Removed "${res.name}" from student list`,
                     color: 'green',
-                    bg: theme.colors.green[0],
-                    icon: <IconCheck />,
+                    bg:
+                      theme.colorScheme === 'dark'
+                        ? theme.colors.dark[9]
+                        : theme.colors.green[0],
                   });
                 },
                 onError: (e) => {

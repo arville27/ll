@@ -10,7 +10,7 @@ import {
   Tooltip,
   useMantineTheme,
 } from '@mantine/core';
-import { Student } from '@prisma/client';
+import { Student, StudentClass } from '@prisma/client';
 import { IconCake, IconEdit, IconSquareRoundedX } from '@tabler/icons-react';
 
 export function StudentCard({
@@ -18,7 +18,7 @@ export function StudentCard({
   editAction,
   deleteAction,
 }: {
-  data: Student;
+  data: Student & { studentClass: StudentClass };
   editAction: () => void;
   deleteAction: () => void;
 }) {

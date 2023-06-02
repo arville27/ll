@@ -3,7 +3,7 @@ import { z } from 'zod';
 import { procedure } from '../../trpc';
 
 export const addStudentClassSchema = z.object({
-  class: z.string(),
+  className: z.string(),
 });
 
 export type addStudentClassInput = z.infer<typeof addStudentClassSchema>;
@@ -11,16 +11,16 @@ export type addStudentClassInput = z.infer<typeof addStudentClassSchema>;
 export const addStudentClassProcedure = procedure
   .input(addStudentClassSchema)
   .mutation(async ({ input, ctx }) => {
-    const isExistedUid = await ctx.prisma.student.findUnique({
-      where: { uid: input.class },
+    const studentClass = await ctx.prisma.studentClass.findUnique({
+      where: { className: input.className },
     });
 
-    if (isExistedUid)
+    if (studentClass)
       throw new TRPCError({ code: 'BAD_REQUEST', message: 'Classname already used' });
 
     const result = ctx.prisma.studentClass.create({
       data: {
-        className: input.class,
+        className: input.className,
       },
     });
     return await result;

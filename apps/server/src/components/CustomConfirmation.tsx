@@ -1,11 +1,4 @@
-import {
-  Button,
-  Group,
-  Stack,
-  Text,
-  useMantineColorScheme,
-  useMantineTheme,
-} from '@mantine/core';
+import { Button, Group, Stack, Text, useMantineTheme } from '@mantine/core';
 import CustomModal from './CustomModal';
 
 interface Props {
@@ -28,24 +21,19 @@ const CustomConfirmation = ({
     <CustomModal
       modalTitle={<Text fw={600}>{title}</Text>}
       displayValue={displayValue}
-      closeAction={closeAction}
-    >
+      closeAction={closeAction}>
       <Stack>
         <span>{message}</span>
-        <Group className="self-end">
+        <Group className='self-end'>
           <Button
             bg={theme.colors.blue[theme.fn.primaryShade()]}
             onClick={() => {
               acceptAction();
               closeAction();
-            }}
-          >
+            }}>
             Yes
           </Button>
-          <Button
-            bg={theme.colors.red[theme.fn.primaryShade()]}
-            onClick={() => closeAction()}
-          >
+          <Button bg={theme.colors.red[theme.fn.primaryShade()]} onClick={closeAction}>
             No
           </Button>
         </Group>

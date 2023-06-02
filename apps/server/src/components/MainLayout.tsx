@@ -1,5 +1,5 @@
 import { Layout } from '@ll/common';
-import { IconHome, IconSchool, IconArticle } from '@tabler/icons-react';
+import { IconHome, IconSchool, IconArticle, IconChalkboard } from '@tabler/icons-react';
 import { HTMLAttributes, PropsWithChildren } from 'react';
 
 const MainLayout: React.FC<PropsWithChildren<HTMLAttributes<HTMLElement>>> = ({
@@ -17,14 +17,18 @@ const MainLayout: React.FC<PropsWithChildren<HTMLAttributes<HTMLElement>>> = ({
             icon: <IconSchool size={20} />,
           },
           {
+            label: 'Class',
+            link: '/class',
+            icon: <IconChalkboard size={20} />,
+          },
+          {
             label: 'Attendance Log',
             link: '/attendance',
             icon: <IconArticle size={20} />,
           },
         ],
       }}
-      {...layoutAttribute}
-    >
+      {...layoutAttribute}>
       {children}
     </Layout>
   );

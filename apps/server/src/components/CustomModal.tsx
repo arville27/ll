@@ -10,16 +10,12 @@ interface Props extends HTMLAttributes<HTMLElement> {
 const useStyles = createStyles((theme) => ({
   modalHeader: {
     backgroundColor:
-      theme.colorScheme === 'dark'
-        ? theme.colors.dark[7]
-        : theme.colors.gray[0],
+      theme.colorScheme === 'dark' ? theme.colors.dark[8] : theme.colors.white,
     zIndex: 0,
   },
   modalBody: {
     backgroundColor:
-      theme.colorScheme === 'dark'
-        ? theme.colors.dark[7]
-        : theme.colors.gray[0],
+      theme.colorScheme === 'dark' ? theme.colors.dark[8] : theme.colors.white,
   },
 }));
 
@@ -41,7 +37,7 @@ const CustomModal: React.FC<PropsWithChildren<Props>> = ({
         blur: 1,
       }}
       centered
-      radius="md"
+      radius='md'
       transitionProps={{
         transition: 'fade',
         duration: 200,
@@ -51,8 +47,7 @@ const CustomModal: React.FC<PropsWithChildren<Props>> = ({
         header: classes.modalHeader,
         body: classes.modalBody,
       }}
-      {...layoutAttribute}
-    >
+      {...layoutAttribute}>
       {children}
     </Modal>
   );
