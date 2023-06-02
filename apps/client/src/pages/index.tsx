@@ -52,14 +52,9 @@ function App() {
                     : theme.colors.gray[0],
               }}>
               <TableStudents
-                data={todayAttendanceLog
-                  .filter((log) =>
-                    log.student.name.toLowerCase().includes(filterKeywordDebounced)
-                  )
-                  .map((log) => ({
-                    clockIn: log.date.getTime(),
-                    name: log.student.name,
-                  }))}
+                data={todayAttendanceLog.filter((log) =>
+                  log.student.name.toLowerCase().includes(filterKeywordDebounced)
+                )}
               />
             </Card>
           ) : (

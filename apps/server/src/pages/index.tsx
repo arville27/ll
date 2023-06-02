@@ -36,7 +36,7 @@ export default function AttendancePage() {
           }}
           className='shadow-md self-center w-full max-w-full mb-12'>
           {data && data.length > 0 ? (
-            <TableAttendance tableHeight='fit' data={data}></TableAttendance>
+            <TableAttendance tableHeight='fit' data={data} />
           ) : (
             <Text className='flex justify-center'>
               No attendance logs on current date

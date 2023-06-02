@@ -3,8 +3,11 @@ import { useState } from 'react';
 
 interface TableStudentsProps {
   data: {
-    name: string;
-    clockIn: number;
+    date: Date;
+    student: {
+      name: string;
+      studentClass: { className: string };
+    };
   }[];
 }
 
@@ -41,6 +44,7 @@ const useStyles = createStyles((theme) => ({
 }));
 
 export function TableStudents({ data }: TableStudentsProps) {
+  console.log(data);
   const { classes, cx } = useStyles();
   const [scrolled, setScrolled] = useState(false);
 
@@ -50,16 +54,15 @@ export function TableStudents({ data }: TableStudentsProps) {
         <td className='max-w-[135px]'>
           <Tooltip
             position='top-start'
-            label={row.name}
+            label={row.student.name}
             classNames={{
               tooltip: 'text-wrap whitespace-normal max-w-4/5',
             }}>
-            <div className='truncate'>{row.name}</div>
+            <div className='truncate'>{row.student.name}</div>
           </Tooltip>
         </td>
-        <td className={classes.contentLimit}>
-          {new Date(row.clockIn).toLocaleTimeString()}
-        </td>
+        <td className={classes.contentLimit}>{row.student.studentClass.className}</td>
+        <td className={classes.contentLimit}>{row.date.toLocaleTimeString()}</td>
       </tr>
     );
   });
@@ -72,6 +75,7 @@ export function TableStudents({ data }: TableStudentsProps) {
         <thead className={cx(classes.header, { [classes.scrolled]: scrolled })}>
           <tr>
             <th>Student's name</th>
+            <th>Student's class</th>
             <th>Clock In</th>
           </tr>
         </thead>
