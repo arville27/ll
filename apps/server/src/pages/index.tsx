@@ -1,13 +1,25 @@
 import MainLayout from '@/components/MainLayout';
 import { TableAttendance } from '@/components/TableAttendance';
 import { trpc } from '@/hooks/trpc';
-import { Card, Group, LoadingOverlay, Stack, Text, useMantineTheme } from '@mantine/core';
-import { Icon24Hours } from '@tabler/icons-react';
+import {
+  Card,
+  Group,
+  Input,
+  LoadingOverlay,
+  Stack,
+  Text,
+  useMantineTheme,
+} from '@mantine/core';
+import { useDebouncedValue } from '@mantine/hooks';
+import { Icon24Hours, IconSearch } from '@tabler/icons-react';
 import * as dfs from 'date-fns';
+import { useState } from 'react';
 
 export default function AttendancePage() {
   const { data } = trpc.getAttendanceLog.useQuery();
   const theme = useMantineTheme();
+  const [filterKeyword, setFilterKeyword] = useState('');
+  const [filterKeywordDebounced] = useDebouncedValue(filterKeyword, 300);
 
   return (
     <MainLayout className='relative h-full w-full pt-12'>
@@ -27,6 +39,13 @@ export default function AttendancePage() {
           </Group>
         </Group>
 
+        <Input
+          value={filterKeyword}
+          onChange={(e) => setFilterKeyword(e.target.value)}
+          radius='xl'
+          icon={<IconSearch size={16} />}
+          placeholder="Filter by student's name or class name"
+        />
         <Card
           withBorder
           radius='md'
@@ -36,7 +55,16 @@ export default function AttendancePage() {
           }}
           className='shadow-md self-center w-full max-w-full mb-12'>
           {data && data.length > 0 ? (
-            <TableAttendance tableHeight='fit' data={data} />
+            <TableAttendance
+              tableHeight='fit'
+              data={data.filter(
+                (log) =>
+                  log.student.name.toLowerCase().includes(filterKeywordDebounced) ||
+                  log.student.studentClass.className
+                    .toLowerCase()
+                    .includes(filterKeywordDebounced)
+              )}
+            />
           ) : (
             <Text className='flex justify-center'>
               No attendance logs on current date

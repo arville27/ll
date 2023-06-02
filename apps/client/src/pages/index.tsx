@@ -38,7 +38,7 @@ function App() {
             onChange={(e) => setFilterKeyword(e.target.value)}
             radius='xl'
             icon={<IconSearch size={16} />}
-            placeholder='Filter by student name'
+            placeholder="Filter by student's name or class name"
           />
           {Boolean(todayAttendanceLog) && todayAttendanceLog.length > 0 ? (
             <Card
@@ -52,8 +52,12 @@ function App() {
                     : theme.colors.gray[0],
               }}>
               <TableStudents
-                data={todayAttendanceLog.filter((log) =>
-                  log.student.name.toLowerCase().includes(filterKeywordDebounced)
+                data={todayAttendanceLog.filter(
+                  (log) =>
+                    log.student.name.toLowerCase().includes(filterKeywordDebounced) ||
+                    log.student.studentClass.className
+                      .toLowerCase()
+                      .includes(filterKeywordDebounced)
                 )}
               />
             </Card>
