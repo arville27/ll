@@ -44,7 +44,6 @@ const useStyles = createStyles((theme) => ({
 }));
 
 export function TableStudents({ data }: TableStudentsProps) {
-  console.log(data);
   const { classes, cx } = useStyles();
   const [scrolled, setScrolled] = useState(false);
 
