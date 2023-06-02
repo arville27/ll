@@ -1,8 +1,8 @@
-import { StudentOrderByEnum } from '@/enums/orderByEnum';
-import { OrderDirEnum } from '@/enums/orderDirEnum';
-import { PrismaClientType } from '@/server/db';
-import { procedure } from '@/server/trpc';
 import { z } from 'zod';
+import { StudentOrderByEnum } from '../../../enums/orderByEnum';
+import { OrderDirEnum } from '../../../enums/orderDirEnum';
+import { PrismaClientType } from '../../../server/db';
+import { procedure } from '../../../server/trpc';
 
 const PAGE_SIZE = 10;
 
