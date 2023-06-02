@@ -1,9 +1,9 @@
 import { Table, ScrollArea, createStyles, Tooltip, Text } from '@mantine/core';
-import { AttendanceLog, Student } from '@prisma/client';
+import { AttendanceLog, Student, StudentClass } from '@prisma/client';
 import { useState } from 'react';
 
 interface TableAttendanceProps {
-  data: (AttendanceLog & { student: Student })[];
+  data: (AttendanceLog & { student: Student & { studentClass: StudentClass } })[];
   showDate?: boolean;
   tableWidth?: number | string;
   tableHeight?: number | string;
@@ -61,6 +61,7 @@ export function TableAttendance({
             <div className='line-clamp-1'>{row.student.name}</div>
           </Tooltip>
         </td>
+        <td className='w-fit'>{row.student.studentClass.className}</td>
         {showDate && <td className='w-fit'>{row.date.toLocaleDateString()}</td>}
       </tr>
     );
@@ -77,6 +78,7 @@ export function TableAttendance({
             <th className='whitespace-nowrap'>Clock in</th>
             <th>ID</th>
             <th>Student name</th>
+            <th>Student class</th>
             {showDate && <th>Date</th>}
           </tr>
         </thead>

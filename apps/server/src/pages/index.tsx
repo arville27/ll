@@ -3,6 +3,7 @@ import { TableAttendance } from '@/components/TableAttendance';
 import { trpc } from '@/hooks/trpc';
 import { Card, Group, LoadingOverlay, Stack, Text, useMantineTheme } from '@mantine/core';
 import { Icon24Hours } from '@tabler/icons-react';
+import * as dfs from 'date-fns';
 
 export default function AttendancePage() {
   const { data } = trpc.getAttendanceLog.useQuery();
@@ -20,7 +21,7 @@ export default function AttendancePage() {
                 {"Today's attendance"}
               </Text>
               <Text fs='sm' c='dimmed'>
-                {new Date().toDateString()}
+                {dfs.format(new Date(), 'EEEE, dd MMM yyyy')}
               </Text>
             </Stack>
           </Group>
