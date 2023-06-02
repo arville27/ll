@@ -46,7 +46,7 @@ const useStyles = createStyles((theme) => ({
   },
 
   burger: {
-    [theme.fn.largerThan('sm')]: {
+    [theme.fn.largerThan('lg')]: {
       display: 'none',
     },
   },
@@ -93,10 +93,11 @@ export function NavigationBar({ links }: NavigationBarProps) {
                   ? theme.colors.dark[0]
                   : theme.colors.gray[7],
             }}>
-            Little Learners Attendance System
+            Little Learners
+            <span className='hidden md:inline'> Attendance System</span>
           </Text>
         </Group>
-        <Group spacing={8} className='hidden sm:flex'>
+        <Group spacing={8} className='hidden lg:flex'>
           {items}
           <ThemeSwitch size='lg' />
         </Group>

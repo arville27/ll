@@ -10,6 +10,7 @@ import { useSearchKeyStore } from '@/store/useSearchKeyStore';
 import { useSelectedStudentStore } from '@/store/useSelectedStudent';
 import {
   ActionIcon,
+  Box,
   Button,
   Group,
   LoadingOverlay,
@@ -22,13 +23,20 @@ import {
 } from '@mantine/core';
 import { useDebouncedValue, useDisclosure } from '@mantine/hooks';
 import { notifications } from '@mantine/notifications';
-import { IconCheck, IconPlus, IconSchool, IconSearch } from '@tabler/icons-react';
+import {
+  IconCheck,
+  IconDeviceDesktopSearch,
+  IconPlus,
+  IconSchool,
+  IconSearch,
+} from '@tabler/icons-react';
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 export default function StudentPage() {
   const theme = useMantineTheme();
   const router = useRouter();
+  const mounted = useRef(false);
 
   const { searchKey, setSearchKey } = useSearchKeyStore((state) => state);
   const { setSelectedStudent } = useSelectedStudentStore((state) => state);
@@ -40,7 +48,7 @@ export default function StudentPage() {
   const [openedModal, disclosureModal] = useDisclosure(false);
   const [openedDeleteConfirm, disclosureDeleteConfirm] = useDisclosure(false);
 
-  const { data, refetch } = trpc.getStudents.useQuery(
+  const { data, refetch } = trpc.getStudentsPageable.useQuery(
     {
       searchKey: debouncedSearchKey,
       page: page,
@@ -63,7 +71,7 @@ export default function StudentPage() {
     setSearchKey(String(q ?? ''));
     if (orderby) setOrderBy((orderBy) => String(orderby));
     if (orderdir) setOrderDir((orderDir) => String(orderdir));
-  }, []);
+  }, [router.query]);
 
   return (
     <MainLayout className='relative h-full w-full pt-12'>
@@ -181,7 +189,10 @@ export default function StudentPage() {
                 total={data.pageTotal}></Pagination>
             </>
           ) : (
-            <Text className='text-center font-semibold'>No students found</Text>
+            <Box className='text-center'>
+              <IconDeviceDesktopSearch color='gray' size={40} />
+              <Text>No students found</Text>
+            </Box>
           )}
         </Stack>
       </Stack>
