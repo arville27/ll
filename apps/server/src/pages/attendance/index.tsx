@@ -168,12 +168,26 @@ export default function AttendancePage() {
             </Button>
             <Button
               onClick={() => {
+                const firstDayOfWeek = dfs.startOfWeek(new Date(), {
+                  weekStartsOn: 1,
+                });
+                setStartDate(firstDayOfWeek);
+                setEndDate(today);
+              }}
+              compact
+              gradient={{ from: 'lime', to: 'teal' }}
+              variant='gradient'>
+              This week
+            </Button>
+            <Button
+              onClick={() => {
                 const firstDayOfMonth = new Date();
                 firstDayOfMonth.setDate(1);
                 setStartDate(firstDayOfMonth);
                 setEndDate(today);
               }}
               compact
+              gradient={{ from: 'yellow', to: 'orange' }}
               variant='gradient'>
               This month
             </Button>
