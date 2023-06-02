@@ -246,11 +246,11 @@ export default function AttendancePage() {
                 <div className='flex w-full gap-4'>
                   <Text>{index + 1}</Text>
                   <Divider orientation='vertical' />
-                  <div className='flex justify-between w-full items-center text-sm'>
+                  <div className='flex flex-row flex-wrap justify-between w-full items-center text-sm gap-1'>
                     <Text>{dfs.format(log.date, 'EEEE, dd MMM yyyy')}</Text>
                     <Badge color='teal'>
                       <Group spacing={5}>
-                        <IconClock size={14} />
+                        <IconClock size={14} className='hidden sm:block' />
                         <Text>{dfs.format(log.date, 'H:mm')}</Text>
                       </Group>
                     </Badge>
