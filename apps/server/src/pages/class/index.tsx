@@ -27,10 +27,10 @@ import {
   IconSchool,
   IconSearch,
 } from '@tabler/icons-react';
-import { useEffect, useState } from 'react';
-import { AddStudentClassForm } from './AddStudentClassForm';
-import StudentListDetail from './StudentListDetail';
 import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
+import AddStudentClassForm from './AddStudentClassForm';
+import StudentListDetail from './StudentListDetail';
 
 export default function StudentClassPage() {
   const theme = useMantineTheme();
