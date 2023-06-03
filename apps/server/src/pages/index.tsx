@@ -19,7 +19,7 @@ export default function AttendancePage() {
   const { data } = trpc.getAttendanceLog.useQuery();
   const theme = useMantineTheme();
   const [filterKeyword, setFilterKeyword] = useState('');
-  const [filterKeywordDebounced] = useDebouncedValue(filterKeyword, 300);
+  const [filterKeywordDebounced] = useDebouncedValue(filterKeyword.toLowerCase(), 300);
 
   return (
     <MainLayout className='relative h-full w-full pt-12'>
