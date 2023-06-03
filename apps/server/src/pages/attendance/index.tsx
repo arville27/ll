@@ -227,14 +227,19 @@ export default function AttendancePage() {
             data.map((i, idx) => (
               <Card withBorder key={idx} className='py-2 px-4'>
                 <Group position='apart'>
-                  <Stack>
-                    <Group spacing='xs'>
-                      <IconPointFilled size={10} />
-                      <Text fw={500}>{i.name}</Text>
-                      <Badge>{i.studentClass.className}</Badge>
-                      <Badge color='yellow'>Total {i.attendanceLogs.length}</Badge>
-                    </Group>
-                  </Stack>
+                  <Group>
+                    <IconPointFilled size={10} />
+                    <Stack spacing='none'>
+                      <Group spacing='xs'>
+                        <Text fw={500}>{i.name}</Text>
+                        <Badge>{i.studentClass.className}</Badge>
+                        <Badge color='yellow'>Total {i.attendanceLogs.length}</Badge>
+                      </Group>
+                      <Text fz='xs' c='dimmed'>
+                        #{i.uid}
+                      </Text>
+                    </Stack>
+                  </Group>
                   <Group>
                     <Button
                       variant='subtle'
@@ -266,18 +271,21 @@ export default function AttendancePage() {
           modalTitle={
             <Group spacing='lg' className='pt-2 pb-1'>
               <IconSchool size={20} />
-              <Text fw={600}>{selectedStudent.name}</Text>
-              <Group spacing={5}>
-                <Badge>{selectedStudent.studentClass.className}</Badge>
-                <Badge color='yellow'>
-                  Total {selectedStudent.attendanceLogs.length}
-                </Badge>
-              </Group>
+              <Stack spacing='none'>
+                <Text fw={600}>{selectedStudent.name}</Text>
+                <Text fz='xs' c='dimmed'>
+                  #{selectedStudent.uid}
+                </Text>
+              </Stack>
             </Group>
           }
           displayValue={openedModal}
           closeAction={() => disclosureModal.close()}>
           <Stack spacing='xs'>
+            <Group spacing={5} className='self-end'>
+              <Badge>{selectedStudent.studentClass.className}</Badge>
+              <Badge color='yellow'>Total {selectedStudent.attendanceLogs.length}</Badge>
+            </Group>
             {selectedStudent.attendanceLogs.map((log, index) => (
               <Card
                 withBorder

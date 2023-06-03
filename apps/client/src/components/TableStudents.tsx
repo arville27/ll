@@ -1,4 +1,4 @@
-import { ScrollArea, Table, Tooltip, createStyles } from '@mantine/core';
+import { ScrollArea, Table, Tooltip, createStyles, Text } from '@mantine/core';
 import * as dfs from 'date-fns';
 import { useState } from 'react';
 
@@ -7,6 +7,7 @@ interface TableStudentsProps {
     date: Date;
     student: {
       name: string;
+      uid: string;
       studentClass: { className: string };
     };
   }[];
@@ -54,9 +55,16 @@ export function TableStudents({ data }: TableStudentsProps) {
         <td className='max-w-[135px]'>
           <Tooltip
             position='top-start'
-            label={row.student.name}
+            label={
+              <>
+                <Text>{row.student.name}</Text>
+                <Text fz='xs' c='dimmed'>
+                  #{row.student.name}
+                </Text>
+              </>
+            }
             classNames={{
-              tooltip: 'text-wrap whitespace-normal max-w-4/5',
+              tooltip: 'text-wrap whitespace-normalbreak-spaces max-w-4/5',
             }}>
             <div className='truncate'>{row.student.name}</div>
           </Tooltip>

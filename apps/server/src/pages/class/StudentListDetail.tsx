@@ -81,6 +81,7 @@ export default function StudentListDetail({
                         </Text>
                       </Stack>
                       <Button
+                        radius='xl'
                         variant='subtle'
                         size='xs'
                         px='xs'

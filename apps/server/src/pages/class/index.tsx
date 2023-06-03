@@ -27,10 +27,10 @@ import {
   IconSchool,
   IconSearch,
 } from '@tabler/icons-react';
+import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { AddStudentClassForm } from './AddStudentClassForm';
 import StudentListDetail from './StudentListDetail';
-import { useRouter } from 'next/router';
 
 export default function StudentClassPage() {
   const theme = useMantineTheme();
@@ -201,13 +201,17 @@ export default function StudentClassPage() {
                             <Button
                               type='submit'
                               variant='subtle'
+                              radius='md'
                               size='xs'
+                              compact
                               onClick={(e) => e.stopPropagation()}>
                               Save
                             </Button>
                             <Button
                               variant='subtle'
+                              radius='md'
                               size='xs'
+                              compact
                               color='red'
                               onClick={(e) => {
                                 e.stopPropagation();
@@ -232,7 +236,9 @@ export default function StudentClassPage() {
                           <Group spacing='none' className='self-end'>
                             <Button
                               variant='subtle'
+                              radius='md'
                               size='xs'
+                              compact
                               onClick={(e) => {
                                 e.stopPropagation();
                                 e.preventDefault();
@@ -244,7 +250,9 @@ export default function StudentClassPage() {
                             <Button
                               color='red'
                               variant='subtle'
+                              radius='md'
                               size='xs'
+                              compact
                               onClick={(e) => {
                                 e.stopPropagation();
                                 e.preventDefault();
