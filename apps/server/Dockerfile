@@ -14,8 +14,6 @@ FROM node:alpine AS installer
 RUN apk add --no-cache libc6-compat
 RUN apk update
 
-# ENV DATABASE_URL=file:/app/data/app.db
-
 WORKDIR /app
 
 # First install the dependencies (as they change less often)

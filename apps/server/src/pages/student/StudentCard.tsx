@@ -12,7 +12,7 @@ import {
 import { Student, StudentClass } from '@prisma/client';
 import { IconCake, IconEdit, IconSquareRoundedX } from '@tabler/icons-react';
 
-export function StudentCard({
+export default function StudentCard({
   student,
   editAction,
   deleteAction,

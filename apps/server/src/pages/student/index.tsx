@@ -4,8 +4,8 @@ import MainLayout from '@/components/MainLayout';
 import { StudentOrderByEnum } from '@/enums/orderByEnum';
 import { OrderDirEnum } from '@/enums/orderDirEnum';
 import { trpc } from '@/hooks/trpc';
-import { SaveStudentForm } from '@/pages/student/SaveStudentForm';
-import { StudentCard } from '@/pages/student/StudentCard';
+import SaveStudentForm from '@/pages/student/SaveStudentForm';
+import StudentCard from '@/pages/student/StudentCard';
 import {
   ActionIcon,
   Box,

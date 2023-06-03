@@ -4,7 +4,7 @@ import { notifications } from '@mantine/notifications';
 import { IconChalkboard, IconExclamationCircle } from '@tabler/icons-react';
 import { useState } from 'react';
 
-export function AddStudentClassForm({
+export default function AddStudentClassForm({
   submitAction,
   cancelAction,
 }: {

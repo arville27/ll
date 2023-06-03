@@ -29,7 +29,7 @@ import {
 } from '@tabler/icons-react';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
-import { AddStudentClassForm } from './AddStudentClassForm';
+import AddStudentClassForm from './AddStudentClassForm';
 import StudentListDetail from './StudentListDetail';
 
 export default function StudentClassPage() {
