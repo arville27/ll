@@ -185,8 +185,10 @@ export default function StudentClassPage() {
                               size='xs'
                               color='red'
                               onClick={(e) => {
+                                e.stopPropagation();
                                 e.preventDefault();
                                 setSelectedClass(undefined);
+                                editClassDisclosure.close();
                               }}>
                               Cancel
                             </Button>
@@ -207,6 +209,7 @@ export default function StudentClassPage() {
                               variant='subtle'
                               size='xs'
                               onClick={(e) => {
+                                e.stopPropagation();
                                 e.preventDefault();
                                 setSelectedClass(studentClass);
                                 editClassDisclosure.open();
@@ -218,6 +221,7 @@ export default function StudentClassPage() {
                               variant='subtle'
                               size='xs'
                               onClick={(e) => {
+                                e.stopPropagation();
                                 e.preventDefault();
                                 setSelectedClass(studentClass);
                                 deleteClassDisclosure.open();
