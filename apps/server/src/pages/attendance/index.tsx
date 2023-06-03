@@ -26,7 +26,8 @@ import {
   IconSchool,
 } from '@tabler/icons-react';
 import * as dfs from 'date-fns';
-import { useState } from 'react';
+import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
 
 function SummaryCard({ count, itemName }: { count: number; itemName: string }) {
   const theme = useMantineTheme();
@@ -61,7 +62,7 @@ function SummaryCard({ count, itemName }: { count: number; itemName: string }) {
 
 export default function AttendancePage() {
   const theme = useMantineTheme();
-
+  const router = useRouter();
   const today = new Date();
 
   const [selectedStudent, setSelectedStudent] = useState<
@@ -70,6 +71,12 @@ export default function AttendancePage() {
   const [startDate, setStartDate] = useState<Date>(today);
   const [endDate, setEndDate] = useState<Date>(today);
   const [openedModal, disclosureModal] = useDisclosure(false);
+
+  useEffect(() => {
+    const { startdate, enddate } = router.query;
+    if (Number(startdate)) setStartDate(new Date(Number(startdate)));
+    if (Number(enddate)) setEndDate(new Date(Number(enddate)));
+  }, [router.query]);
 
   const { data } = trpc.getAttendanceLogPerStudent.useQuery(
     startDate
@@ -114,7 +121,15 @@ export default function AttendancePage() {
               value={startDate}
               maxDate={endDate}
               onChange={(e) => {
-                if (e) setStartDate(e);
+                if (e) {
+                  router.push({
+                    query: {
+                      ...router.query,
+                      startdate: e.getTime(),
+                    },
+                  });
+                  setStartDate(e);
+                }
               }}
               placeholder='Date'
               radius='md'
@@ -138,7 +153,15 @@ export default function AttendancePage() {
               minDate={startDate!}
               maxDate={today}
               onChange={(e) => {
-                if (e) setEndDate(e);
+                if (e) {
+                  router.push({
+                    query: {
+                      ...router.query,
+                      enddate: e.getTime(),
+                    },
+                  });
+                  setEndDate(e);
+                }
               }}
               placeholder='Date'
               radius='md'
