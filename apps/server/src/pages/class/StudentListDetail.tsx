@@ -14,7 +14,7 @@ import { useDebouncedValue } from '@mantine/hooks';
 import { Student, StudentClass } from '@prisma/client';
 import { IconDeviceDesktopSearch, IconSearch } from '@tabler/icons-react';
 import { useRouter } from 'next/router';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export default function StudentListDetail({
   studentClass,
@@ -24,7 +24,12 @@ export default function StudentListDetail({
   const router = useRouter();
   const theme = useMantineTheme();
   const [searchKey, setSearchKey] = useState('');
-  const [debouncedSearchKey] = useDebouncedValue(searchKey.toLowerCase(), 100);
+  const [debouncedSearchKey] = useDebouncedValue(searchKey.toLowerCase(), 50);
+
+  useEffect(() => {
+    setSearchKey('');
+  }, [studentClass]);
+
   return (
     <Stack>
       <TextInput

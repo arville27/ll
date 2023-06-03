@@ -27,12 +27,14 @@ import {
   IconSchool,
   IconSearch,
 } from '@tabler/icons-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { AddStudentClassForm } from './AddStudentClassForm';
 import StudentListDetail from './StudentListDetail';
+import { useRouter } from 'next/router';
 
 export default function StudentClassPage() {
   const theme = useMantineTheme();
+  const router = useRouter();
   const isLgMediaScreen = useMediaQuery(`(max-width: ${theme.breakpoints.lg})`);
   const [page, setPage] = useState(1);
   const [searchKey, setSearchKey] = useState('');
@@ -44,7 +46,13 @@ export default function StudentClassPage() {
   const [selectedClass, setSelectedClass] = useState<
     StudentClass & { students: Student[] }
   >();
-  const { data, refetch } = trpc.getStudentClassesPageable.useQuery({
+
+  useEffect(() => {
+    const { q } = router.query;
+    if (q) setSearchKey(String(q));
+  }, [router.query]);
+
+  const { data: studentClasses, refetch } = trpc.getStudentClassesPageable.useQuery({
     searchKey: debouncedSearchKey,
     page: page,
   });
@@ -90,25 +98,26 @@ export default function StudentClassPage() {
   }
   return (
     <MainLayout className='relative h-full w-full pt-12'>
-      <LoadingOverlay visible={!data} />
+      <LoadingOverlay visible={!studentClasses} />
       <div className='grid grid-rows-none grid-cols-1 lg:grid-cols-[1fr_0.7fr] px-4 h-full'>
         <Stack spacing='xl' className='mx-auto w-full px-4 max-w-2xl'>
           <Group position='apart'>
             <Group>
               <IconChalkboard />
               <Text fz='xl' fw={500} className='leading-none'>
-                Class List {!addClassDisplay ? 'ga ada' : 'ada'}
+                Class List
               </Text>
             </Group>
             <Button
               className='hidden sm:block'
               leftIcon={<IconPlus size='1.1rem' />}
+              size='xs'
               onClick={addClassDisclosure.open}>
               New
             </Button>
             <ActionIcon
               className='sm:hidden'
-              size='lg'
+              size='md'
               color='blue'
               variant='filled'
               onClick={addClassDisclosure.open}>
@@ -120,16 +129,23 @@ export default function StudentClassPage() {
             className='text-xl'
             icon={<IconSearch size={14} />}
             value={searchKey}
-            onChange={(e) => setSearchKey(e.target.value)}
+            onChange={(e) => {
+              router.push({
+                query: {
+                  q: e.target.value,
+                },
+              });
+              setSearchKey(e.target.value);
+            }}
             placeholder='Search class name'
             radius='md'
             size='sm'
           />
 
-          <Stack className='mb-8' spacing='none'>
-            {data && data.records.length > 0 ? (
+          <Stack spacing='none'>
+            {studentClasses && studentClasses.records.length > 0 ? (
               <>
-                {data.records.map((studentClass, index) => (
+                {studentClasses.records.map((studentClass, index) => (
                   <form
                     key={studentClass.id}
                     onSubmit={(e) => {
@@ -241,15 +257,15 @@ export default function StudentClassPage() {
                         </>
                       )}
                     </Flex>
-                    {index < data.records.length - 1 && <Divider />}
+                    {index < studentClasses.records.length - 1 && <Divider />}
                   </form>
                 ))}
 
                 <Pagination
-                  className='self-end'
+                  className='self-end pt-3'
                   value={page}
                   onChange={(e) => setPage(e)}
-                  total={data.pageTotal}
+                  total={studentClasses.pageTotal}
                 />
               </>
             ) : (
