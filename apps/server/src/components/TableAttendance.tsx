@@ -1,4 +1,4 @@
-import { ScrollArea, Table, Tooltip, createStyles } from '@mantine/core';
+import { ScrollArea, Table, Tooltip, createStyles, Text } from '@mantine/core';
 import { AttendanceLog, Student, StudentClass } from '@prisma/client';
 import * as dfs from 'date-fns';
 import { useState } from 'react';
@@ -47,7 +47,16 @@ export function TableAttendance({
       <tr key={row.id}>
         <td className='w-fit'>{index + 1}</td>
         <td className='w-fit whitespace-nowrap'>{dfs.format(row.date, 'HH:mm')}</td>
-        <td className='w-fit'>{row.student.uid}</td>
+        <td className='w-fit'>
+          <Tooltip
+            position='top-start'
+            label={row.student.uid}
+            classNames={{
+              tooltip: 'text-wrap whitespace-normal max-w-3/5',
+            }}>
+            <Text className='truncate max-w-[12rem]'>#{row.student.uid}</Text>
+          </Tooltip>
+        </td>
         <td className='w-fit'>
           <Tooltip
             position='top-start'
@@ -55,7 +64,9 @@ export function TableAttendance({
             classNames={{
               tooltip: 'text-wrap whitespace-normal max-w-3/5',
             }}>
-            <div className='line-clamp-1'>{row.student.name}</div>
+            <div className='line-clamp-1 '>
+              <Text className='truncate max-w-[12rem]'>{row.student.name}</Text>
+            </div>
           </Tooltip>
         </td>
         <td className='w-fit'>{row.student.studentClass.className}</td>
