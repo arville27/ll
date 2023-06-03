@@ -1,15 +1,8 @@
 import { trpc } from '@/hooks/trpc';
-import '@/style.css';
-import {
-  ColorScheme,
-  ColorSchemeProvider,
-  MantineProvider,
-  em,
-  LoadingOverlay,
-} from '@mantine/core';
-import type { AppProps } from 'next/app';
-import { useState } from 'react';
 import { useThemeStore } from '@/store/useThemeStore';
+import '@/style.css';
+import { ColorSchemeProvider, LoadingOverlay, MantineProvider, em } from '@mantine/core';
+import type { AppProps } from 'next/app';
 
 // This default export is required in a new `pages/_app.js` file.
 function MyApp({ Component, pageProps }: AppProps) {
@@ -39,6 +32,7 @@ function MyApp({ Component, pageProps }: AppProps) {
             },
           }),
           breakpoints: {
+            'xs': em('400px'),
             'sm': em('640px'),
             'md': em('768px'),
             'lg': em('1034px'),

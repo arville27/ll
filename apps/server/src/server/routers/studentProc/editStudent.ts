@@ -1,6 +1,6 @@
-import { procedure } from '../../trpc';
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
+import { procedure } from '../../trpc';
 
 export const editStudentInputSchema = z.object({
   id: z.number(),
@@ -15,17 +15,17 @@ export type editStudentInput = z.infer<typeof editStudentInputSchema>;
 export const editStudentProcedure = procedure
   .input(editStudentInputSchema)
   .mutation(async ({ input, ctx }) => {
-    const isExistedUid = await ctx.prisma.student.findUnique({
+    const existedStudent = await ctx.prisma.student.findUnique({
       where: {
         uid: input.uid,
       },
     });
 
-    if (isExistedUid && isExistedUid.id !== input.id)
+    if (existedStudent && existedStudent.id !== input.id)
       throw new TRPCError({ code: 'BAD_REQUEST', message: 'Student UID already used' });
 
     const { id, uid, name, birthDate, studentClassId } = input;
-    const result = ctx.prisma.student.update({
+    return await ctx.prisma.student.update({
       where: { id },
       data: {
         uid,
@@ -34,5 +34,4 @@ export const editStudentProcedure = procedure
         studentClassId,
       },
     });
-    return await result;
   });

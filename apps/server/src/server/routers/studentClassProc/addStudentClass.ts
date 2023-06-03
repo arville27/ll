@@ -11,17 +11,16 @@ export type addStudentClassInput = z.infer<typeof addStudentClassSchema>;
 export const addStudentClassProcedure = procedure
   .input(addStudentClassSchema)
   .mutation(async ({ input, ctx }) => {
-    const studentClass = await ctx.prisma.studentClass.findUnique({
+    const existedClass = await ctx.prisma.studentClass.findUnique({
       where: { className: input.className },
     });
 
-    if (studentClass)
+    if (existedClass)
       throw new TRPCError({ code: 'BAD_REQUEST', message: 'Classname already used' });
 
-    const result = ctx.prisma.studentClass.create({
+    return await ctx.prisma.studentClass.create({
       data: {
         className: input.className,
       },
     });
-    return await result;
   });

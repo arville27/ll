@@ -24,14 +24,13 @@ import {
 import { useDebouncedValue, useDisclosure } from '@mantine/hooks';
 import { notifications } from '@mantine/notifications';
 import {
-  IconCheck,
   IconDeviceDesktopSearch,
   IconPlus,
   IconSchool,
   IconSearch,
 } from '@tabler/icons-react';
 import { useRouter } from 'next/router';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export default function StudentPage() {
   const theme = useMantineTheme();
@@ -61,7 +60,7 @@ export default function StudentPage() {
 
   const selectedStudent = useSelectedStudentStore((state) => state.selectedStudent);
 
-  const deleteStudentMutation = trpc.deleteStudentById.useMutation({
+  const deleteStudentMutation = trpc.deleteStudent.useMutation({
     onSettled: () => refetch(),
   });
 

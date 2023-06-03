@@ -1,7 +1,7 @@
 import { trpc } from '@/hooks/trpc';
-import { Button, Group, Input, useMantineTheme } from '@mantine/core';
+import { Button, TextInput, useMantineTheme } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
-import { IconChalkboard, IconCheck, IconExclamationCircle } from '@tabler/icons-react';
+import { IconChalkboard, IconExclamationCircle } from '@tabler/icons-react';
 import { useState } from 'react';
 
 export function AddStudentClassForm({
@@ -54,8 +54,8 @@ export function AddStudentClassForm({
         );
       }}>
       <div className='flex gap-2'>
-        <Input
-          autoFocus
+        <TextInput
+          data-autofocus
           className='w-full'
           icon={<IconChalkboard />}
           value={className}

@@ -1,5 +1,5 @@
-import { PrismaClientType } from '../../db';
 import { z } from 'zod';
+import { PrismaClientType } from '../../db';
 import { procedure } from '../../trpc';
 
 const PAGE_SIZE = 8;
@@ -11,7 +11,7 @@ export const getStudentClassesSchema = z.object({
 
 export type GetStudentClassInput = z.infer<typeof getStudentClassesSchema>;
 
-export async function getClass({
+export async function getAllClasses({
   input,
   prisma,
 }: {
@@ -21,7 +21,7 @@ export async function getClass({
   return await prisma.studentClass.findMany({
     where: {
       className: {
-        contains: input.searchKey ? input.searchKey : '',
+        contains: input.searchKey ?? '',
       },
     },
     include: {
@@ -35,17 +35,31 @@ export async function getClass({
 
 export const getStudentClassesProcedure = procedure
   .input(getStudentClassesSchema)
-  .query(({ input, ctx }) => getClass({ input, prisma: ctx.prisma }));
+  .query(({ input, ctx }) => getAllClasses({ input, prisma: ctx.prisma }));
 
 export const getStudentClassesPageableProcedure = procedure
   .input(getStudentClassesSchema)
   .query(async ({ input, ctx }) => {
-    if (!input || !input.page) input.page = 1;
-    const records = await getClass({ input, prisma: ctx.prisma });
-    const startIndex = PAGE_SIZE * (input.page - 1);
+    if (!input.page) input.page = 1;
+    const allRecords = await getAllClasses({ input, prisma: ctx.prisma });
+    const pageableRecords = await ctx.prisma.studentClass.findMany({
+      where: {
+        className: {
+          contains: input.searchKey ?? '',
+        },
+      },
+      include: {
+        students: true,
+      },
+      orderBy: {
+        className: 'asc',
+      },
+      skip: (input.page - 1) * PAGE_SIZE,
+      take: PAGE_SIZE,
+    });
     return {
       pageCount: input.page,
-      pageTotal: Math.ceil(records.length / PAGE_SIZE),
-      records: records.slice(startIndex, startIndex + PAGE_SIZE - 1),
+      pageTotal: Math.ceil(allRecords.length / PAGE_SIZE),
+      records: pageableRecords,
     };
   });

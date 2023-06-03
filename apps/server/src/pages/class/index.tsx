@@ -10,7 +10,6 @@ import {
   Divider,
   Flex,
   Group,
-  Input,
   LoadingOverlay,
   Pagination,
   Stack,
@@ -34,7 +33,7 @@ import StudentListDetail from './StudentListDetail';
 
 export default function StudentClassPage() {
   const theme = useMantineTheme();
-  const isRenderModalAllow = useMediaQuery(`(max-width: ${theme.breakpoints.lg})`);
+  const isLgMediaScreen = useMediaQuery(`(max-width: ${theme.breakpoints.lg})`);
   const [page, setPage] = useState(1);
   const [searchKey, setSearchKey] = useState('');
   const [debouncedSearchKey] = useDebouncedValue(searchKey, 300);
@@ -98,7 +97,7 @@ export default function StudentClassPage() {
             <Group>
               <IconChalkboard />
               <Text fz='xl' fw={500} className='leading-none'>
-                Class List
+                Class List {!addClassDisplay ? 'ga ada' : 'ada'}
               </Text>
             </Group>
             <Button
@@ -107,7 +106,12 @@ export default function StudentClassPage() {
               onClick={addClassDisclosure.open}>
               New
             </Button>
-            <ActionIcon className='sm:hidden' size='lg' color='blue' variant='filled'>
+            <ActionIcon
+              className='sm:hidden'
+              size='lg'
+              color='blue'
+              variant='filled'
+              onClick={addClassDisclosure.open}>
               <IconPlus size='1.1rem' />
             </ActionIcon>
           </Group>
@@ -149,6 +153,10 @@ export default function StudentClassPage() {
                               ? theme.colors.dark[8]
                               : theme.colors.gray[1],
                         },
+                        [theme.fn.smallerThan('xs')]: {
+                          flexDirection: 'column',
+                          alignItems: 'flex-start',
+                        },
                       }}
                       onClick={() => {
                         setSelectedClass(studentClass);
@@ -159,7 +167,7 @@ export default function StudentClassPage() {
                       selectedClass.id === studentClass.id &&
                       editClassDisplay ? (
                         <>
-                          <Input
+                          <TextInput
                             autoFocus
                             className='text-xl'
                             defaultValue={studentClass.className}
@@ -169,16 +177,17 @@ export default function StudentClassPage() {
                                 className: e.target.value,
                               })
                             }
+                            onClick={(e) => e.stopPropagation()}
                             radius='md'
                             size='xs'
                           />
-                          <Group spacing='none'>
+                          <Group spacing='none' className='self-end'>
                             <Button
                               type='submit'
                               variant='subtle'
                               size='xs'
                               onClick={(e) => e.stopPropagation()}>
-                              Save {selectedClass.className}
+                              Save
                             </Button>
                             <Button
                               variant='subtle'
@@ -204,7 +213,7 @@ export default function StudentClassPage() {
                               {studentClass.students.length} student(s)
                             </Text>
                           </Stack>
-                          <Group spacing='none'>
+                          <Group spacing='none' className='self-end'>
                             <Button
                               variant='subtle'
                               size='xs'
@@ -301,6 +310,7 @@ export default function StudentClassPage() {
                         ? theme.colors.dark[9]
                         : theme.colors.green[0],
                   });
+                  if (res.id === selectedClass.id) setSelectedClass(undefined);
                 },
                 onError: (e) => {
                   notifications.show({
@@ -320,7 +330,7 @@ export default function StudentClassPage() {
           }
         />
       )}
-      {isRenderModalAllow && selectedClass && (
+      {isLgMediaScreen && !editClassDisplay && selectedClass && (
         <CustomModal
           modalTitle={
             <Stack spacing='none'>

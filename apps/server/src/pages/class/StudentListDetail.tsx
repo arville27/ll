@@ -10,6 +10,7 @@ import {
   TextInput,
   useMantineTheme,
 } from '@mantine/core';
+import { useDebouncedValue } from '@mantine/hooks';
 import { Student, StudentClass } from '@prisma/client';
 import { IconDeviceDesktopSearch, IconSearch } from '@tabler/icons-react';
 import { useRouter } from 'next/router';
@@ -23,6 +24,7 @@ export default function StudentListDetail({
   const router = useRouter();
   const theme = useMantineTheme();
   const [searchKey, setSearchKey] = useState('');
+  const [debouncedSearchKey] = useDebouncedValue(searchKey.toLowerCase(), 100);
   return (
     <Stack>
       <TextInput
@@ -46,8 +48,8 @@ export default function StudentListDetail({
               {studentClass.students
                 .filter(
                   (student) =>
-                    student.uid.toLowerCase().includes(searchKey) ||
-                    student.name.toLowerCase().includes(searchKey)
+                    student.uid.toLowerCase().includes(debouncedSearchKey) ||
+                    student.name.toLowerCase().includes(debouncedSearchKey)
                 )
                 .map((student, index) => (
                   <Card

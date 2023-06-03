@@ -14,14 +14,14 @@ export type addStudentInput = z.infer<typeof addStudentSchema>;
 export const addStudentProcedure = procedure
   .input(addStudentSchema)
   .mutation(async ({ input, ctx }) => {
-    const isExistedUid = await ctx.prisma.student.findUnique({
+    const existedStudent = await ctx.prisma.student.findUnique({
       where: { uid: input.uid },
     });
 
-    if (isExistedUid)
+    if (existedStudent)
       throw new TRPCError({ code: 'BAD_REQUEST', message: 'Student UID already used' });
 
-    const result = ctx.prisma.student.create({
+    return await ctx.prisma.student.create({
       data: {
         uid: input.uid,
         name: input.name,
@@ -29,5 +29,4 @@ export const addStudentProcedure = procedure
         studentClassId: input.studentClassId,
       },
     });
-    return await result;
   });

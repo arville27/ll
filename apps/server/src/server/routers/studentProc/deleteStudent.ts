@@ -1,14 +1,14 @@
 import { procedure } from '../../trpc';
 import { z } from 'zod';
 
-export const deleteStudentByIdSchema = z.object({
+export const deleteStudentSchema = z.object({
   id: z.number(),
 });
 
-export type deleteStudentByIdInput = z.infer<typeof deleteStudentByIdSchema>;
+export type deleteStudentInput = z.infer<typeof deleteStudentSchema>;
 
-export const deleteStudentByIdProcedure = procedure
-  .input(deleteStudentByIdSchema)
+export const deleteStudentProcedure = procedure
+  .input(deleteStudentSchema)
   .mutation(async ({ input, ctx }) => {
     return await ctx.prisma.student.delete({
       where: {

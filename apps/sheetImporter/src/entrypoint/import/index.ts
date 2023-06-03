@@ -29,7 +29,7 @@ export default async (filepath: string) => {
 
   const necessaryClasses = sheets.map((sheet) => sheet.name.trim());
 
-  let studentClasses = await trpc.getStudentClasses.query();
+  let studentClasses = await trpc.getStudentClasses.query({});
 
   console.log('Inserting all necessary student classes');
   try {
@@ -48,7 +48,7 @@ export default async (filepath: string) => {
   }
   console.log('Finish inserting all necessary student classes');
 
-  studentClasses = await trpc.getStudentClasses.query();
+  studentClasses = await trpc.getStudentClasses.query({});
 
   console.log('Inserting students');
   try {

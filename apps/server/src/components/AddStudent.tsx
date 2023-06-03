@@ -56,9 +56,6 @@ export function AddStudent({
 
   const addStudentMutation = trpc.addStudent.useMutation({
     onSettled: () => {
-      // Reset input and search bar value
-      setSearchKey('');
-
       // Refetch student list
       refetch();
     },
@@ -66,9 +63,6 @@ export function AddStudent({
 
   const editStudentMutation = trpc.editStudent.useMutation({
     onSettled: () => {
-      // Reset input and search bar value
-      setSearchKey('');
-
       // Refetch student list
       refetch();
     },

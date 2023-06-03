@@ -22,55 +22,6 @@ async function getAllStudents({
   input: getStudentsInput;
   prisma: PrismaClientType;
 }) {
-  if (!input.searchKey) input.searchKey = '';
-  if (!input.orderBy) input.orderBy = StudentOrderByEnum.NAME;
-  if (!input.orderDir) input.orderDir = OrderDirEnum.ASC;
-
-  let orderByClause: any;
-  switch (input.orderBy) {
-    case StudentOrderByEnum.NAME:
-      orderByClause = {
-        name: input.orderDir,
-      };
-      break;
-    case StudentOrderByEnum.UID:
-      orderByClause = [
-        {
-          uid: input.orderDir,
-        },
-        {
-          name: OrderDirEnum.ASC,
-        },
-      ];
-      break;
-    case StudentOrderByEnum.BIRTH_DATE:
-      orderByClause = [
-        {
-          birthDate: input.orderDir,
-        },
-        {
-          name: OrderDirEnum.ASC,
-        },
-      ];
-      break;
-    case StudentOrderByEnum.CLASSNAME:
-      orderByClause = [
-        {
-          studentClass: {
-            className: input.orderDir,
-          },
-        },
-        {
-          name: OrderDirEnum.ASC,
-        },
-      ];
-      break;
-    default:
-      orderByClause = {
-        name: OrderDirEnum.ASC,
-      };
-  }
-
   return await prisma.student.findMany({
     where: {
       OR: [
@@ -96,7 +47,9 @@ async function getAllStudents({
     include: {
       studentClass: true,
     },
-    orderBy: orderByClause,
+    orderBy: {
+      name: OrderDirEnum.ASC,
+    },
   });
 }
 
@@ -110,11 +63,88 @@ export const getStudentsPageableProcedure = procedure
   .input(getStudentsSchema)
   .query(async ({ input, ctx }) => {
     if (!input.page) input.page = 1;
-    const records = await getAllStudents({ input, prisma: ctx.prisma });
-    const startIndex = PAGE_SIZE * (input.page - 1);
+    if (!input.searchKey) input.searchKey = '';
+    if (!input.orderBy) input.orderBy = StudentOrderByEnum.NAME;
+    if (!input.orderDir) input.orderDir = OrderDirEnum.ASC;
+
+    let orderByClause: any;
+    switch (input.orderBy) {
+      case StudentOrderByEnum.NAME:
+        orderByClause = {
+          name: input.orderDir,
+        };
+        break;
+      case StudentOrderByEnum.UID:
+        orderByClause = [
+          {
+            uid: input.orderDir,
+          },
+          {
+            name: OrderDirEnum.ASC,
+          },
+        ];
+        break;
+      case StudentOrderByEnum.BIRTH_DATE:
+        orderByClause = [
+          {
+            birthDate: input.orderDir,
+          },
+          {
+            name: OrderDirEnum.ASC,
+          },
+        ];
+        break;
+      case StudentOrderByEnum.CLASSNAME:
+        orderByClause = [
+          {
+            studentClass: {
+              className: input.orderDir,
+            },
+          },
+          {
+            name: OrderDirEnum.ASC,
+          },
+        ];
+        break;
+      default:
+        orderByClause = {
+          name: OrderDirEnum.ASC,
+        };
+    }
+
+    const allRecords = await getAllStudents({ input, prisma: ctx.prisma });
+    const pageableRecords = await ctx.prisma.student.findMany({
+      where: {
+        OR: [
+          {
+            name: {
+              contains: input.searchKey,
+            },
+          },
+          {
+            uid: {
+              contains: input.searchKey,
+            },
+          },
+          {
+            studentClass: {
+              className: {
+                contains: input.searchKey,
+              },
+            },
+          },
+        ],
+      },
+      include: {
+        studentClass: true,
+      },
+      orderBy: orderByClause,
+      skip: (input.page - 1) * PAGE_SIZE,
+      take: PAGE_SIZE,
+    });
     return {
       pageCount: input.page,
-      pageTotal: Math.ceil(records.length / PAGE_SIZE),
-      records: records.slice(startIndex, startIndex + PAGE_SIZE - 1),
+      pageTotal: Math.ceil(allRecords.length / PAGE_SIZE),
+      records: pageableRecords,
     };
   });
