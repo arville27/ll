@@ -64,7 +64,7 @@ export default function StudentListDetail({
                     className='flex items-center gap-3 shadow-sm'>
                     <Text className='min-w-[1.5rem]'>{index + 1}</Text>
                     <Divider orientation='vertical' />
-                    <Group className='w-full' position='apart' px='sm'>
+                    <Group className='w-full' position='apart'>
                       <Stack spacing='none'>
                         <Text fz='sm' className='truncate w-[7rem]'>
                           {student.name}

@@ -18,7 +18,7 @@ import {
   TextInput,
   useMantineTheme,
 } from '@mantine/core';
-import { useDebouncedValue, useDisclosure } from '@mantine/hooks';
+import { useDebouncedValue, useDisclosure, useMediaQuery } from '@mantine/hooks';
 import { notifications } from '@mantine/notifications';
 import { Student, StudentClass } from '@prisma/client';
 import {
@@ -34,6 +34,7 @@ import StudentListDetail from './StudentListDetail';
 
 export default function StudentClassPage() {
   const theme = useMantineTheme();
+  const isRenderModalAllow = useMediaQuery(`(max-width: ${theme.breakpoints.lg})`);
   const [page, setPage] = useState(1);
   const [searchKey, setSearchKey] = useState('');
   const [debouncedSearchKey] = useDebouncedValue(searchKey, 300);
@@ -315,7 +316,7 @@ export default function StudentClassPage() {
           }
         />
       )}
-      {selectedClass && (
+      {isRenderModalAllow && selectedClass && (
         <CustomModal
           modalTitle={
             <Stack spacing='none'>
@@ -333,8 +334,7 @@ export default function StudentClassPage() {
             </Stack>
           }
           displayValue={studentListDisplay}
-          closeAction={studentListDisclosure.close}
-          className='block lg:hidden'>
+          closeAction={studentListDisclosure.close}>
           <div className='px-3'>
             <StudentListDetail studentClass={selectedClass} />
           </div>
