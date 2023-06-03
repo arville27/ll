@@ -185,7 +185,6 @@ export function AddStudent({
                   : '',
             })
           }
-          onKeyDown={(e) => e.preventDefault()}
           placeholder='Select birth date'
           radius='md'
           required
