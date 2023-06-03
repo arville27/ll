@@ -47,7 +47,6 @@ export function AddStudentClassForm({
                   theme.colorScheme === 'dark'
                     ? theme.colors.dark[9]
                     : theme.colors.red[0],
-                icon: <IconExclamationCircle />,
               });
             },
           }

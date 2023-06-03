@@ -1,10 +1,9 @@
 import { trpc } from '@/hooks/trpc';
 import { addStudentInput } from '@/server/routers/studentProc/addStudent';
-import { useSearchKeyStore } from '@/store/useSearchKeyStore';
-import { useSelectedStudentStore } from '@/store/useSelectedStudent';
 import { Button, Select, Stack, Text, TextInput, useMantineTheme } from '@mantine/core';
 import { DateInput } from '@mantine/dates';
 import { notifications } from '@mantine/notifications';
+import { Student, StudentClass } from '@prisma/client';
 import {
   IconCalendarEvent,
   IconChalkboard,
@@ -22,45 +21,42 @@ class StudentInput {
   studentClassId = '';
 }
 
-export function AddStudent({
+export function SaveStudentForm({
+  student,
   refetch,
   closeAction,
 }: {
+  student: Student | undefined;
   refetch: () => void;
   closeAction: () => void;
 }) {
   const theme = useMantineTheme();
-  const setSearchKey = useSearchKeyStore((state) => state.setSearchKey);
-  const selectedStudent = useSelectedStudentStore((state) => state.selectedStudent);
 
   const [input, setInput] = useState<StudentInput>(
-    selectedStudent
+    student
       ? {
-          id: String(selectedStudent.id),
-          uid: selectedStudent.uid,
-          name: selectedStudent.name,
-          birthDate: selectedStudent.birthDate,
-          studentClassId: String(selectedStudent.studentClassId),
+          id: String(student.id),
+          uid: student.uid,
+          name: student.name,
+          birthDate: student.birthDate,
+          studentClassId: String(student.studentClassId),
         }
       : new StudentInput()
   );
 
   const { data: classes, refetch: classesRefetch } = trpc.getStudentClasses.useQuery({});
-
   const addStudentClassMutation = trpc.addStudentClass.useMutation({
     onSettled: () => {
       // Refetch class list
       classesRefetch();
     },
   });
-
   const addStudentMutation = trpc.addStudent.useMutation({
     onSettled: () => {
       // Refetch student list
       refetch();
     },
   });
-
   const editStudentMutation = trpc.editStudent.useMutation({
     onSettled: () => {
       // Refetch student list
@@ -97,7 +93,7 @@ export function AddStudent({
       studentClassId: Number(input.studentClassId),
     };
 
-    if (!selectedStudent) {
+    if (!student) {
       addStudentMutation.mutate(payloadAdd, {
         onSuccess: (res) => {
           notifications.show({
@@ -107,6 +103,7 @@ export function AddStudent({
             bg:
               theme.colorScheme === 'dark' ? theme.colors.dark[9] : theme.colors.green[0],
           });
+          closeAction();
         },
         onError: (e) => {
           notifications.show({
@@ -128,6 +125,7 @@ export function AddStudent({
             bg:
               theme.colorScheme === 'dark' ? theme.colors.dark[9] : theme.colors.green[0],
           });
+          closeAction();
         },
         onError: (e) => {
           notifications.show({
@@ -139,13 +137,12 @@ export function AddStudent({
         },
       });
     }
-    closeAction();
   }
 
   return (
     <Stack className='gap-8 items-center p-4 sm:px-8'>
       <Text ta='center' fz={20} lh={2} fw={700}>
-        {!selectedStudent ? 'Add New Student' : 'Edit Student Profile'}
+        {!student ? 'Add New Student' : 'Edit Student Profile'}
       </Text>
 
       <Stack align='stretch' spacing='md' w='100%'>

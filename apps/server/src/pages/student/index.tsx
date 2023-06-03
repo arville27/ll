@@ -1,13 +1,11 @@
-import { AddStudent } from '@/components/AddStudent';
 import CustomConfirmation from '@/components/CustomConfirmation';
 import CustomModal from '@/components/CustomModal';
 import MainLayout from '@/components/MainLayout';
-import { StudentCard } from '@/components/StudentCard';
 import { StudentOrderByEnum } from '@/enums/orderByEnum';
 import { OrderDirEnum } from '@/enums/orderDirEnum';
 import { trpc } from '@/hooks/trpc';
-import { useSearchKeyStore } from '@/store/useSearchKeyStore';
-import { useSelectedStudentStore } from '@/store/useSelectedStudent';
+import { SaveStudentForm } from '@/pages/student/SaveStudentForm';
+import { StudentCard } from '@/pages/student/StudentCard';
 import {
   ActionIcon,
   Box,
@@ -23,6 +21,7 @@ import {
 } from '@mantine/core';
 import { useDebouncedValue, useDisclosure } from '@mantine/hooks';
 import { notifications } from '@mantine/notifications';
+import { Student } from '@prisma/client';
 import {
   IconDeviceDesktopSearch,
   IconPlus,
@@ -35,18 +34,16 @@ import { useEffect, useState } from 'react';
 export default function StudentPage() {
   const theme = useMantineTheme();
   const router = useRouter();
-
-  const { searchKey, setSearchKey } = useSearchKeyStore((state) => state);
-  const { setSelectedStudent } = useSelectedStudentStore((state) => state);
+  const [searchKey, setSearchKey] = useState('');
   const [debouncedSearchKey] = useDebouncedValue(searchKey, 300);
   const [page, setPage] = useState(1);
   const [orderBy, setOrderBy] = useState<string>(StudentOrderByEnum.NAME);
   const [orderDir, setOrderDir] = useState<string>(OrderDirEnum.ASC);
-
+  const [selectedStudent, setSelectedStudent] = useState<Student>();
   const [openedModal, disclosureModal] = useDisclosure(false);
   const [openedDeleteConfirm, disclosureDeleteConfirm] = useDisclosure(false);
 
-  const { data, refetch } = trpc.getStudentsPageable.useQuery(
+  const { data: students, refetch } = trpc.getStudentsPageable.useQuery(
     {
       searchKey: debouncedSearchKey,
       page: page,
@@ -58,22 +55,20 @@ export default function StudentPage() {
     }
   );
 
-  const selectedStudent = useSelectedStudentStore((state) => state.selectedStudent);
-
   const deleteStudentMutation = trpc.deleteStudent.useMutation({
     onSettled: () => refetch(),
   });
 
   useEffect(() => {
     const { q, orderby, orderdir } = router.query;
-    setSearchKey(String(q ?? ''));
+    if (q) setSearchKey(String(q));
     if (orderby) setOrderBy((orderBy) => String(orderby));
     if (orderdir) setOrderDir((orderDir) => String(orderdir));
   }, [router.query]);
 
   return (
     <MainLayout className='relative h-full w-full pt-12'>
-      <LoadingOverlay visible={!data} />
+      <LoadingOverlay visible={!students} />
       <Stack spacing='xl' className='mx-auto px-5 max-w-[50rem]'>
         <Group position='apart'>
           <Group>
@@ -85,14 +80,15 @@ export default function StudentPage() {
           <Button
             className='hidden sm:block'
             leftIcon={<IconPlus size='1.1rem' />}
+            size='xs'
             onClick={disclosureModal.open}>
             New
           </Button>
           <ActionIcon
             className='sm:hidden'
-            size='lg'
             color='blue'
             variant='filled'
+            size='md'
             onClick={disclosureModal.open}>
             <IconPlus size='1.1rem' />
           </ActionIcon>
@@ -169,14 +165,20 @@ export default function StudentPage() {
         </Stack>
 
         <Stack className='mb-8' spacing='md'>
-          {data && data.records.length > 0 ? (
+          {students && students.records.length > 0 ? (
             <>
-              {data.records.map((student) => (
+              {students.records.map((student) => (
                 <StudentCard
                   key={student.uid}
-                  data={student}
-                  editAction={disclosureModal.open}
-                  deleteAction={disclosureDeleteConfirm.open}
+                  student={student}
+                  editAction={() => {
+                    setSelectedStudent(student);
+                    disclosureModal.open();
+                  }}
+                  deleteAction={() => {
+                    setSelectedStudent(student);
+                    disclosureDeleteConfirm.open();
+                  }}
                 />
               ))}
 
@@ -184,7 +186,7 @@ export default function StudentPage() {
                 className='self-end'
                 value={page}
                 onChange={(e) => setPage(e)}
-                total={data.pageTotal}
+                total={students.pageTotal}
               />
             </>
           ) : (
@@ -200,13 +202,14 @@ export default function StudentPage() {
         displayValue={openedModal}
         closeAction={() => {
           disclosureModal.close();
-          setSelectedStudent(null);
+          setTimeout(() => setSelectedStudent(undefined), 200); // Because of modal transition = 200ms
         }}>
-        <AddStudent
+        <SaveStudentForm
+          student={selectedStudent}
           refetch={refetch}
           closeAction={() => {
             disclosureModal.close();
-            setSelectedStudent(null);
+            setTimeout(() => setSelectedStudent(undefined), 200); // Because of modal transition = 200ms
           }}
         />
       </CustomModal>
@@ -218,7 +221,7 @@ export default function StudentPage() {
         closeAction={disclosureDeleteConfirm.close}
         acceptAction={() => {
           if (selectedStudent) {
-            deleteStudentMutation.mutateAsync(
+            deleteStudentMutation.mutate(
               { id: selectedStudent.id },
               {
                 onSuccess: (res) => {
