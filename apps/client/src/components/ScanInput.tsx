@@ -1,61 +1,41 @@
-import { Student } from '.prisma/client';
+import { Student, StudentClass } from '.prisma/client';
 import { trpc } from '@/hooks/trpc';
 import {
+  Autocomplete,
   Badge,
   Box,
-  Input,
-  ScrollArea,
+  SelectItemProps,
   Stack,
   Text,
-  UnstyledButton,
   useMantineTheme,
 } from '@mantine/core';
-import { useDebouncedValue, useFocusTrap } from '@mantine/hooks';
+import { useDebouncedValue } from '@mantine/hooks';
 import { notifications } from '@mantine/notifications';
 import { IconHash, IconScan } from '@tabler/icons-react';
-import { useEffect, useRef } from 'react';
+import { forwardRef, useEffect, useRef } from 'react';
 
-function AutoCompleteItem({
-  student,
-  onAction,
-}: {
-  student: Student;
-  onAction: () => void;
-}) {
-  const theme = useMantineTheme();
-
-  return (
-    <UnstyledButton
-      onClick={onAction}
-      onKeyDown={(e) => {
-        if (e.key === 'Enter') {
-          e.preventDefault();
-          onAction();
-        }
-      }}
-      className='py-2 px-4 rounded-lg flex justify-between m-1 mb-2 w-[95%]'
-      sx={{
-        'backgroundColor':
-          theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.colors.gray[1],
-        '&:hover': {
-          backgroundColor:
-            theme.colorScheme === 'dark' ? theme.colors.dark[5] : theme.colors.gray[0],
-        },
-        'outlineColor': theme.colors.blue[5],
-      }}>
-      <Stack className='gap-1'>
-        <div>{student.name}</div>
-        <Box className='text-sm flex items-center gap-1'>
-          <IconHash size={14} />
-          <Text c='dimmed' fz='xs'>
-            {student.uid}
-          </Text>
-        </Box>
-      </Stack>
-      <Badge>BPK 7</Badge>
-    </UnstyledButton>
-  );
+interface ItemProps extends SelectItemProps {
+  student: Student & { studentClass: StudentClass };
 }
+
+const AutoCompleteItem = forwardRef<HTMLDivElement, ItemProps>(
+  ({ student, ...other }, ref) => {
+    return (
+      <div ref={ref} {...other} className={`${other.className} flex justify-between`}>
+        <Stack className='gap-1'>
+          <Text>{student.name}</Text>
+          <Box className='text-sm flex items-center gap-1'>
+            <IconHash size={14} />
+            <Text c='dimmed' fz='xs'>
+              {student.uid}
+            </Text>
+          </Box>
+        </Stack>
+        <Badge>{student.studentClass.className}</Badge>
+      </div>
+    );
+  }
+);
 
 export function ScanInput({
   keyword,
@@ -66,7 +46,6 @@ export function ScanInput({
   setKeyword: (keyword: string) => void;
   refetch: () => void;
 }) {
-  const focusTrapRef = useFocusTrap(true);
   const addAttendanceMutation = trpc.addAttendanceLog.useMutation({
     onSettled: () => refetch(),
   });
@@ -126,26 +105,27 @@ export function ScanInput({
           e.preventDefault();
           submitStudentUid(keyword);
         }}>
-        <Input
+        <Autocomplete
           ref={inputRef}
           value={keyword}
-          autoComplete='none'
-          onChange={(e) => setKeyword(e.target.value)}
-          icon={<IconScan />}
-          placeholder='Student ID'
+          onChange={(value) => setKeyword(value)}
           radius='xl'
           size='md'
+          limit={4}
+          icon={<IconScan />}
+          onItemSubmit={(item) => submitStudentUid(item.student.uid)}
+          itemComponent={AutoCompleteItem}
+          placeholder='Student ID'
+          dropdownPosition='bottom'
+          data={
+            autocompleteData
+              ? autocompleteData.map((item) => ({
+                  student: item,
+                  value: item.uid,
+                }))
+              : []
+          }
         />
-        <ScrollArea className='mt-3 relative h-60 px-2' ref={focusTrapRef}>
-          {Boolean(autocompleteData) &&
-            autocompleteData.map((student, index) => (
-              <AutoCompleteItem
-                key={student.id}
-                student={student}
-                onAction={() => submitStudentUid(student.uid)}
-              />
-            ))}
-        </ScrollArea>
       </form>
     </div>
   );
