@@ -256,7 +256,16 @@ export default function AttendancePage() {
           closeAction={() => disclosureModal.close()}>
           <Stack spacing='xs'>
             {selectedStudent.attendanceLogs.map((log, index) => (
-              <Card shadow='sm' key={log.id}>
+              <Card
+                withBorder
+                key={log.id}
+                sx={{
+                  backgroundColor:
+                    theme.colorScheme == 'dark'
+                      ? theme.colors.dark[7]
+                      : theme.colors.gray[1],
+                }}
+                className='shadow-sm'>
                 <div className='flex w-full gap-4'>
                   <Text>{index + 1}</Text>
                   <Divider orientation='vertical' />

@@ -1,3 +1,4 @@
+import CustomConfirmation from '@/components/CustomConfirmation';
 import CustomModal from '@/components/CustomModal';
 import MainLayout from '@/components/MainLayout';
 import { trpc } from '@/hooks/trpc';
@@ -22,19 +23,14 @@ import { notifications } from '@mantine/notifications';
 import { Student, StudentClass } from '@prisma/client';
 import {
   IconChalkboard,
-  IconCheck,
   IconDeviceDesktopSearch,
-  IconExclamationCircle,
   IconPlus,
   IconSchool,
   IconSearch,
 } from '@tabler/icons-react';
-// import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { AddStudentClassForm } from './AddStudentClassForm';
-import CustomConfirmation from '@/components/CustomConfirmation';
 import StudentListDetail from './StudentListDetail';
-import { Console } from 'console';
 
 export default function StudentClassPage() {
   const theme = useMantineTheme();
@@ -239,7 +235,8 @@ export default function StudentClassPage() {
                   className='self-end'
                   value={page}
                   onChange={(e) => setPage(e)}
-                  total={data.pageTotal}></Pagination>
+                  total={data.pageTotal}
+                />
               </>
             ) : (
               <Box className='text-center'>
@@ -250,7 +247,7 @@ export default function StudentClassPage() {
           </Stack>
         </Stack>
         <div className='h-[90%] mx-auto w-full hidden lg:block max-w-lg px-4'>
-          <Card className='p-7 h-full shadow-md' radius='lg'>
+          <Card withBorder className='p-7 h-full shadow-md rounded-lg'>
             <Group position='apart' className='pb-5'>
               <Group spacing='xs'>
                 <IconSchool size={20} />
