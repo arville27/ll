@@ -2,8 +2,6 @@ import * as dfs from 'date-fns';
 import xlsx from 'node-xlsx';
 import path from 'path';
 import { exit } from 'process';
-// import { Student } from './types';
-// import { sendAddStudentClassRequest } from './utils';
 import { trpc } from '../../utils/trpc';
 
 const COLUMN_LEGEND = {
@@ -14,13 +12,6 @@ const COLUMN_LEGEND = {
 } as const;
 
 const BIRTH_DATE_FORMAT = 'ddMMyy';
-
-const SERVER_URL = process.env.SERVER_URL as string;
-
-if (!SERVER_URL) {
-  console.log('Please make sure to define SERVER_URL environment variable');
-  exit(1);
-}
 
 function readSheet(sheet: any[][]) {
   // Student data is start from index 4 or ROW 5 in spread sheet software
@@ -48,7 +39,7 @@ export default async (filepath: string) => {
           (studentClass) =>
             studentClasses.find((i) => i.className === studentClass) === undefined
         )
-        .map((studentClass) => trpc.addStudentClass.mutate({ class: studentClass }))
+        .map((studentClass) => trpc.addStudentClass.mutate({ className: studentClass }))
     );
   } catch (e) {
     console.log('Error while inserting student classes');
