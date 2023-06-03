@@ -21,7 +21,7 @@ class StudentInput {
   studentClassId = '';
 }
 
-export function SaveStudentForm({
+export default function SaveStudentForm({
   student,
   refetch,
   closeAction,
