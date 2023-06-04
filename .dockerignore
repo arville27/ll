@@ -1,8 +1,8 @@
-node_modules
-.next
-Dockerfile
-.env
-dist
-target
 apps/*
 !apps/server
+**/node_modules
+**/.next
+Dockerfile
+**/.env
+**/dist
+**/target
