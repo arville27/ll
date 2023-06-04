@@ -2,17 +2,16 @@ import { initTRPC } from '@trpc/server';
 
 import { type CreateNextContextOptions } from '@trpc/server/adapters/next';
 import { prisma } from './db';
+import { sessionOptions } from '../../lib/sessionOptions';
+import { getIronSession } from 'iron-session';
 
-type CreateContextOptions = Record<string, never>;
+export const createTRPCContext = async (_opts: CreateNextContextOptions) => {
+  const session = await getIronSession(_opts.req, _opts.res, sessionOptions);
 
-const createInnerTRPCContext = (_opts: CreateContextOptions) => {
   return {
     prisma,
+    session,
   };
-};
-
-export const createTRPCContext = (_opts: CreateNextContextOptions) => {
-  return createInnerTRPCContext({});
 };
 
 // Avoid exporting the entire t-object
