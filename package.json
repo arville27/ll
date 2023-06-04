@@ -9,8 +9,5 @@
   },
   "devDependencies": {
     "turborepo": "^0.0.1"
-  },
-  "dependencies": {
-    "@mantine/notifications": "^6.0.9"
   }
 }

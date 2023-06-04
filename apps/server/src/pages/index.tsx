@@ -13,9 +13,14 @@ import {
 import { useDebouncedValue } from '@mantine/hooks';
 import { Icon24Hours, IconSearch } from '@tabler/icons-react';
 import * as dfs from 'date-fns';
+import { withIronSessionSsr } from 'iron-session/next';
+import { InferGetServerSidePropsType } from 'next';
 import { useState } from 'react';
+import { User, sessionOptions } from '../server/sessionOptions';
 
-export default function AttendancePage() {
+export default function AttendancePage({
+  user,
+}: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const { data } = trpc.getAttendanceLog.useQuery();
   const theme = useMantineTheme();
   const [filterKeyword, setFilterKeyword] = useState('');
@@ -75,3 +80,22 @@ export default function AttendancePage() {
     </MainLayout>
   );
 }
+
+export const getServerSideProps = withIronSessionSsr(async ({ req, res }) => {
+  const user = req.session.user;
+
+  if (user === undefined) {
+    return {
+      props: {
+        user: { isLoggedIn: false, login: '', avatarUrl: '' } as User,
+      },
+      redirect: {
+        destination: '/login',
+      },
+    };
+  }
+
+  return {
+    props: { user },
+  };
+}, sessionOptions);

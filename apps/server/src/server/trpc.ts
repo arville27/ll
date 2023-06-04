@@ -1,17 +1,24 @@
-import { initTRPC } from '@trpc/server';
-
+import { TRPCError, initTRPC } from '@trpc/server';
 import { type CreateNextContextOptions } from '@trpc/server/adapters/next';
+import { IronSession, getIronSession } from 'iron-session';
+import { sessionOptions } from './sessionOptions';
 import { prisma } from './db';
-import { sessionOptions } from '../../lib/sessionOptions';
-import { getIronSession } from 'iron-session';
+
+type CreateContextOptions = {
+  session: IronSession | null;
+};
+
+export const createInnerTRPCContext = (opts: CreateContextOptions) => {
+  return {
+    session: opts.session,
+    prisma,
+  };
+};
 
 export const createTRPCContext = async (_opts: CreateNextContextOptions) => {
   const session = await getIronSession(_opts.req, _opts.res, sessionOptions);
 
-  return {
-    prisma,
-    session,
-  };
+  return createInnerTRPCContext({ session });
 };
 
 // Avoid exporting the entire t-object
@@ -36,4 +43,19 @@ const t = initTRPC.context<typeof createTRPCContext>().create({
 
 // Base router and procedure helpers
 export const router = t.router;
-export const procedure = t.procedure;
+export const publicProcedure = t.procedure;
+
+/** Reusable middleware that enforces users are logged in before running the procedure. */
+const enforceUserIsAuthed = t.middleware(({ ctx, next }) => {
+  if (!ctx.session || !ctx.session.user) {
+    throw new TRPCError({ code: 'UNAUTHORIZED' });
+  }
+  return next({
+    ctx: {
+      // infers the `session` as non-nullable
+      session: { ...ctx.session, user: ctx.session.user },
+    },
+  });
+});
+
+export const protectedProcedure = t.procedure.use(enforceUserIsAuthed);
