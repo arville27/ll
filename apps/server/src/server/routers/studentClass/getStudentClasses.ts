@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { PrismaClientType } from '../../db';
-import { procedure } from '../../trpc';
+import { protectedProcedure, publicProcedure } from '../../trpc';
 
 const PAGE_SIZE = 8;
 
@@ -33,11 +33,11 @@ export async function getAllClasses({
   });
 }
 
-export const getStudentClassesProcedure = procedure
+export const getStudentClassesProcedure = protectedProcedure
   .input(getStudentClassesSchema)
   .query(({ input, ctx }) => getAllClasses({ input, prisma: ctx.prisma }));
 
-export const getStudentClassesPageableProcedure = procedure
+export const getStudentClassesPageableProcedure = publicProcedure
   .input(getStudentClassesSchema)
   .query(async ({ input, ctx }) => {
     if (!input.page) input.page = 1;

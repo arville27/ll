@@ -12,7 +12,8 @@ function App() {
   const [filterKeyword, setFilterKeyword] = useState('');
   const [filterKeywordDebounced] = useDebouncedValue(filterKeyword, 300);
   const theme = useMantineTheme();
-  const { data: todayAttendanceLog, refetch } = trpc.getAttendanceLog.useQuery();
+  const { data: todayAttendanceLog, refetch } =
+    trpc.attendance.getAttendanceLog.useQuery();
 
   return (
     <Layout navbarProp={{ links: [] }}>

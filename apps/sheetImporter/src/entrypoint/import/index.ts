@@ -29,7 +29,7 @@ export default async (filepath: string) => {
 
   const necessaryClasses = sheets.map((sheet) => sheet.name.trim());
 
-  let studentClasses = await trpc.getStudentClasses.query({});
+  let studentClasses = await trpc.studentClass.getStudentClasses.query({});
 
   console.log('Inserting all necessary student classes');
   try {
@@ -39,7 +39,9 @@ export default async (filepath: string) => {
           (studentClass) =>
             studentClasses.find((i) => i.className === studentClass) === undefined
         )
-        .map((studentClass) => trpc.addStudentClass.mutate({ className: studentClass }))
+        .map((studentClass) =>
+          trpc.studentClass.addStudentClass.mutate({ className: studentClass })
+        )
     );
   } catch (e) {
     console.log('Error while inserting student classes');
@@ -48,7 +50,7 @@ export default async (filepath: string) => {
   }
   console.log('Finish inserting all necessary student classes');
 
-  studentClasses = await trpc.getStudentClasses.query({});
+  studentClasses = await trpc.studentClass.getStudentClasses.query({});
 
   console.log('Inserting students');
   try {
@@ -63,7 +65,7 @@ export default async (filepath: string) => {
               ?.id!,
           }))
         )
-        .map((student) => trpc.addStudent.mutate(student))
+        .map((student) => trpc.student.addStudent.mutate(student))
     );
   } catch (e) {
     console.log('Error while inserting students');

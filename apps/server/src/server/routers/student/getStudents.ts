@@ -1,8 +1,8 @@
 import { z } from 'zod';
 import { StudentOrderByEnum } from '../../../enums/orderByEnum';
 import { OrderDirEnum } from '../../../enums/orderDirEnum';
-import { PrismaClientType } from '../../../server/db';
-import { procedure } from '../../../server/trpc';
+import { PrismaClientType } from '../../db';
+import { protectedProcedure, publicProcedure } from '../../trpc';
 
 const PAGE_SIZE = 10;
 
@@ -53,13 +53,13 @@ async function getAllStudents({
   });
 }
 
-export const getStudentsProcedure = procedure
+export const getStudentsProcedure = protectedProcedure
   .input(getStudentsSchema)
   .query(async ({ input, ctx }) => {
     return await getAllStudents({ input, prisma: ctx.prisma });
   });
 
-export const getStudentsPageableProcedure = procedure
+export const getStudentsPageableProcedure = protectedProcedure
   .input(getStudentsSchema)
   .query(async ({ input, ctx }) => {
     if (!input.page) input.page = 1;

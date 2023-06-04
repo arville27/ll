@@ -5,7 +5,7 @@ import { sessionOptions } from './sessionOptions';
 import { prisma } from './db';
 
 type CreateContextOptions = {
-  session: IronSession | null;
+  session: IronSession;
 };
 
 export const createInnerTRPCContext = (opts: CreateContextOptions) => {
@@ -47,13 +47,14 @@ export const publicProcedure = t.procedure;
 
 /** Reusable middleware that enforces users are logged in before running the procedure. */
 const enforceUserIsAuthed = t.middleware(({ ctx, next }) => {
-  if (!ctx.session || !ctx.session.user) {
+  console.log('session middleware:', ctx.session);
+  if (!ctx.session.user) {
     throw new TRPCError({ code: 'UNAUTHORIZED' });
   }
   return next({
     ctx: {
       // infers the `session` as non-nullable
-      session: { ...ctx.session, user: ctx.session.user },
+      session: ctx.session,
     },
   });
 });

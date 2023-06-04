@@ -2,9 +2,7 @@
 import type { IronSessionOptions } from 'iron-session';
 
 export type User = {
-  isLoggedIn: boolean;
-  login: string;
-  avatarUrl: string;
+  name: string;
 };
 
 export const sessionOptions: IronSessionOptions = {

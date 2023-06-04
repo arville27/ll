@@ -43,7 +43,7 @@ export default function StudentPage() {
   const [openedModal, disclosureModal] = useDisclosure(false);
   const [openedDeleteConfirm, disclosureDeleteConfirm] = useDisclosure(false);
 
-  const { data: students, refetch } = trpc.getStudentsPageable.useQuery(
+  const { data: students, refetch } = trpc.student.getStudentsPageable.useQuery(
     {
       searchKey: debouncedSearchKey,
       page: page,
@@ -55,7 +55,7 @@ export default function StudentPage() {
     }
   );
 
-  const deleteStudentMutation = trpc.deleteStudent.useMutation({
+  const deleteStudentMutation = trpc.student.deleteStudent.useMutation({
     onSettled: () => refetch(),
   });
 

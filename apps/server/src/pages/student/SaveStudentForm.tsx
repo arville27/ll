@@ -1,5 +1,5 @@
 import { trpc } from '@/hooks/trpc';
-import { addStudentInput } from '@/server/routers/studentProc/addStudent';
+import { addStudentInput } from '@/server/routers/student/addStudent';
 import { Button, Select, Stack, Text, TextInput, useMantineTheme } from '@mantine/core';
 import { DateInput } from '@mantine/dates';
 import { notifications } from '@mantine/notifications';
@@ -44,20 +44,21 @@ export default function SaveStudentForm({
       : new StudentInput()
   );
 
-  const { data: classes, refetch: classesRefetch } = trpc.getStudentClasses.useQuery({});
-  const addStudentClassMutation = trpc.addStudentClass.useMutation({
+  const { data: classes, refetch: classesRefetch } =
+    trpc.studentClass.getStudentClasses.useQuery({});
+  const addStudentClassMutation = trpc.studentClass.addStudentClass.useMutation({
     onSettled: () => {
       // Refetch class list
       classesRefetch();
     },
   });
-  const addStudentMutation = trpc.addStudent.useMutation({
+  const addStudentMutation = trpc.student.addStudent.useMutation({
     onSettled: () => {
       // Refetch student list
       refetch();
     },
   });
-  const editStudentMutation = trpc.editStudent.useMutation({
+  const editStudentMutation = trpc.student.editStudent.useMutation({
     onSettled: () => {
       // Refetch student list
       refetch();

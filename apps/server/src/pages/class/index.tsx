@@ -52,14 +52,15 @@ export default function StudentClassPage() {
     if (q) setSearchKey(String(q));
   }, [router.query]);
 
-  const { data: studentClasses, refetch } = trpc.getStudentClassesPageable.useQuery({
-    searchKey: debouncedSearchKey,
-    page: page,
-  });
-  const editStudentClassMutation = trpc.editStudentClass.useMutation({
+  const { data: studentClasses, refetch } =
+    trpc.studentClass.getStudentClassesPageable.useQuery({
+      searchKey: debouncedSearchKey,
+      page: page,
+    });
+  const editStudentClassMutation = trpc.studentClass.editStudentClass.useMutation({
     onSettled: () => refetch(),
   });
-  const deleteStudentClassMutation = trpc.deleteStudentClass.useMutation({
+  const deleteStudentClassMutation = trpc.studentClass.deleteStudentClass.useMutation({
     onSettled: () => refetch(),
   });
 

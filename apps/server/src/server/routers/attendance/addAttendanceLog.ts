@@ -1,8 +1,8 @@
-import { PrismaClientType } from '../../db';
-import { z } from 'zod';
-import { getAttendanceLog } from './getAttendanceLog';
 import { TRPCError } from '@trpc/server';
-import { procedure } from '../../trpc';
+import { z } from 'zod';
+import { PrismaClientType } from '../../db';
+import { protectedProcedure } from '../../trpc';
+import { getAttendanceLog } from './getAttendanceLog';
 
 export const addAttendanceLogInputSchema = z.object({
   uid: z.string(),
@@ -41,6 +41,6 @@ export async function addAttendanceLog({
   };
 }
 
-export const addAttendanceLogProcedure = procedure
+export const addAttendanceLogProcedure = protectedProcedure
   .input(addAttendanceLogInputSchema)
   .mutation(async ({ input, ctx }) => addAttendanceLog({ input, prisma: ctx.prisma }));

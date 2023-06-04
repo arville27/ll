@@ -1,6 +1,6 @@
 import { TRPCError } from '@trpc/server';
-import { procedure } from '../../trpc';
 import { z } from 'zod';
+import { protectedProcedure } from '../../trpc';
 
 export const deleteStudentClassSchema = z.object({
   id: z.number(),
@@ -8,7 +8,7 @@ export const deleteStudentClassSchema = z.object({
 
 export type deleteStudentClassInput = z.infer<typeof deleteStudentClassSchema>;
 
-export const deleteStudentClassProcedure = procedure
+export const deleteStudentClassProcedure = protectedProcedure
   .input(deleteStudentClassSchema)
   .mutation(async ({ input, ctx }) => {
     const relatedStudent = await ctx.prisma.student.findFirst({

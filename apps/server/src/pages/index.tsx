@@ -18,10 +18,10 @@ import { InferGetServerSidePropsType } from 'next';
 import { useState } from 'react';
 import { User, sessionOptions } from '../server/sessionOptions';
 
-export default function AttendancePage({
-  user,
-}: InferGetServerSidePropsType<typeof getServerSideProps>) {
-  const { data } = trpc.getAttendanceLog.useQuery();
+export default function AttendancePage({}: InferGetServerSidePropsType<
+  typeof getServerSideProps
+>) {
+  const { data } = trpc.attendance.getAttendanceLog.useQuery();
   const theme = useMantineTheme();
   const [filterKeyword, setFilterKeyword] = useState('');
   const [filterKeywordDebounced] = useDebouncedValue(filterKeyword.toLowerCase(), 300);
@@ -86,11 +86,9 @@ export const getServerSideProps = withIronSessionSsr(async ({ req, res }) => {
 
   if (user === undefined) {
     return {
-      props: {
-        user: { isLoggedIn: false, login: '', avatarUrl: '' } as User,
-      },
       redirect: {
         destination: '/login',
+        permanent: false,
       },
     };
   }

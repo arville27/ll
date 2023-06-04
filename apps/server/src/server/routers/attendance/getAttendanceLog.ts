@@ -1,6 +1,6 @@
-import { PrismaClientType } from '../../db';
 import { z } from 'zod';
-import { procedure } from '../../trpc';
+import { PrismaClientType } from '../../db';
+import { protectedProcedure } from '../../trpc';
 
 export const getAttendanceLogInputSchema = z.optional(
   z.object({
@@ -52,6 +52,6 @@ export async function getAttendanceLog({
   });
 }
 
-export const getAttendanceLogProcedure = procedure
+export const getAttendanceLogProcedure = protectedProcedure
   .input(getAttendanceLogInputSchema)
   .query(({ input, ctx }) => getAttendanceLog({ input, prisma: ctx.prisma }));

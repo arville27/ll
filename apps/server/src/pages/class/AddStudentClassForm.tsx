@@ -13,7 +13,7 @@ export default function AddStudentClassForm({
 }) {
   const theme = useMantineTheme();
   const [className, setClassName] = useState('');
-  const addStudentClassMutation = trpc.addStudentClass.useMutation({
+  const addStudentClassMutation = trpc.studentClass.addStudentClass.useMutation({
     onSettled: () => {
       submitAction();
       cancelAction();

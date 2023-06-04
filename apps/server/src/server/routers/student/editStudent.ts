@@ -1,6 +1,6 @@
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
-import { procedure } from '../../trpc';
+import { protectedProcedure } from '../../trpc';
 
 export const editStudentInputSchema = z.object({
   id: z.number(),
@@ -12,7 +12,7 @@ export const editStudentInputSchema = z.object({
 
 export type editStudentInput = z.infer<typeof editStudentInputSchema>;
 
-export const editStudentProcedure = procedure
+export const editStudentProcedure = protectedProcedure
   .input(editStudentInputSchema)
   .mutation(async ({ input, ctx }) => {
     const existedStudent = await ctx.prisma.student.findUnique({
