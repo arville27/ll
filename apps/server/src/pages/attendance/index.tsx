@@ -78,7 +78,7 @@ export default function AttendancePage() {
     if (Number(enddate)) setEndDate(new Date(Number(enddate)));
   }, [router.query]);
 
-  const { data } = trpc.attendance.getAttendanceLogPerStudent.useQuery(
+  const { data } = trpc.getAttendanceLogPerStudent.useQuery(
     startDate
       ? {
           startDate: startDate,

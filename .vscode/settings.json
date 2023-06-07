@@ -3,5 +3,8 @@
     "apps/client",
     "apps/server",
     "packages/ui"
+  ],
+  "rust-analyzer.linkedProjects": [
+    "apps/client/src-tauri/Cargo.toml"
   ]
 }

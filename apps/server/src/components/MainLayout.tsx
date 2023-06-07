@@ -1,11 +1,25 @@
+import { trpc } from '@/hooks/trpc';
 import { Layout } from '@ll/common';
-import { IconHome, IconSchool, IconArticle, IconChalkboard } from '@tabler/icons-react';
+import {
+  IconHome,
+  IconSchool,
+  IconArticle,
+  IconChalkboard,
+  IconLogout,
+} from '@tabler/icons-react';
+import { useRouter } from 'next/router';
 import { HTMLAttributes, PropsWithChildren } from 'react';
 
 const MainLayout: React.FC<PropsWithChildren<HTMLAttributes<HTMLElement>>> = ({
   children,
   ...layoutAttribute
 }) => {
+  const router = useRouter();
+  const logoutMutation = trpc.logout.useMutation({
+    onSuccess() {
+      router.push('/login');
+    },
+  });
   return (
     <Layout
       navbarProp={{
@@ -27,6 +41,12 @@ const MainLayout: React.FC<PropsWithChildren<HTMLAttributes<HTMLElement>>> = ({
             icon: <IconArticle size={20} />,
           },
         ],
+        logout: (
+          <IconLogout
+            className='cursor-pointer'
+            onClick={() => logoutMutation.mutate()}
+          />
+        ),
       }}
       {...layoutAttribute}>
       {children}

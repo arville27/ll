@@ -1,16 +1,7 @@
-import { router } from '@/server/trpc';
-import { addStudentClassProcedure } from './addStudentClass';
-import { deleteStudentClassProcedure } from './deleteStudentClass';
-import { editStudentClassProcedure } from './editStudentClass';
-import {
+export { addStudentClassProcedure } from './addStudentClass';
+export { deleteStudentClassProcedure } from './deleteStudentClass';
+export { editStudentClassProcedure } from './editStudentClass';
+export {
   getStudentClassesPageableProcedure,
   getStudentClassesProcedure,
 } from './getStudentClasses';
-
-export const studentClass = router({
-  addStudentClass: addStudentClassProcedure,
-  editStudentClass: editStudentClassProcedure,
-  deleteStudentClass: deleteStudentClassProcedure,
-  getStudentClasses: getStudentClassesProcedure,
-  getStudentClassesPageable: getStudentClassesPageableProcedure,
-});

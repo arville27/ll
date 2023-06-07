@@ -1,10 +1,3 @@
-import { router } from '@/server/trpc';
-import { getAttendanceLogProcedure } from './getAttendanceLog';
-import { addAttendanceLogProcedure } from './addAttendanceLog';
-import { getAttendanceLogPerStudentProcedure } from './getAttendanceLogPerStudent';
-
-export const attendance = router({
-  getAttendanceLog: getAttendanceLogProcedure,
-  addAttendanceLog: addAttendanceLogProcedure,
-  getAttendanceLogPerStudent: getAttendanceLogPerStudentProcedure,
-});
+export { getAttendanceLogProcedure } from './getAttendanceLog';
+export { addAttendanceLogProcedure } from './addAttendanceLog';
+export { getAttendanceLogPerStudentProcedure } from './getAttendanceLogPerStudent';

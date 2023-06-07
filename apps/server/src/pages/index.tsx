@@ -21,7 +21,7 @@ import { User, sessionOptions } from '../server/sessionOptions';
 export default function AttendancePage({}: InferGetServerSidePropsType<
   typeof getServerSideProps
 >) {
-  const { data } = trpc.attendance.getAttendanceLog.useQuery();
+  const { data } = trpc.getAttendanceLog.useQuery();
   const theme = useMantineTheme();
   const [filterKeyword, setFilterKeyword] = useState('');
   const [filterKeywordDebounced] = useDebouncedValue(filterKeyword.toLowerCase(), 300);

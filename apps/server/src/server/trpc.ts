@@ -6,11 +6,12 @@ import { prisma } from './db';
 
 type CreateContextOptions = {
   session: IronSession;
+  req: NextApiRequest;
 };
 
 export const createInnerTRPCContext = (opts: CreateContextOptions) => {
   return {
-    session: opts.session,
+    ...opts,
     prisma,
   };
 };
@@ -18,7 +19,7 @@ export const createInnerTRPCContext = (opts: CreateContextOptions) => {
 export const createTRPCContext = async (_opts: CreateNextContextOptions) => {
   const session = await getIronSession(_opts.req, _opts.res, sessionOptions);
 
-  return createInnerTRPCContext({ session });
+  return createInnerTRPCContext({ session, req: _opts.req });
 };
 
 // Avoid exporting the entire t-object
@@ -27,6 +28,7 @@ export const createTRPCContext = async (_opts: CreateNextContextOptions) => {
 // is common in i18n libraries.
 import superjson from 'superjson';
 import { ZodError } from 'zod';
+import { NextApiRequest } from 'next';
 
 const t = initTRPC.context<typeof createTRPCContext>().create({
   transformer: superjson,
@@ -47,10 +49,16 @@ export const publicProcedure = t.procedure;
 
 /** Reusable middleware that enforces users are logged in before running the procedure. */
 const enforceUserIsAuthed = t.middleware(({ ctx, next }) => {
-  console.log('session middleware:', ctx.session);
-  if (!ctx.session.user) {
+  const { authorization } = ctx.req.headers;
+
+  console.log(authorization);
+  if (
+    !ctx.session.user &&
+    (!authorization || authorization !== 'RjsDKNJvHJI0y6XYmpxg8qraBMH9z6XI')
+  ) {
     throw new TRPCError({ code: 'UNAUTHORIZED' });
   }
+
   return next({
     ctx: {
       // infers the `session` as non-nullable

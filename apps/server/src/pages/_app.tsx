@@ -2,6 +2,7 @@ import { trpc } from '@/hooks/trpc';
 import { useThemeStore } from '@/store/useThemeStore';
 import '@/style.css';
 import { ColorSchemeProvider, LoadingOverlay, MantineProvider, em } from '@mantine/core';
+import { Notifications } from '@mantine/notifications';
 import type { AppProps } from 'next/app';
 
 // This default export is required in a new `pages/_app.js` file.
@@ -41,6 +42,7 @@ function MyApp({ Component, pageProps }: AppProps) {
           },
         }}>
         <Component {...pageProps} />
+        <Notifications zIndex={300} position='top-right' />
       </MantineProvider>
     </ColorSchemeProvider>
   );

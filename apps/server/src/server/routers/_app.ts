@@ -1,18 +1,45 @@
 import { router } from '../trpc';
-import { attendance } from './attendance';
-import { auth } from './auth';
-import { student } from './student';
-import { studentClass } from './studentClass';
+import {
+  addAttendanceLogProcedure,
+  getAttendanceLogPerStudentProcedure,
+  getAttendanceLogProcedure,
+} from './attendance';
+import { loginProcedure, logoutProcedure } from './auth';
+import {
+  addStudentProcedure,
+  deleteStudentProcedure,
+  editStudentProcedure,
+  getStudentsPageableProcedure,
+  getStudentsProcedure,
+} from './student';
+import {
+  addStudentClassProcedure,
+  deleteStudentClassProcedure,
+  editStudentClassProcedure,
+  getStudentClassesPageableProcedure,
+  getStudentClassesProcedure,
+} from './studentClass';
 
 export const appRouter = router({
   // AttendanceProcedure
-  attendance,
+  addAttendanceLog: addAttendanceLogProcedure,
+  getAttendanceLogPerStudent: getAttendanceLogPerStudentProcedure,
+  getAttendanceLog: getAttendanceLogProcedure,
   // StudentProcedure
-  student,
+  addStudent: addStudentProcedure,
+  deleteStudent: deleteStudentProcedure,
+  editStudent: editStudentProcedure,
+  getStudentsPageable: getStudentsPageableProcedure,
+  getStudents: getStudentsProcedure,
   // StudentClassProcedute
-  studentClass,
+  addStudentClass: addStudentClassProcedure,
+  deleteStudentClass: deleteStudentClassProcedure,
+  editStudentClass: editStudentClassProcedure,
+  getStudentClassesPageable: getStudentClassesPageableProcedure,
+  getStudentClasses: getStudentClassesProcedure,
   // AuthProcedure
-  auth,
+  login: loginProcedure,
+  logout: logoutProcedure,
 });
 // export type definition of API
 export type AppRouter = typeof appRouter;

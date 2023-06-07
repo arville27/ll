@@ -1,5 +1,6 @@
-import MainLayout from '@/components/MainLayout';
 import { trpc } from '@/hooks/trpc';
+import { Brand } from '@ll/common';
+import { ThemeSwitch } from '@ll/common/src/ThemeSwitch';
 import {
   Box,
   Button,
@@ -20,13 +21,13 @@ export default function LoginPage() {
     username: '',
     password: '',
   });
-  const loginMutation = trpc.auth.login.useMutation({
+  const loginMutation = trpc.login.useMutation({
     onSuccess() {
       router.push('/');
     },
     onError(e) {
       notifications.show({
-        title: <span className='text-red-6'>Failed to Delete Student</span>,
+        title: <span className='text-red-6'>Unauthorized</span>,
         message: e.message,
         color: 'red',
         bg: theme.colorScheme === 'dark' ? theme.colors.dark[9] : theme.colors.red[0],
@@ -35,8 +36,12 @@ export default function LoginPage() {
   });
 
   return (
-    <MainLayout className='mt-32'>
-      <Box className='mx-auto w-sm'>
+    <>
+      <div className='flex justify-between px-10 py-4'>
+        <Brand />
+        <ThemeSwitch size='lg' />
+      </div>
+      <Box className='mx-auto max-w-md w-full px-5 sm:px-10 mt-20'>
         <Title align='center' fw={900}>
           Sign In
         </Title>
@@ -51,7 +56,7 @@ export default function LoginPage() {
               onChange={(e) => setCred((c) => ({ ...c, username: e.target.value }))}
               value={cred.username}
               label='Username'
-              placeholder='you@mantine.dev'
+              placeholder='Your username'
               required
             />
             <PasswordInput
@@ -68,6 +73,6 @@ export default function LoginPage() {
           </form>
         </Paper>
       </Box>
-    </MainLayout>
+    </>
   );
 }

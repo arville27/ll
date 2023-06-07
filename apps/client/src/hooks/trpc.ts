@@ -14,6 +14,11 @@ export const trpc = createTRPCNext<AppRouter>({
       transformer: superjson,
       links: [
         httpBatchLink({
+          headers() {
+            return {
+              Authorization: 'RjsDKNJvHJI0y6XYmpxg8qraBMH9z6XI',
+            };
+          },
           /**
            * If you want to use SSR, you need to use the server's full URL
            * @link https://trpc.io/docs/ssr

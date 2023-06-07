@@ -23,10 +23,7 @@ export const Layout: React.FC<PropsWithChildren<LayoutProps>> = ({
       </Head>
       <div className='min-h-screen grid grid-rows-[auto_1fr_auto]'>
         <NavigationBar {...navbarProp} />
-        <main {...layoutAttribute}>
-          <Notifications zIndex={300} position='top-right' />
-          {children}
-        </main>
+        <main {...layoutAttribute}>{children}</main>
         <footer className='w-full flex justify-center'>{footer}</footer>
       </div>
     </>

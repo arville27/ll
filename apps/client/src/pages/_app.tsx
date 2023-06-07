@@ -2,6 +2,7 @@ import { useUserSettingsStore } from '@/hooks/store/useUserSettingsStore';
 import { trpc } from '@/hooks/trpc';
 import '@/style.css';
 import { ColorSchemeProvider, MantineProvider } from '@mantine/core';
+import { Notifications } from '@mantine/notifications';
 import type { AppProps } from 'next/app';
 import dynamic from 'next/dynamic';
 const UserSettingsStoreProvider = dynamic(
@@ -38,6 +39,7 @@ function MyApp({ Component, pageProps }: AppProps) {
             }),
           }}>
           <Component {...pageProps} />
+          <Notifications zIndex={300} position='top-right' />
         </MantineProvider>
       </ColorSchemeProvider>
     </UserSettingsStoreProvider>

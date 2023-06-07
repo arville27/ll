@@ -46,14 +46,14 @@ export function ScanInput({
   setKeyword: (keyword: string) => void;
   refetch: () => void;
 }) {
-  const addAttendanceMutation = trpc.attendance.addAttendanceLog.useMutation({
+  const addAttendanceMutation = trpc.addAttendanceLog.useMutation({
     onSettled: () => refetch(),
   });
 
   const theme = useMantineTheme();
   const inputRef = useRef(null);
   const [debouncedKeyword] = useDebouncedValue(keyword, 300);
-  const { data: autocompleteData } = trpc.student.getStudents.useQuery(
+  const { data: autocompleteData } = trpc.getStudents.useQuery(
     { searchKey: debouncedKeyword },
     {
       enabled: Boolean(debouncedKeyword),
