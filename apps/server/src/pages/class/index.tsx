@@ -100,7 +100,7 @@ export default function StudentClassPage() {
     <MainLayout className='relative h-full w-full pt-12'>
       <LoadingOverlay visible={!studentClasses} />
       <div className='grid grid-rows-none grid-cols-1 lg:grid-cols-[1fr_0.7fr] px-4 h-full'>
-        <Stack spacing='xl' className='mx-auto w-full px-4 max-w-2xl'>
+        <Stack spacing='xl' className='mx-auto w-full px-4 mb-8 max-w-2xl'>
           <Group position='apart'>
             <Group>
               <IconChalkboard />
@@ -284,9 +284,9 @@ export default function StudentClassPage() {
             )}
           </Stack>
         </Stack>
-        <div className='h-[90%] mx-auto w-full hidden lg:block max-w-lg px-4'>
-          <Card withBorder className='p-7 h-full shadow-md rounded-lg'>
-            <Group position='apart' className='pb-5'>
+        <div className='h-11/12 mx-auto w-full hidden md:block max-w-lg px-4'>
+          <Card withBorder className='h-full shadow-md rounded-lg p-5'>
+            <Group position='apart' className='mb-5'>
               <Group spacing='xs'>
                 <IconSchool size={20} />
                 <Text fz='md' fw={500}>
@@ -373,7 +373,7 @@ export default function StudentClassPage() {
           }
           displayValue={studentListDisplay}
           closeAction={studentListDisclosure.close}>
-          <div className='px-3'>
+          <div className='px-1 sm:px-2'>
             <StudentListDetail studentClass={selectedClass} />
           </div>
         </CustomModal>

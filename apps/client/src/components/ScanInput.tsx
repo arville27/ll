@@ -23,10 +23,10 @@ const AutoCompleteItem = forwardRef<HTMLDivElement, ItemProps>(
     return (
       <div ref={ref} {...other} className={`${other.className} flex justify-between`}>
         <Stack className='gap-1'>
-          <Text>{student.name}</Text>
+          <Text className='truncate max-w-[16.5rem]'>{student.name}</Text>
           <Box className='text-sm flex items-center gap-1'>
-            <IconHash size={14} />
-            <Text c='dimmed' fz='xs'>
+            <IconHash size={12} />
+            <Text c='dimmed' fz='xs' className='truncate max-w-[15rem]'>
               {student.uid}
             </Text>
           </Box>
@@ -125,6 +125,7 @@ export function ScanInput({
                 }))
               : []
           }
+          className='break-words'
         />
       </form>
     </div>

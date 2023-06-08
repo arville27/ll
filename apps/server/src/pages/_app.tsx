@@ -36,7 +36,7 @@ function MyApp({ Component, pageProps }: AppProps) {
             'xs': em('400px'),
             'sm': em('640px'),
             'md': em('768px'),
-            'lg': em('1034px'),
+            'lg': em('1024px'),
             'xl': em('1280px'),
             '2xl': em('1536px'),
           },

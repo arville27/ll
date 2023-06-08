@@ -3,7 +3,7 @@ import { addStudentInput } from '@/server/routers/student/addStudent';
 import { Button, Select, Stack, Text, TextInput, useMantineTheme } from '@mantine/core';
 import { DateInput } from '@mantine/dates';
 import { notifications } from '@mantine/notifications';
-import { Student, StudentClass } from '@prisma/client';
+import { Student } from '@prisma/client';
 import {
   IconCalendarEvent,
   IconChalkboard,
@@ -166,6 +166,7 @@ export default function SaveStudentForm({
           radius='md'
           required
           size='sm'
+          maxLength={90}
         />
         <DateInput
           value={input.birthDate}
@@ -244,6 +245,7 @@ export default function SaveStudentForm({
           required
           size='sm'
           inputWrapperOrder={['label', 'input', 'description', 'error']}
+          maxLength={96}
         />
       </Stack>
 

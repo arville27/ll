@@ -67,7 +67,7 @@ export default function StudentPage() {
   }, [router.query]);
 
   return (
-    <MainLayout className='relative h-full w-full pt-12'>
+    <MainLayout className='relative h-full w-full pt-12 min-w-0'>
       <LoadingOverlay visible={!students} />
       <Stack spacing='xl' className='mx-auto px-5 max-w-[50rem]'>
         <Group position='apart'>

@@ -1,5 +1,6 @@
 import {
   Badge,
+  Box,
   Button,
   Card,
   Flex,
@@ -30,38 +31,22 @@ export default function StudentCard({
         backgroundColor:
           theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.white,
       }}
-      className='shadow-sm'>
-      <Flex className='w-full flex-col gap-1 overflow-hidden'>
-        <Flex className='justify-between'>
-          <Stack spacing='none'>
-            <Group spacing='xs' align='center'>
-              <Tooltip
-                label={student.name}
-                position='top-start'
-                classNames={{
-                  tooltip: 'text-wrap whitespace-normal max-w-4/5',
-                }}>
-                <Text
-                  lineClamp={1}
-                  className='overflow-hidden text-ellipsis font-semibold'
-                  color='blue'
-                  lh='1.25'>
-                  {student.name}
-                </Text>
-              </Tooltip>
-            </Group>
-            <Text fz='xs' px='3px'>
-              #{student.uid}
-            </Text>
-          </Stack>
-          <Badge size='sm' radius='md'>
-            {student.studentClass.className}
-          </Badge>
-        </Flex>
-
-        <Flex className='flex-col sm:flex-row' justify='space-between' gap='sm'>
+      className=' shadow-sm'>
+      <Flex className='flex-col gap-1 overflow-hidden'>
+        <Box>
+          <Text className='font-semibold break-words' color='blue' lh='1.25'>
+            {student.name}
+          </Text>
+          <Text fz='xs' px='3px' className='break-words'>
+            #{student.uid}
+          </Text>
+        </Box>
+        <Badge size='sm' radius='md' className='w-fit'>
+          {student.studentClass.className}
+        </Badge>
+        <Flex className='flex-col gap-3 sm:flex-row justify-between'>
           <Group spacing='xs' align='center'>
-            <IconCake width={13}></IconCake>
+            <IconCake size={10}></IconCake>
             <Text c='dimmed' fz='0.75rem'>
               {student.birthDate.toLocaleDateString(undefined, {
                 weekday: 'long',
@@ -71,13 +56,11 @@ export default function StudentCard({
               })}
             </Text>
           </Group>
-
-          <Group>
+          <Group className='self-end'>
             <Button
               leftIcon={<IconEdit size='14' />}
               color='blue'
               size='xs'
-              p={10}
               variant='outline'
               onClick={editAction}>
               Edit
@@ -86,7 +69,6 @@ export default function StudentCard({
               leftIcon={<IconSquareRoundedX size='14' />}
               color='red'
               size='xs'
-              p={10}
               onClick={deleteAction}>
               Delete
             </Button>

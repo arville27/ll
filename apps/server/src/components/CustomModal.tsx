@@ -9,6 +9,9 @@ interface Props extends HTMLAttributes<HTMLElement> {
 
 const useStyles = createStyles((theme) => ({
   modalHeader: {
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
     backgroundColor:
       theme.colorScheme === 'dark' ? theme.colors.dark[8] : theme.colors.white,
     zIndex: 0,

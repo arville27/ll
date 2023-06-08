@@ -3,9 +3,9 @@ import { z } from 'zod';
 import { protectedProcedure } from '../../trpc';
 
 export const addStudentSchema = z.object({
-  name: z.string(),
+  name: z.string().max(90),
   birthDate: z.number().lte(new Date().getTime()),
-  uid: z.string(),
+  uid: z.string().max(96),
   studentClassId: z.number(),
 });
 

@@ -7,10 +7,12 @@ import {
   Button,
   Card,
   Divider,
+  Flex,
   Group,
   LoadingOverlay,
   Stack,
   Text,
+  Tooltip,
   useMantineTheme,
 } from '@mantine/core';
 import { DateInput } from '@mantine/dates';
@@ -88,7 +90,7 @@ export default function AttendancePage() {
   );
 
   return (
-    <MainLayout className='relative h-full w-full pt-12'>
+    <MainLayout className='relative h-full w-full pt-12 min-w-0'>
       <LoadingOverlay visible={!data} />
       <Stack spacing='xl' className='mx-auto px-5 max-w-[50rem]'>
         <Group position='apart'>
@@ -226,35 +228,43 @@ export default function AttendancePage() {
           {data && data.length > 0 ? (
             data.map((i, idx) => (
               <Card withBorder key={idx} className='py-2 px-4'>
-                <Group position='apart'>
-                  <Group>
-                    <IconPointFilled size={10} />
-                    <Stack spacing='none'>
-                      <Group spacing='xs'>
-                        <Text fw={500}>{i.name}</Text>
-                        <Badge>{i.studentClass.className}</Badge>
-                        <Badge color='yellow'>Total {i.attendanceLogs.length}</Badge>
+                <Flex className='flex-col sm:flex-row justify-between flex-nowrap w-full'>
+                  <Group className='w-full truncate' noWrap>
+                    <IconPointFilled size={10} className='min-w-3' />
+                    <Stack spacing='none' className='w-full truncate'>
+                      <Group className='truncate' position='apart' spacing='xl' noWrap>
+                        <Text fw={500} className='truncate max-w-xs'>
+                          {i.name}
+                        </Text>
+                        <Group className='hidden sm:flex' spacing='sm' noWrap>
+                          <Badge size='sm' className='min-w-20'>
+                            {i.studentClass.className}
+                          </Badge>
+                          <Badge size='sm' color='yellow' className='min-w-20'>
+                            Total {i.attendanceLogs.length}
+                          </Badge>
+                        </Group>
                       </Group>
-                      <Text fz='xs' c='dimmed'>
+                      <Text fz='xs' c='dimmed' className='truncate max-w-xs'>
                         #{i.uid}
                       </Text>
                     </Stack>
                   </Group>
-                  <Group>
-                    <Button
-                      variant='subtle'
-                      radius='xl'
-                      onClick={() => {
-                        setSelectedStudent(i);
-                        disclosureModal.open();
-                      }}>
-                      <Group spacing={8}>
-                        <Text fz='xs'>More info</Text>
-                        <IconArrowRight size={14} />
-                      </Group>
-                    </Button>
-                  </Group>
-                </Group>
+                  <Button
+                    className='self-end sm:self-center'
+                    variant='subtle'
+                    compact
+                    radius='xl'
+                    onClick={() => {
+                      setSelectedStudent(i);
+                      disclosureModal.open();
+                    }}>
+                    <Group spacing={8} noWrap>
+                      <Text fz='xs'>More info</Text>
+                      <IconArrowRight size={14} />
+                    </Group>
+                  </Button>
+                </Flex>
               </Card>
             ))
           ) : (
@@ -268,50 +278,62 @@ export default function AttendancePage() {
 
       {selectedStudent && (
         <CustomModal
-          modalTitle={
-            <Group spacing='lg' className='pt-2 pb-1'>
-              <IconSchool size={20} />
-              <Stack spacing='none'>
-                <Text fw={600}>{selectedStudent.name}</Text>
-                <Text fz='xs' c='dimmed'>
+          modalTitle='Attendance Details  '
+          displayValue={openedModal}
+          closeAction={() => disclosureModal.close()}>
+          <Stack spacing='none'>
+            <Group spacing='xs' className='pt-2 pb-1' noWrap>
+              <IconSchool size={20} className='min-w-4' />
+              <Stack spacing='none' className='truncate'>
+                <Tooltip
+                  position='top-start'
+                  label={`${selectedStudent.name}`}
+                  classNames={{
+                    tooltip: 'break-words whitespace-normal max-w-3/5',
+                  }}>
+                  <Text fw={600} className='truncate'>
+                    {selectedStudent.name}
+                  </Text>
+                </Tooltip>
+                <Text fz='xs' c='dimmed' className='truncate'>
                   #{selectedStudent.uid}
                 </Text>
               </Stack>
             </Group>
-          }
-          displayValue={openedModal}
-          closeAction={() => disclosureModal.close()}>
-          <Stack spacing='xs'>
             <Group spacing={5} className='self-end'>
               <Badge>{selectedStudent.studentClass.className}</Badge>
-              <Badge color='yellow'>Total {selectedStudent.attendanceLogs.length}</Badge>
+              <Badge color='yellow'>{selectedStudent.attendanceLogs.length} log(s)</Badge>
             </Group>
-            {selectedStudent.attendanceLogs.map((log, index) => (
-              <Card
-                withBorder
-                key={log.id}
-                sx={{
-                  backgroundColor:
-                    theme.colorScheme == 'dark'
-                      ? theme.colors.dark[7]
-                      : theme.colors.gray[1],
-                }}
-                className='shadow-sm'>
-                <div className='flex w-full gap-4'>
-                  <Text>{index + 1}</Text>
-                  <Divider orientation='vertical' />
-                  <div className='flex flex-row flex-wrap justify-between w-full items-center text-sm gap-1'>
-                    <Text>{dfs.format(log.date, 'EEEE, dd MMM yyyy')}</Text>
-                    <Badge color='teal'>
-                      <Group spacing={5}>
-                        <IconClock size={14} className='hidden sm:block' />
-                        <Text>{dfs.format(log.date, 'H:mm')}</Text>
-                      </Group>
-                    </Badge>
+            <Stack spacing='xs' className='mt-3'>
+              {selectedStudent.attendanceLogs.map((log, index) => (
+                <Card
+                  withBorder
+                  key={log.id}
+                  sx={{
+                    backgroundColor:
+                      theme.colorScheme == 'dark'
+                        ? theme.colors.dark[7]
+                        : theme.colors.gray[1],
+                  }}
+                  className='shadow-sm'>
+                  <div className='flex w-full gap-4'>
+                    <Text>{index + 1}</Text>
+                    <Divider orientation='vertical' />
+                    <div className='flex flex-row flex-wrap justify-between w-full items-center text-sm gap-1'>
+                      <Text className='w-44'>
+                        {dfs.format(log.date, 'EEEE, dd MMM yyyy')}
+                      </Text>
+                      <Badge color='teal' className='px-2'>
+                        <Group spacing={5}>
+                          <IconClock size={14} />
+                          <Text>{dfs.format(log.date, 'H:mm')}</Text>
+                        </Group>
+                      </Badge>
+                    </div>
                   </div>
-                </div>
-              </Card>
-            ))}
+                </Card>
+              ))}
+            </Stack>
           </Stack>
         </CustomModal>
       )}

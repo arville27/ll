@@ -57,14 +57,14 @@ export function TableStudents({ data }: TableStudentsProps) {
             position='top-start'
             label={
               <>
-                <Text>{row.student.name}</Text>
-                <Text fz='xs' c='dimmed'>
+                <Text className='break-words'>{row.student.name}</Text>
+                <Text fz='xs' c='dimmed' className='break-words'>
                   #{row.student.name}
                 </Text>
               </>
             }
             classNames={{
-              tooltip: 'text-wrap whitespace-normalbreak-spaces max-w-4/5',
+              tooltip: 'break-word whitespace-normal max-w-4/5',
             }}>
             <div className='truncate'>{row.student.name}</div>
           </Tooltip>

@@ -50,9 +50,9 @@ export function TableAttendance({
         <td className='w-fit'>
           <Tooltip
             position='top-start'
-            label={row.student.uid}
+            label={`#${row.student.uid}`}
             classNames={{
-              tooltip: 'text-wrap whitespace-normal max-w-3/5',
+              tooltip: 'break-words whitespace-normal max-w-3/5',
             }}>
             <Text className='truncate max-w-[12rem]'>#{row.student.uid}</Text>
           </Tooltip>
@@ -62,7 +62,7 @@ export function TableAttendance({
             position='top-start'
             label={row.student.name}
             classNames={{
-              tooltip: 'text-wrap whitespace-normal max-w-3/5',
+              tooltip: 'break-words whitespace-normal max-w-3/5',
             }}>
             <div className='line-clamp-1 '>
               <Text className='truncate max-w-[12rem]'>{row.student.name}</Text>

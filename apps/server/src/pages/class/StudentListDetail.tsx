@@ -3,6 +3,7 @@ import {
   Button,
   Card,
   Divider,
+  Flex,
   Group,
   ScrollArea,
   Stack,
@@ -42,14 +43,14 @@ export default function StudentListDetail({
         size='sm'
       />
       {studentClass ? (
-        <ScrollArea pr='lg' h={400}>
+        <div className='overflow-y-auto max-h-sm lg:max-h-md'>
           {studentClass.students.length === 0 ? (
             <Box className='text-center m-10'>
               <IconDeviceDesktopSearch color='gray' size={40} />
               <Text>No students found</Text>
             </Box>
           ) : (
-            <Stack spacing='sm'>
+            <Stack spacing='sm' className='pr-2'>
               {studentClass.students
                 .filter(
                   (student) =>
@@ -60,7 +61,6 @@ export default function StudentListDetail({
                   <Card
                     withBorder
                     key={student.id}
-                    py='sm'
                     radius='md'
                     sx={{
                       backgroundColor:
@@ -68,32 +68,35 @@ export default function StudentListDetail({
                           ? theme.colors.dark[7]
                           : theme.colors.gray[1],
                     }}
-                    className='flex items-center gap-3 shadow-sm'>
-                    <Text className='min-w-[1.5rem]'>{index + 1}</Text>
-                    <Divider orientation='vertical' />
-                    <Group className='w-full' position='apart'>
-                      <Stack spacing='none'>
-                        <Text fz='sm' className='truncate w-[7rem]'>
-                          {student.name}
-                        </Text>
-                        <Text fz='xs' c='dimmed' className='truncate w-[7rem]'>
-                          #{student.uid}
-                        </Text>
-                      </Stack>
-                      <Button
-                        radius='xl'
-                        variant='subtle'
-                        size='xs'
-                        px='xs'
-                        onClick={() => router.push(`/student?q=${student.name}`)}>
-                        More info
-                      </Button>
-                    </Group>
+                    className=' shadow-sm py-3 px-4 max-w-md'>
+                    <Flex align='center' className='gap-3'>
+                      <Text fz='xs'>{index + 1}</Text>
+                      <Divider orientation='vertical' />
+                      <Flex className='truncate w-full flex-nowrap flex-col sm:flex-row sm:justify-between'>
+                        <div className='truncate'>
+                          <Text fz='sm' className='truncate'>
+                            {student.name}
+                          </Text>
+                          <Text fz='xs' c='dimmed' className='truncate'>
+                            #{student.uid}
+                          </Text>
+                        </div>
+                        <Button
+                          radius='xl'
+                          variant='subtle'
+                          size='xs'
+                          compact
+                          className='px-3 self-end sm:self-center'
+                          onClick={() => router.push(`/student?q=${student.name}`)}>
+                          More info
+                        </Button>
+                      </Flex>
+                    </Flex>
                   </Card>
                 ))}
             </Stack>
           )}
-        </ScrollArea>
+        </div>
       ) : (
         <Text align='center' c='dimmed' p={30}>
           Select class to see student list detail
