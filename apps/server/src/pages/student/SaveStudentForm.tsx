@@ -44,21 +44,20 @@ export default function SaveStudentForm({
       : new StudentInput()
   );
 
-  const { data: classes, refetch: classesRefetch } =
-    trpc.studentClass.getStudentClasses.useQuery({});
-  const addStudentClassMutation = trpc.studentClass.addStudentClass.useMutation({
+  const { data: classes, refetch: classesRefetch } = trpc.getStudentClasses.useQuery({});
+  const addStudentClassMutation = trpc.addStudentClass.useMutation({
     onSettled: () => {
       // Refetch class list
       classesRefetch();
     },
   });
-  const addStudentMutation = trpc.student.addStudent.useMutation({
+  const addStudentMutation = trpc.addStudent.useMutation({
     onSettled: () => {
       // Refetch student list
       refetch();
     },
   });
-  const editStudentMutation = trpc.student.editStudent.useMutation({
+  const editStudentMutation = trpc.editStudent.useMutation({
     onSettled: () => {
       // Refetch student list
       refetch();

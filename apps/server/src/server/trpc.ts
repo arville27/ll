@@ -51,7 +51,6 @@ export const publicProcedure = t.procedure;
 const enforceUserIsAuthed = t.middleware(({ ctx, next }) => {
   const { authorization } = ctx.req.headers;
 
-  console.log(authorization);
   if (
     !ctx.session.user &&
     (!authorization || authorization !== 'RjsDKNJvHJI0y6XYmpxg8qraBMH9z6XI')

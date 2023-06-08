@@ -1,6 +1,6 @@
-import { publicProcedure } from '@/server/trpc';
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
+import { publicProcedure } from '../../../server/trpc';
 
 export const loginProcedure = publicProcedure
   .input(
