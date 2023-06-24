@@ -37,7 +37,7 @@ async function getAllStudents({
         },
         {
           studentClass: {
-            className: {
+            name: {
               contains: input.searchKey,
             },
           },
@@ -98,7 +98,12 @@ export const getStudentsPageableProcedure = protectedProcedure
         orderByClause = [
           {
             studentClass: {
-              className: input.orderDir,
+              name: input.orderDir,
+            },
+          },
+          {
+            studentClass: {
+              grade: input.orderDir,
             },
           },
           {
@@ -128,7 +133,7 @@ export const getStudentsPageableProcedure = protectedProcedure
           },
           {
             studentClass: {
-              className: {
+              name: {
                 contains: input.searchKey,
               },
             },

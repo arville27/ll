@@ -1,4 +1,5 @@
 import { Button, Group, Stack, Text, useMantineTheme } from '@mantine/core';
+import { IconExclamationCircle } from '@tabler/icons-react';
 import CustomModal from './CustomModal';
 
 interface Props {
@@ -19,11 +20,16 @@ const CustomConfirmation = ({
   const theme = useMantineTheme();
   return (
     <CustomModal
-      modalTitle={<Text fw={600}>{title}</Text>}
+      modalTitle={
+        <Group className='items-center' spacing='xs'>
+          <IconExclamationCircle size={30} />
+          <Text fw={600}>{title}</Text>
+        </Group>
+      }
       displayValue={displayValue}
       closeAction={closeAction}>
       <Stack>
-        <span>{message}</span>
+        <span className='text-justify px-2'>{message}</span>
         <Group className='self-end'>
           <Button
             bg={theme.colors.blue[theme.fn.primaryShade()]}

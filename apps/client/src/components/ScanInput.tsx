@@ -31,7 +31,9 @@ const AutoCompleteItem = forwardRef<HTMLDivElement, ItemProps>(
             </Text>
           </Box>
         </Stack>
-        <Badge>{student.studentClass.className}</Badge>
+        <Badge>
+          {student.studentClass.name} {student.studentClass.grade}
+        </Badge>
       </div>
     );
   }

@@ -18,6 +18,7 @@ import {
   editStudentClassProcedure,
   getStudentClassesPageableProcedure,
   getStudentClassesProcedure,
+  upgradeStudentClassesProcedure,
 } from './studentClass';
 
 export const appRouter = router({
@@ -37,6 +38,7 @@ export const appRouter = router({
   editStudentClass: editStudentClassProcedure,
   getStudentClassesPageable: getStudentClassesPageableProcedure,
   getStudentClasses: getStudentClassesProcedure,
+  upgradeStudentClasses: upgradeStudentClassesProcedure,
   // AuthProcedure
   login: loginProcedure,
   logout: logoutProcedure,

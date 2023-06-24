@@ -7,20 +7,20 @@ import {
   Box,
   Button,
   Card,
-  Divider,
-  Flex,
   Group,
   LoadingOverlay,
   Pagination,
   Stack,
   Text,
   TextInput,
+  Tooltip,
   useMantineTheme,
 } from '@mantine/core';
 import { useDebouncedValue, useDisclosure, useMediaQuery } from '@mantine/hooks';
 import { notifications } from '@mantine/notifications';
 import { Student, StudentClass } from '@prisma/client';
 import {
+  IconArrowAutofitUp,
   IconChalkboard,
   IconDeviceDesktopSearch,
   IconPlus,
@@ -30,6 +30,7 @@ import {
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import AddStudentClassForm from './AddStudentClassForm';
+import ClassContent from './ClassContent';
 import StudentListDetail from './StudentListDetail';
 
 export default function StudentClassPage() {
@@ -43,9 +44,11 @@ export default function StudentClassPage() {
   const [editClassDisplay, editClassDisclosure] = useDisclosure(false);
   const [deleteClassDisplay, deleteClassDisclosure] = useDisclosure(false);
   const [studentListDisplay, studentListDisclosure] = useDisclosure(false);
+  const [upgradeClassDisplay, upgradeClassDisclosure] = useDisclosure(false);
   const [selectedClass, setSelectedClass] = useState<
     StudentClass & { students: Student[] }
   >();
+  const [isUpgrade, setIsUpgrade] = useState(false);
 
   useEffect(() => {
     const { q } = router.query;
@@ -56,46 +59,13 @@ export default function StudentClassPage() {
     searchKey: debouncedSearchKey,
     page: page,
   });
-  const editStudentClassMutation = trpc.editStudentClass.useMutation({
-    onSettled: () => refetch(),
-  });
   const deleteStudentClassMutation = trpc.deleteStudentClass.useMutation({
     onSettled: () => refetch(),
   });
+  const upgradeStudentClassesMutation = trpc.upgradeStudentClasses.useMutation({
+    onSettled: () => refetch(),
+  });
 
-  function submitEdit() {
-    if (selectedClass)
-      editStudentClassMutation.mutate(
-        {
-          id: selectedClass.id,
-          className: selectedClass.className,
-        },
-        {
-          onSuccess: (res) => {
-            notifications.show({
-              title: <span className='text-green-6'>Success</span>,
-              message: `Saved ${res.className}`,
-              color: 'green',
-              bg:
-                theme.colorScheme === 'dark'
-                  ? theme.colors.dark[9]
-                  : theme.colors.green[0],
-            });
-            setSelectedClass(undefined);
-            editClassDisclosure.close();
-          },
-          onError: (e) => {
-            notifications.show({
-              title: <span className='text-red-6'>Failed to Delete Student</span>,
-              message: e.message,
-              color: 'red',
-              bg:
-                theme.colorScheme === 'dark' ? theme.colors.dark[9] : theme.colors.red[0],
-            });
-          },
-        }
-      );
-  }
   return (
     <MainLayout className='relative h-full w-full pt-12'>
       <LoadingOverlay visible={!studentClasses} />
@@ -108,21 +78,51 @@ export default function StudentClassPage() {
                 Class List
               </Text>
             </Group>
-            <Button
-              className='hidden sm:block'
-              leftIcon={<IconPlus size='1.1rem' />}
-              size='xs'
-              onClick={addClassDisclosure.open}>
-              New
-            </Button>
-            <ActionIcon
-              className='sm:hidden'
-              size='md'
-              color='blue'
-              variant='filled'
-              onClick={addClassDisclosure.open}>
-              <IconPlus size='1.1rem' />
-            </ActionIcon>
+            <Group spacing='sm'>
+              <Button
+                className='hidden sm:block'
+                leftIcon={<IconArrowAutofitUp size='1.1rem' />}
+                size='xs'
+                color={isUpgrade ? 'green' : 'red'}
+                onClick={() => {
+                  if (isUpgrade) upgradeClassDisclosure.open();
+                  else setIsUpgrade(() => true);
+                }}
+                disabled={editClassDisplay}>
+                {isUpgrade ? 'Confirm' : 'Upgrade Class'}
+              </Button>
+              <Tooltip
+                className='sm:hidden'
+                label={`
+                ${isUpgrade ? 'Confirm' : 'Upgrade Class'}`}>
+                <ActionIcon
+                  size='md'
+                  color={isUpgrade ? 'green' : 'red'}
+                  variant='filled'
+                  onClick={() => {
+                    if (isUpgrade) upgradeClassDisclosure.open();
+                    else setIsUpgrade(() => true);
+                  }}>
+                  <IconArrowAutofitUp size='1.1rem' />
+                </ActionIcon>
+              </Tooltip>
+              <Button
+                className='hidden sm:block'
+                leftIcon={<IconPlus size='1.1rem' />}
+                size='xs'
+                onClick={addClassDisclosure.open}>
+                New
+              </Button>
+              <Tooltip className='sm:hidden' label='New'>
+                <ActionIcon
+                  size='md'
+                  color='blue'
+                  variant='filled'
+                  onClick={addClassDisclosure.open}>
+                  <IconPlus size='1.1rem' />
+                </ActionIcon>
+              </Tooltip>
+            </Group>
           </Group>
 
           <TextInput
@@ -146,127 +146,25 @@ export default function StudentClassPage() {
             {studentClasses && studentClasses.records.length > 0 ? (
               <>
                 {studentClasses.records.map((studentClass, index) => (
-                  <form
-                    key={studentClass.id}
-                    onSubmit={(e) => {
-                      e.preventDefault();
-                      submitEdit();
-                    }}>
-                    <Flex
-                      justify='space-between'
-                      align='center'
-                      className='px-5 py-2 cursor-pointer'
-                      sx={{
-                        'backgroundColor':
-                          selectedClass && selectedClass.id === studentClass.id
-                            ? theme.colorScheme == 'dark'
-                              ? theme.colors.dark[9]
-                              : theme.colors.gray[2]
-                            : '',
-                        '&:hover': {
-                          backgroundColor:
-                            theme.colorScheme == 'dark'
-                              ? theme.colors.dark[8]
-                              : theme.colors.gray[1],
-                        },
-                        [theme.fn.smallerThan('xs')]: {
-                          flexDirection: 'column',
-                          alignItems: 'flex-start',
-                        },
-                      }}
-                      onClick={() => {
-                        setSelectedClass(studentClass);
-                        studentListDisclosure.open();
-                      }}
-                      tabIndex={1}>
-                      {selectedClass &&
-                      selectedClass.id === studentClass.id &&
-                      editClassDisplay ? (
-                        <>
-                          <TextInput
-                            autoFocus
-                            className='text-xl'
-                            defaultValue={studentClass.className}
-                            onChange={(e) =>
-                              setSelectedClass({
-                                ...studentClass,
-                                className: e.target.value,
-                              })
-                            }
-                            onClick={(e) => e.stopPropagation()}
-                            radius='md'
-                            size='xs'
-                          />
-                          <Group spacing='none' className='self-end'>
-                            <Button
-                              type='submit'
-                              variant='subtle'
-                              radius='md'
-                              size='xs'
-                              compact
-                              onClick={(e) => e.stopPropagation()}>
-                              Save
-                            </Button>
-                            <Button
-                              variant='subtle'
-                              radius='md'
-                              size='xs'
-                              compact
-                              color='red'
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                e.preventDefault();
-                                setSelectedClass(undefined);
-                                editClassDisclosure.close();
-                              }}>
-                              Cancel
-                            </Button>
-                          </Group>
-                        </>
-                      ) : (
-                        <>
-                          <Stack spacing='none'>
-                            <Text fz='sm' fw={600}>
-                              {studentClass.className}
-                            </Text>
-                            <Text fz='xs' c='dimmed'>
-                              {studentClass.students.length} student(s)
-                            </Text>
-                          </Stack>
-                          <Group spacing='none' className='self-end'>
-                            <Button
-                              variant='subtle'
-                              radius='md'
-                              size='xs'
-                              compact
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                e.preventDefault();
-                                setSelectedClass(studentClass);
-                                editClassDisclosure.open();
-                              }}>
-                              Edit
-                            </Button>
-                            <Button
-                              color='red'
-                              variant='subtle'
-                              radius='md'
-                              size='xs'
-                              compact
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                e.preventDefault();
-                                setSelectedClass(studentClass);
-                                deleteClassDisclosure.open();
-                              }}>
-                              Delete
-                            </Button>
-                          </Group>
-                        </>
-                      )}
-                    </Flex>
-                    {index < studentClasses.records.length - 1 && <Divider />}
-                  </form>
+                  <ClassContent
+                    key={index}
+                    index={index}
+                    studentClass={studentClass}
+                    totalClass={studentClasses.records.length}
+                    isUpgrading={isUpgrade}
+                    isSelected={Boolean(
+                      selectedClass && selectedClass.id === studentClass.id
+                    )}
+                    onEdit={refetch}
+                    onSelect={() => {
+                      setSelectedClass(studentClass);
+                      studentListDisclosure.open();
+                    }}
+                    onDeleteClick={() => {
+                      setSelectedClass(studentClass);
+                      deleteClassDisclosure.open();
+                    }}
+                  />
                 ))}
 
                 <Pagination
@@ -284,12 +182,13 @@ export default function StudentClassPage() {
             )}
           </Stack>
         </Stack>
-        <div className='h-11/12 mx-auto w-full hidden md:block max-w-lg px-4'>
+        <div className='h-11/12 mx-auto w-full hidden lg:block max-w-lg px-4'>
           <Card withBorder className='h-full shadow-md rounded-lg p-5'>
             <Group position='apart' className='mb-5'>
               <Group spacing='xs'>
                 <IconSchool size={20} />
                 <Text fz='md' fw={500}>
+                  {selectedClass ? `${selectedClass.name} ${selectedClass.grade} ` : ''}
                   Student List
                 </Text>
               </Group>
@@ -315,8 +214,8 @@ export default function StudentClassPage() {
       {selectedClass && (
         <CustomConfirmation
           displayValue={deleteClassDisplay}
-          title='Delete Student Class'
-          message={`Are you sure want to delete ${selectedClass.className}?`}
+          title='Warning Delete Student Class'
+          message={`All class data and its students records will be REMOVED PERMANENTLY. Proceed to remove "${selectedClass.name} ${selectedClass.grade}"?`}
           closeAction={deleteClassDisclosure.close}
           acceptAction={() =>
             deleteStudentClassMutation.mutate(
@@ -327,7 +226,7 @@ export default function StudentClassPage() {
                 onSuccess: (res) => {
                   notifications.show({
                     title: <span className='text-green-6'>Success</span>,
-                    message: `Removed "${res.className}"`,
+                    message: `Removed "${res.name}"`,
                     color: 'green',
                     bg:
                       theme.colorScheme === 'dark'
@@ -361,11 +260,12 @@ export default function StudentClassPage() {
               <Group spacing='xs'>
                 <IconSchool size={20} />
                 <Text fz='md' fw={500}>
+                  {`${selectedClass.name} ${selectedClass.grade} `}
                   Student List
                 </Text>
               </Group>
               {selectedClass && (
-                <Text fz='xs' c='dimmed' className='self-end'>
+                <Text fz='xs' c='dimmed' className='ml-8'>
                   Total {selectedClass.students.length} student(s)
                 </Text>
               )}
@@ -377,6 +277,47 @@ export default function StudentClassPage() {
             <StudentListDetail studentClass={selectedClass} />
           </div>
         </CustomModal>
+      )}
+      {studentClasses && (
+        <CustomConfirmation
+          displayValue={upgradeClassDisplay}
+          title='Warning Upgrade All Classes'
+          message={`Upgrade class apply increment grade and some deletion to all class without exception and can't be revert. Proceed to upgrade student class as shown in the page?`}
+          closeAction={() => {
+            upgradeClassDisclosure.close();
+            setIsUpgrade(false);
+          }}
+          acceptAction={() =>
+            upgradeStudentClassesMutation.mutate(undefined, {
+              onSuccess: (res) => {
+                notifications.show({
+                  title: <span className='text-green-6'>Success</span>,
+                  message: `${res.updated.count} classes is upgraded, ${res.deleted.count} classes is deleted`,
+                  color: 'green',
+                  bg:
+                    theme.colorScheme === 'dark'
+                      ? theme.colors.dark[9]
+                      : theme.colors.green[0],
+                });
+                setIsUpgrade(false);
+                refetch();
+              },
+              onError: (e) => {
+                notifications.show({
+                  title: (
+                    <span className='text-red-6'>Failed to Upgrade All Classes</span>
+                  ),
+                  message: e.message,
+                  color: 'red',
+                  bg:
+                    theme.colorScheme === 'dark'
+                      ? theme.colors.dark[9]
+                      : theme.colors.red[0],
+                });
+              },
+            })
+          }
+        />
       )}
     </MainLayout>
   );

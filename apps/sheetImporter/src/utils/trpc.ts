@@ -15,6 +15,11 @@ export const trpc = createTRPCProxyClient<AppRouter>({
   transformer: superjson,
   links: [
     httpBatchLink({
+      headers() {
+        return {
+          Authorization: 'RjsDKNJvHJI0y6XYmpxg8qraBMH9z6XI',
+        };
+      },
       url: `${process.env.SERVER_URL}/api/trpc`,
     }),
   ],

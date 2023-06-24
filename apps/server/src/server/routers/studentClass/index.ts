@@ -5,3 +5,4 @@ export {
   getStudentClassesPageableProcedure,
   getStudentClassesProcedure,
 } from './getStudentClasses';
+export { upgradeStudentClassesProcedure } from './upgradeStudentClasses';

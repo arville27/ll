@@ -42,7 +42,7 @@ export default function StudentCard({
           </Text>
         </Box>
         <Badge size='sm' radius='md' className='w-fit'>
-          {student.studentClass.className}
+          {student.studentClass.name} {student.studentClass.grade}
         </Badge>
         <Flex className='flex-col gap-3 sm:flex-row justify-between'>
           <Group spacing='xs' align='center'>

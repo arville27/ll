@@ -65,7 +65,7 @@ export default function AttendancePage({}: InferGetServerSidePropsType<
               data={data.filter(
                 (log) =>
                   log.student.name.toLowerCase().includes(filterKeywordDebounced) ||
-                  log.student.studentClass.className
+                  log.student.studentClass.name
                     .toLowerCase()
                     .includes(filterKeywordDebounced)
               )}

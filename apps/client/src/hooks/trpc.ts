@@ -6,6 +6,7 @@ import superjson from 'superjson';
 function getBaseUrl() {
   // assume localhost
   return 'https://ll.arv.cx';
+  // return 'http://localhost:3000';
 }
 
 export const trpc = createTRPCNext<AppRouter>({

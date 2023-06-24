@@ -1,7 +1,7 @@
 import { trpc } from '@/hooks/trpc';
-import { Button, TextInput, useMantineTheme } from '@mantine/core';
+import { Button, NumberInput, TextInput, useMantineTheme } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
-import { IconChalkboard, IconExclamationCircle } from '@tabler/icons-react';
+import { Icon123, IconChalkboard, IconExclamationCircle } from '@tabler/icons-react';
 import { useState } from 'react';
 
 export default function AddStudentClassForm({
@@ -12,7 +12,8 @@ export default function AddStudentClassForm({
   cancelAction: () => void;
 }) {
   const theme = useMantineTheme();
-  const [className, setClassName] = useState('');
+  const [name, setName] = useState('');
+  const [grade, setGrade] = useState(1);
   const addStudentClassMutation = trpc.addStudentClass.useMutation({
     onSettled: () => {
       submitAction();
@@ -25,12 +26,12 @@ export default function AddStudentClassForm({
       onSubmit={(e) => {
         e.preventDefault();
         addStudentClassMutation.mutate(
-          { className },
+          { name, grade },
           {
             onSuccess: (res) => {
               notifications.show({
                 title: <span className='text-green-6'>Success</span>,
-                message: `Added ${res.className}`,
+                message: `Added ${res.name} ${res.grade}`,
                 color: 'green',
                 bg:
                   theme.colorScheme === 'dark'
@@ -55,11 +56,26 @@ export default function AddStudentClassForm({
       <div className='flex gap-2'>
         <TextInput
           data-autofocus
-          className='w-full'
           icon={<IconChalkboard />}
-          value={className}
-          onChange={(e) => setClassName(e.target.value)}
-          placeholder='Input class name'
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          placeholder='Name'
+          maw={200}
+        />
+        <NumberInput
+          icon={<Icon123 />}
+          value={grade}
+          onKeyDown={(e) => {
+            const regexr = /^[A-z]$/;
+            if (regexr.test(e.key)) e.preventDefault();
+          }}
+          onChange={(e) => {
+            if (e) setGrade(e);
+          }}
+          placeholder='Grade'
+          w={100}
+          min={1}
+          max={99}
         />
         <Button type='submit' variant='gradient' size='sm'>
           Submit

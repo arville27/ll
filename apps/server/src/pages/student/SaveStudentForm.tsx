@@ -67,7 +67,7 @@ export default function SaveStudentForm({
   const classOptions = classes
     ? classes.map((studentClass) => ({
         value: studentClass.id + '',
-        label: studentClass.className,
+        label: `${studentClass.name} ${studentClass.grade}`,
       }))
     : [];
 
@@ -129,7 +129,7 @@ export default function SaveStudentForm({
         },
         onError: (e) => {
           notifications.show({
-            title: <span className='text-red-6'>Failed to Add Class</span>,
+            title: <span className='text-red-6'>Failed to Edit Student</span>,
             message: e.message,
             color: 'red',
             bg: theme.colorScheme === 'dark' ? theme.colors.dark[9] : theme.colors.red[0],
@@ -193,18 +193,33 @@ export default function SaveStudentForm({
           icon={<IconChalkboard size={18} />}
           label='Class'
           data={classOptions}
-          placeholder='Select class'
+          placeholder='Exp: LL 1'
           searchable
           creatable
           getCreateLabel={(query) => `+ Create ${query}`}
           onCreate={(query) => {
-            const item = { className: query };
+            const lastSpaceIndex = query.lastIndexOf(' ');
+            const name = query.substring(0, lastSpaceIndex);
+            const grade = Number(query.substring(lastSpaceIndex + 1));
+            if (lastSpaceIndex == -1 || isNaN(grade)) {
+              notifications.show({
+                title: <span className='text-red-6'>Invalid class name format</span>,
+                message: 'Class name format: { text } { number(max: 99) }',
+                color: 'red',
+                bg:
+                  theme.colorScheme === 'dark'
+                    ? theme.colors.dark[9]
+                    : theme.colors.red[0],
+              });
+              return;
+            }
+            const item = { name, grade };
             addStudentClassMutation.mutate(item, {
               onSuccess: (res) => {
                 setInput({ ...input, studentClassId: String(res.id) });
                 notifications.show({
                   title: <span className='text-green-6'>Success</span>,
-                  message: 'Added new class ',
+                  message: `Added new class "${res.name} ${res.grade}" `,
                   color: 'green',
                   bg:
                     theme.colorScheme === 'dark'
@@ -213,11 +228,10 @@ export default function SaveStudentForm({
                 });
               },
               onError: (e) => {
+                const errMsg = JSON.parse(e.message).at(0);
                 notifications.show({
-                  title: (
-                    <span className='text-red-6'>Failed to add student attendance</span>
-                  ),
-                  message: e.message,
+                  title: <span className='text-red-6'>Failed to add class</span>,
+                  message: errMsg ? errMsg.message : '',
                   color: 'red',
                   bg:
                     theme.colorScheme === 'dark'
@@ -232,6 +246,7 @@ export default function SaveStudentForm({
             if (e) setInput({ ...input, studentClassId: e });
           }}
           maxDropdownHeight={160}
+          maxLength={10}
           required
         />
         <TextInput

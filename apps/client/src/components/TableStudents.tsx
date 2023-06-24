@@ -8,7 +8,7 @@ interface TableStudentsProps {
     student: {
       name: string;
       uid: string;
-      studentClass: { className: string };
+      studentClass: { name: string; grade: number };
     };
   }[];
 }
@@ -69,7 +69,10 @@ export function TableStudents({ data }: TableStudentsProps) {
             <div className='truncate'>{row.student.name}</div>
           </Tooltip>
         </td>
-        <td className={classes.contentLimit}>{row.student.studentClass.className}</td>
+        <td
+          className={
+            classes.contentLimit
+          }>{`${row.student.studentClass.name} ${row.student.studentClass.grade}`}</td>
         <td className={classes.contentLimit}>{dfs.format(row.date, 'HH:mm')}</td>
       </tr>
     );

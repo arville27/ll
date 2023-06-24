@@ -20,7 +20,7 @@ export async function getAllClasses({
 }) {
   return await prisma.studentClass.findMany({
     where: {
-      className: {
+      name: {
         contains: input.searchKey ?? '',
       },
     },
@@ -28,7 +28,7 @@ export async function getAllClasses({
       students: true,
     },
     orderBy: {
-      className: 'asc',
+      name: 'asc',
     },
   });
 }
@@ -44,16 +44,14 @@ export const getStudentClassesPageableProcedure = publicProcedure
     const allRecords = await getAllClasses({ input, prisma: ctx.prisma });
     const pageableRecords = await ctx.prisma.studentClass.findMany({
       where: {
-        className: {
+        name: {
           contains: input.searchKey ?? '',
         },
       },
       include: {
         students: true,
       },
-      orderBy: {
-        className: 'asc',
-      },
+      orderBy: [{ name: 'asc' }, { grade: 'asc' }],
       skip: (input.page - 1) * PAGE_SIZE,
       take: PAGE_SIZE,
     });

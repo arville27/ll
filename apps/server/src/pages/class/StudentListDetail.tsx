@@ -38,7 +38,7 @@ export default function StudentListDetail({
         icon={<IconSearch size={14} />}
         value={searchKey}
         onChange={(e) => setSearchKey(e.target.value)}
-        placeholder='Search student by uid or name'
+        placeholder='Search by student id or name'
         radius='md'
         size='sm'
       />

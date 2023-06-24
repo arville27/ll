@@ -3,6 +3,7 @@ import xlsx from 'node-xlsx';
 import path from 'path';
 import { exit } from 'process';
 import { trpc } from '../../utils/trpc';
+import { error } from 'console';
 
 const COLUMN_LEGEND = {
   ROW_NUMBER: 0,
@@ -24,6 +25,18 @@ function readSheet(sheet: any[][]) {
   }));
 }
 
+function extractClassAttribute(studentClass: string) {
+  const lastSpaceIndex = studentClass.lastIndexOf(' ');
+  const name = studentClass.substring(0, lastSpaceIndex);
+  const grade = Number(studentClass.substring(lastSpaceIndex + 1));
+  if (lastSpaceIndex == -1 || isNaN(grade))
+    throw `Invalid student class format: ${studentClass}`;
+  return {
+    name,
+    grade,
+  };
+}
+
 export default async (filepath: string) => {
   const sheets = xlsx.parse(path.resolve(filepath));
 
@@ -35,11 +48,16 @@ export default async (filepath: string) => {
   try {
     await Promise.all(
       necessaryClasses
+        .map((studentClass) => extractClassAttribute(studentClass.trim()))
         .filter(
           (studentClass) =>
-            studentClasses.find((i) => i.className === studentClass) === undefined
+            studentClasses.find(
+              (i) => i.name === studentClass.name && i.grade === studentClass.grade
+            ) === undefined
         )
-        .map((studentClass) => trpc.addStudentClass.mutate({ className: studentClass }))
+        .map((studentClass) => {
+          trpc.addStudentClass.mutate(studentClass);
+        })
     );
   } catch (e) {
     console.log('Error while inserting student classes');
@@ -54,15 +72,18 @@ export default async (filepath: string) => {
   try {
     await Promise.all(
       sheets
-        .flatMap((sheet) =>
-          readSheet(sheet.data).map((row) => ({
+        .flatMap((sheet) => {
+          const classIdentifiers = extractClassAttribute(sheet.name.trim());
+          return readSheet(sheet.data).map((row) => ({
             birthDate: row.birthDate.getTime(),
             name: row.name,
             uid: row.studentUid,
-            studentClassId: studentClasses.find((i) => i.className === sheet.name.trim())
-              ?.id!,
-          }))
-        )
+            studentClassId: studentClasses.find(
+              (i) =>
+                i.name === classIdentifiers.name && i.grade === classIdentifiers.grade
+            )?.id!,
+          }));
+        })
         .map((student) => trpc.addStudent.mutate(student))
     );
   } catch (e) {
