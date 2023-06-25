@@ -2,18 +2,10 @@ import { protectedProcedure } from '../../trpc';
 
 export const upgradeStudentClassesProcedure = protectedProcedure.mutation(
   async ({ ctx }) => {
-    const deleted = await ctx.prisma.studentClass.deleteMany({
-      where: {
-        grade: {
-          gte: 9,
-        },
-      },
-    });
-
     const tobeUpdated = await ctx.prisma.studentClass.findMany({
       where: {
         grade: {
-          lt: 9,
+          gt: 0,
         },
       },
       orderBy: {
@@ -35,10 +27,7 @@ export const upgradeStudentClassesProcedure = protectedProcedure.mutation(
     }
 
     return {
-      updated: {
-        count: tobeUpdated.length,
-      },
-      deleted,
+      count: tobeUpdated.length,
     };
   }
 );

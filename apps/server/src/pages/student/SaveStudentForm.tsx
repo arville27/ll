@@ -68,7 +68,7 @@ export default function SaveStudentForm({
   const classOptions = classes
     ? classes.map((studentClass) => ({
         value: studentClass.id + '',
-        label: `${studentClass.name} ${studentClass.grade}`,
+        label: `${studentClass.name} ${studentClass.grade ?? ''}`,
       }))
     : [];
 
@@ -200,24 +200,24 @@ export default function SaveStudentForm({
           getCreateLabel={(query) => `+ Create ${query}`}
           onCreate={(query) => {
             const classIdentifiers = extractClassAttribute(query.trim());
-            if (isNaN(classIdentifiers.grade)) {
-              notifications.show({
-                title: <span className='text-red-6'>Invalid class name format</span>,
-                message: 'Class name format: { text } { number(max: 99) }',
-                color: 'red',
-                bg:
-                  theme.colorScheme === 'dark'
-                    ? theme.colors.dark[9]
-                    : theme.colors.red[0],
-              });
-              return;
-            }
+            // if (isNaN(classIdentifiers.grade)) {
+            //   notifications.show({
+            //     title: <span className='text-red-6'>Invalid class name format</span>,
+            //     message: 'Class name format: { text } { number }',
+            //     color: 'red',
+            //     bg:
+            //       theme.colorScheme === 'dark'
+            //         ? theme.colors.dark[9]
+            //         : theme.colors.red[0],
+            //   });
+            //   return;
+            // }
             addStudentClassMutation.mutate(classIdentifiers, {
               onSuccess: (res) => {
                 setInput({ ...input, studentClassId: String(res.id) });
                 notifications.show({
                   title: <span className='text-green-6'>Success</span>,
-                  message: `Added new class "${res.name} ${res.grade}" `,
+                  message: `Added new class "${res.name} ${res.grade ?? ''}" `,
                   color: 'green',
                   bg:
                     theme.colorScheme === 'dark'

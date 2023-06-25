@@ -71,16 +71,17 @@ function App() {
               <TableStudents
                 data={todayAttendanceLog.filter((log) => {
                   const classIdentifiers = extractClassAttribute(filterKeywordDebounced);
-                  return log.student.name
-                    .toLowerCase()
-                    .includes(filterKeywordDebounced) || isNaN(classIdentifiers.grade)
+                  const isValidClass = isNaN(classIdentifiers.grade)
                     ? log.student.studentClass.name
                         .toLowerCase()
                         .includes(filterKeywordDebounced)
-                    : log.student.studentClass.name
-                        .toLowerCase()
-                        .includes(classIdentifiers.name) &&
-                        log.student.studentClass.grade === classIdentifiers.grade;
+                    : log.student.studentClass.name.toLowerCase() ==
+                        classIdentifiers.name &&
+                      log.student.studentClass.grade === classIdentifiers.grade;
+                  return (
+                    log.student.name.toLowerCase().includes(filterKeywordDebounced) ||
+                    isValidClass
+                  );
                 })}
                 onDelete={refetch}
               />

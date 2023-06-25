@@ -55,12 +55,19 @@ export default function StudentClassPage() {
     if (q) setSearchKey(String(q));
   }, [router.query]);
 
+  useEffect(() => {
+    setPage(1);
+  }, [debouncedSearchKey]);
+
   const { data: studentClasses, refetch } = trpc.getStudentClassesPageable.useQuery({
     searchKey: debouncedSearchKey,
     page: page,
   });
   const deleteStudentClassMutation = trpc.deleteStudentClass.useMutation({
-    onSettled: () => refetch(),
+    onSettled: () => {
+      setPage(1);
+      refetch();
+    },
   });
   const upgradeStudentClassesMutation = trpc.upgradeStudentClasses.useMutation({
     onSettled: () => refetch(),
@@ -86,7 +93,15 @@ export default function StudentClassPage() {
                 color={isUpgrade ? 'green' : 'red'}
                 onClick={() => {
                   if (isUpgrade) upgradeClassDisclosure.open();
-                  else setIsUpgrade(() => true);
+                  else {
+                    router.push({
+                      query: {
+                        q: '',
+                      },
+                    });
+                    setSearchKey('');
+                    setIsUpgrade(() => true);
+                  }
                 }}
                 disabled={editClassDisplay}>
                 {isUpgrade ? 'Confirm' : 'Upgrade Class'}
@@ -188,7 +203,9 @@ export default function StudentClassPage() {
               <Group spacing='xs'>
                 <IconSchool size={20} />
                 <Text fz='md' fw={500}>
-                  {selectedClass ? `${selectedClass.name} ${selectedClass.grade} ` : ''}
+                  {selectedClass
+                    ? `${selectedClass.name} ${selectedClass.grade ?? ''} `
+                    : ''}
                   Student List
                 </Text>
               </Group>
@@ -215,7 +232,9 @@ export default function StudentClassPage() {
         <CustomConfirmation
           displayValue={deleteClassDisplay}
           title='Warning Delete Student Class'
-          message={`All class data and its students records will be REMOVED PERMANENTLY. Proceed to remove "${selectedClass.name} ${selectedClass.grade}"?`}
+          message={`All class data and its students records will be REMOVED PERMANENTLY. Proceed to remove "${
+            selectedClass.name
+          } ${selectedClass.grade ?? ''}"?`}
           closeAction={deleteClassDisclosure.close}
           acceptAction={() =>
             deleteStudentClassMutation.mutate(
@@ -226,7 +245,7 @@ export default function StudentClassPage() {
                 onSuccess: (res) => {
                   notifications.show({
                     title: <span className='text-green-6'>Success</span>,
-                    message: `Removed "${res.name}"`,
+                    message: `Removed "${res.name} ${res.grade ?? ''}"`,
                     color: 'green',
                     bg:
                       theme.colorScheme === 'dark'
@@ -260,7 +279,7 @@ export default function StudentClassPage() {
               <Group spacing='xs'>
                 <IconSchool size={20} />
                 <Text fz='md' fw={500}>
-                  {`${selectedClass.name} ${selectedClass.grade} `}
+                  {selectedClass.name} {selectedClass.grade}
                   Student List
                 </Text>
               </Group>
@@ -282,7 +301,7 @@ export default function StudentClassPage() {
         <CustomConfirmation
           displayValue={upgradeClassDisplay}
           title='Warning Upgrade All Classes'
-          message={`Upgrade class apply increment grade and some deletion to all class without exception and can't be revert. Proceed to upgrade student class as shown in the page?`}
+          message={`Upgrade class will increase grade by one to every class without exception and can't be revert. Proceed to upgrade student class as shown in the page?`}
           closeAction={() => {
             upgradeClassDisclosure.close();
             setIsUpgrade(false);
@@ -292,7 +311,7 @@ export default function StudentClassPage() {
               onSuccess: (res) => {
                 notifications.show({
                   title: <span className='text-green-6'>Success</span>,
-                  message: `${res.updated.count} classes is upgraded, ${res.deleted.count} classes is deleted`,
+                  message: `${res.count} classes is upgraded`,
                   color: 'green',
                   bg:
                     theme.colorScheme === 'dark'

@@ -38,18 +38,19 @@ export default async (filepath: string) => {
       necessaryClasses
         .map((studentClass) => {
           const classIdentifiers = extractClassAttribute(studentClass.trim());
-          if (isNaN(classIdentifiers.grade)) throw 'Invalid class name format';
+          if (isNaN(classIdentifiers.grade))
+            console.log(`Invalid class name format: ${classIdentifiers.name}`);
           return classIdentifiers;
         })
         .filter(
           (studentClass) =>
-            studentClasses.find(
-              (i) => i.name === studentClass.name && i.grade === studentClass.grade
+            studentClasses.find((i) =>
+              i.name === studentClass.name && isNaN(studentClass.grade)
+                ? !i.grade
+                : i.grade === studentClass.grade
             ) === undefined
         )
-        .map((studentClass) => {
-          trpc.addStudentClass.mutate(studentClass);
-        })
+        .map(async (studentClass) => await trpc.addStudentClass.mutate(studentClass))
     );
   } catch (e) {
     console.log('Error while inserting student classes');
@@ -70,9 +71,10 @@ export default async (filepath: string) => {
             birthDate: row.birthDate.getTime(),
             name: row.name,
             uid: row.studentUid,
-            studentClassId: studentClasses.find(
-              (i) =>
-                i.name === classIdentifiers.name && i.grade === classIdentifiers.grade
+            studentClassId: studentClasses.find((i) =>
+              i.name === classIdentifiers.name && isNaN(classIdentifiers.grade)
+                ? !i.grade
+                : i.grade === classIdentifiers.grade
             )?.id!,
           }));
         })

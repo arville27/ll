@@ -5,10 +5,7 @@ import { protectedProcedure } from '../../trpc';
 export const editStudentClassInputSchema = z.object({
   id: z.number(),
   name: z.string(),
-  grade: z
-    .number()
-    .min(1, 'Class grade must be more than 0')
-    .max(9, 'Class grade must be less than 10'),
+  grade: z.number(),
 });
 
 export type editStudentClassInput = z.infer<typeof editStudentClassInputSchema>;
@@ -16,12 +13,15 @@ export type editStudentClassInput = z.infer<typeof editStudentClassInputSchema>;
 export const editStudentClassProcedure = protectedProcedure
   .input(editStudentClassInputSchema)
   .mutation(async ({ input, ctx }) => {
-    const existedClass = await ctx.prisma.studentClass.findUnique({
+    if (input.grade <= 0)
+      throw new TRPCError({
+        code: 'BAD_REQUEST',
+        message: 'Class grade must greater than 0',
+      });
+    const existedClass = await ctx.prisma.studentClass.findFirst({
       where: {
-        name_grade: {
-          name: input.name,
-          grade: input.grade,
-        },
+        name: input.name,
+        grade: input.grade,
       },
     });
 

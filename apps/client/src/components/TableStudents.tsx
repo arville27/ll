@@ -84,10 +84,9 @@ export function TableStudents({ data, onDelete }: TableStudentsProps) {
             <div className='truncate'>{row.student.name}</div>
           </Tooltip>
         </td>
-        <td
-          className={
-            classes.contentLimit
-          }>{`${row.student.studentClass.name} ${row.student.studentClass.grade}`}</td>
+        <td className={classes.contentLimit}>
+          {row.student.studentClass.name} {row.student.studentClass.grade}
+        </td>
         <td className={classes.contentLimit}>{dfs.format(row.date, 'HH:mm')}</td>
         <td className='text-center'>
           <Button

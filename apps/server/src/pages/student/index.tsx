@@ -123,7 +123,7 @@ export default function StudentPage() {
                 { value: StudentOrderByEnum.UID, label: 'ID' },
                 { value: StudentOrderByEnum.NAME, label: 'Name' },
                 { value: StudentOrderByEnum.BIRTH_DATE, label: 'Birth date' },
-                { value: StudentOrderByEnum.CLASSNAME, label: 'Class name' },
+                { value: StudentOrderByEnum.CLASSNAME, label: 'Class' },
               ]}
               size='xs'
               onChange={(e) => {

@@ -19,7 +19,10 @@ export const addStudentProcedure = protectedProcedure
     });
 
     if (existedStudent)
-      throw new TRPCError({ code: 'BAD_REQUEST', message: 'Student UID already used' });
+      throw new TRPCError({
+        code: 'BAD_REQUEST',
+        message: `Student UID already used: #${existedStudent.uid}`,
+      });
 
     return await ctx.prisma.student.create({
       data: {

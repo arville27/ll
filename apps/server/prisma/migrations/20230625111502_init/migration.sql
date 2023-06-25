@@ -22,7 +22,8 @@ CREATE TABLE "AttendanceLog" (
 -- CreateTable
 CREATE TABLE "StudentClass" (
     "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    "className" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
+    "grade" INTEGER,
     "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" DATETIME NOT NULL
 );

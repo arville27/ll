@@ -31,7 +31,7 @@ export default function AddStudentClassForm({
             onSuccess: (res) => {
               notifications.show({
                 title: <span className='text-green-6'>Success</span>,
-                message: `Added ${res.name} ${res.grade}`,
+                message: `Added ${res.name} ${res.grade ?? ''}`,
                 color: 'green',
                 bg:
                   theme.colorScheme === 'dark'
@@ -71,11 +71,11 @@ export default function AddStudentClassForm({
           }}
           onChange={(e) => {
             if (e) setGrade(e);
+            else setGrade(NaN);
           }}
           placeholder='Grade'
           w={100}
           min={1}
-          max={99}
         />
         <Button type='submit' variant='gradient' size='sm'>
           Submit

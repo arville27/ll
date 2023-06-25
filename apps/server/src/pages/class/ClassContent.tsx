@@ -52,6 +52,7 @@ export default function ClassContent({
     onSettled: onEdit,
   });
   function submitEdit() {
+    if (!currentClass.grade) return;
     editStudentClassMutation.mutate(
       {
         id: currentClass.id,
@@ -62,7 +63,7 @@ export default function ClassContent({
         onSuccess: (res) => {
           notifications.show({
             title: <span className='text-green-6'>Success</span>,
-            message: `Saved ${res.name} ${res.grade}`,
+            message: `Saved ${res.name} ${res.grade ?? ''}`,
             color: 'green',
             bg:
               theme.colorScheme === 'dark' ? theme.colors.dark[9] : theme.colors.green[0],
@@ -129,7 +130,7 @@ export default function ClassContent({
               <NumberInput
                 autoFocus
                 className='text-xl'
-                defaultValue={currentClass.grade}
+                defaultValue={currentClass.grade ?? undefined}
                 label='Grade'
                 onChange={(e) => {
                   if (e)
@@ -173,7 +174,7 @@ export default function ClassContent({
           <>
             <Stack spacing='none'>
               <Text fz='sm' fw={600}>
-                {`${currentClass.name} ${currentClass.grade}`}
+                {currentClass.name} {currentClass.grade}
               </Text>
               <Text fz='xs' c='dimmed'>
                 {currentClass.students.length} student(s)
@@ -182,9 +183,9 @@ export default function ClassContent({
             <Group spacing='none' className='self-end items-end'>
               {isUpgrading ? (
                 <>
-                  {currentClass.grade >= 9 ? (
-                    <Text fz='sm' fw={600} color='red'>
-                      will be deleted
+                  {!currentClass.grade ? (
+                    <Text fz='xs' fw={600} c='dimmed'>
+                      not changed
                     </Text>
                   ) : (
                     <>

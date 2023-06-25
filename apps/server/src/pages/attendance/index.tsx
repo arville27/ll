@@ -238,7 +238,7 @@ export default function AttendancePage() {
                         </Text>
                         <Group className='hidden sm:flex' spacing='sm' noWrap>
                           <Badge size='sm' className='min-w-20'>
-                            {i.studentClass.name}
+                            {i.studentClass.name} {i.studentClass.grade}
                           </Badge>
                           <Badge size='sm' color='yellow' className='min-w-20'>
                             Total {i.attendanceLogs.length}
@@ -301,7 +301,9 @@ export default function AttendancePage() {
               </Stack>
             </Group>
             <Group spacing={5} className='self-end'>
-              <Badge>{selectedStudent.studentClass.name}</Badge>
+              <Badge>
+                {selectedStudent.studentClass.name} {selectedStudent.studentClass.grade}
+              </Badge>
               <Badge color='yellow'>{selectedStudent.attendanceLogs.length} log(s)</Badge>
             </Group>
             <Stack spacing='xs' className='mt-3'>

@@ -34,9 +34,8 @@ model AttendanceLog {
 model StudentClass {
   id        Int       @id @default(autoincrement())
   name      String
-  grade     Int
+  grade     Int?
   students  Student[]
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
-  @@unique([name, grade], name: "classIdentity")
 }

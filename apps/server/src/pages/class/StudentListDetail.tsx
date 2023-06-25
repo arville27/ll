@@ -44,7 +44,11 @@ export default function StudentListDetail({
       />
       {studentClass ? (
         <div className='overflow-y-auto max-h-sm lg:max-h-md'>
-          {studentClass.students.length === 0 ? (
+          {studentClass.students.filter(
+            (student) =>
+              student.uid.toLowerCase().includes(debouncedSearchKey) ||
+              student.name.toLowerCase().includes(debouncedSearchKey)
+          ).length === 0 ? (
             <Box className='text-center m-10'>
               <IconDeviceDesktopSearch color='gray' size={40} />
               <Text>No students found</Text>
