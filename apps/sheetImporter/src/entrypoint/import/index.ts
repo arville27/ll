@@ -3,7 +3,7 @@ import xlsx from 'node-xlsx';
 import path from 'path';
 import { exit } from 'process';
 import { trpc } from '../../utils/trpc';
-import { error } from 'console';
+import { extractClassAttribute } from '@ll/common/src/utils/extractClassAttribute';
 
 const COLUMN_LEGEND = {
   ROW_NUMBER: 0,
@@ -25,18 +25,6 @@ function readSheet(sheet: any[][]) {
   }));
 }
 
-function extractClassAttribute(studentClass: string) {
-  const lastSpaceIndex = studentClass.lastIndexOf(' ');
-  const name = studentClass.substring(0, lastSpaceIndex);
-  const grade = Number(studentClass.substring(lastSpaceIndex + 1));
-  if (lastSpaceIndex == -1 || isNaN(grade))
-    throw `Invalid student class format: ${studentClass}`;
-  return {
-    name,
-    grade,
-  };
-}
-
 export default async (filepath: string) => {
   const sheets = xlsx.parse(path.resolve(filepath));
 
@@ -48,7 +36,11 @@ export default async (filepath: string) => {
   try {
     await Promise.all(
       necessaryClasses
-        .map((studentClass) => extractClassAttribute(studentClass.trim()))
+        .map((studentClass) => {
+          const classIdentifiers = extractClassAttribute(studentClass.trim());
+          if (isNaN(classIdentifiers.grade)) throw 'Invalid class name format';
+          return classIdentifiers;
+        })
         .filter(
           (studentClass) =>
             studentClasses.find(

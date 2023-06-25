@@ -2,6 +2,7 @@ import { ScanInput } from '@/components/ScanInput';
 import { TableStudents } from '@/components/TableStudents';
 import { trpc } from '@/hooks/trpc';
 import { Layout } from '@ll/common';
+import { extractClassAttribute } from '@ll/common/src/utils/extractClassAttribute';
 import { Card, Group, Input, Stack, Text, useMantineTheme } from '@mantine/core';
 import { useDebouncedValue } from '@mantine/hooks';
 import { IconList, IconLogout, IconScan, IconSearch } from '@tabler/icons-react';
@@ -17,7 +18,7 @@ function App() {
   });
   const [keyword, setKeyword] = useState('');
   const [filterKeyword, setFilterKeyword] = useState('');
-  const [filterKeywordDebounced] = useDebouncedValue(filterKeyword, 300);
+  const [filterKeywordDebounced] = useDebouncedValue(filterKeyword.toLowerCase(), 300);
   const theme = useMantineTheme();
   const { data: todayAttendanceLog, refetch } = trpc.getAttendanceLog.useQuery();
 
@@ -54,7 +55,7 @@ function App() {
             onChange={(e) => setFilterKeyword(e.target.value)}
             radius='xl'
             icon={<IconSearch size={16} />}
-            placeholder="Filter by student's name or class name"
+            placeholder="Filter by student's name or class"
           />
           {Boolean(todayAttendanceLog) && todayAttendanceLog.length > 0 ? (
             <Card
@@ -68,13 +69,19 @@ function App() {
                     : theme.colors.gray[0],
               }}>
               <TableStudents
-                data={todayAttendanceLog.filter(
-                  (log) =>
-                    log.student.name.toLowerCase().includes(filterKeywordDebounced) ||
-                    log.student.studentClass.name
-                      .toLowerCase()
-                      .includes(filterKeywordDebounced)
-                )}
+                data={todayAttendanceLog.filter((log) => {
+                  const classIdentifiers = extractClassAttribute(filterKeywordDebounced);
+                  return log.student.name
+                    .toLowerCase()
+                    .includes(filterKeywordDebounced) || isNaN(classIdentifiers.grade)
+                    ? log.student.studentClass.name
+                        .toLowerCase()
+                        .includes(filterKeywordDebounced)
+                    : log.student.studentClass.name
+                        .toLowerCase()
+                        .includes(classIdentifiers.name) &&
+                        log.student.studentClass.grade === classIdentifiers.grade;
+                })}
               />
             </Card>
           ) : (

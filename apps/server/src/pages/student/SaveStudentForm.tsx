@@ -1,5 +1,6 @@
 import { trpc } from '@/hooks/trpc';
 import { addStudentInput } from '@/server/routers/student/addStudent';
+import { extractClassAttribute } from '@ll/common/src/utils/extractClassAttribute';
 import { Button, Select, Stack, Text, TextInput, useMantineTheme } from '@mantine/core';
 import { DateInput } from '@mantine/dates';
 import { notifications } from '@mantine/notifications';
@@ -198,10 +199,8 @@ export default function SaveStudentForm({
           creatable
           getCreateLabel={(query) => `+ Create ${query}`}
           onCreate={(query) => {
-            const lastSpaceIndex = query.lastIndexOf(' ');
-            const name = query.substring(0, lastSpaceIndex);
-            const grade = Number(query.substring(lastSpaceIndex + 1));
-            if (lastSpaceIndex == -1 || isNaN(grade)) {
+            const classIdentifiers = extractClassAttribute(query.trim());
+            if (isNaN(classIdentifiers.grade)) {
               notifications.show({
                 title: <span className='text-red-6'>Invalid class name format</span>,
                 message: 'Class name format: { text } { number(max: 99) }',
@@ -213,8 +212,7 @@ export default function SaveStudentForm({
               });
               return;
             }
-            const item = { name, grade };
-            addStudentClassMutation.mutate(item, {
+            addStudentClassMutation.mutate(classIdentifiers, {
               onSuccess: (res) => {
                 setInput({ ...input, studentClassId: String(res.id) });
                 notifications.show({

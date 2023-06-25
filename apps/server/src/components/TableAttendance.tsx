@@ -69,7 +69,9 @@ export function TableAttendance({
             </div>
           </Tooltip>
         </td>
-        <td className='w-fit'>{row.student.studentClass.name}</td>
+        <td className='w-fit'>
+          {row.student.studentClass.name} {row.student.studentClass.grade}
+        </td>
         {showDate && <td className='w-fit'>{dfs.format(row.date, 'HH:mm')}</td>}
       </tr>
     );

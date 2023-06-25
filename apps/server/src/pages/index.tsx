@@ -17,6 +17,7 @@ import { withIronSessionSsr } from 'iron-session/next';
 import { InferGetServerSidePropsType } from 'next';
 import { useState } from 'react';
 import { User, sessionOptions } from '../server/sessionOptions';
+import { extractClassAttribute } from '@ll/common/src/utils/extractClassAttribute';
 
 export default function AttendancePage({}: InferGetServerSidePropsType<
   typeof getServerSideProps
@@ -49,7 +50,7 @@ export default function AttendancePage({}: InferGetServerSidePropsType<
           onChange={(e) => setFilterKeyword(e.target.value)}
           radius='xl'
           icon={<IconSearch size={16} />}
-          placeholder="Filter by student's name or class name"
+          placeholder="Filter by student's name or class"
         />
         <Card
           withBorder
@@ -62,13 +63,18 @@ export default function AttendancePage({}: InferGetServerSidePropsType<
           {data && data.length > 0 ? (
             <TableAttendance
               tableHeight='fit'
-              data={data.filter(
-                (log) =>
-                  log.student.name.toLowerCase().includes(filterKeywordDebounced) ||
-                  log.student.studentClass.name
-                    .toLowerCase()
-                    .includes(filterKeywordDebounced)
-              )}
+              data={data.filter((log) => {
+                const classIdentifiers = extractClassAttribute(filterKeywordDebounced);
+                return log.student.name.toLowerCase().includes(filterKeywordDebounced) ||
+                  isNaN(classIdentifiers.grade)
+                  ? log.student.studentClass.name
+                      .toLowerCase()
+                      .includes(filterKeywordDebounced)
+                  : log.student.studentClass.name
+                      .toLowerCase()
+                      .includes(classIdentifiers.name) &&
+                      log.student.studentClass.grade === classIdentifiers.grade;
+              })}
             />
           ) : (
             <Text className='flex justify-center'>

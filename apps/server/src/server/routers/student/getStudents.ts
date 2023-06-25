@@ -1,8 +1,9 @@
+import { extractClassAttribute } from '@ll/common/src/utils/extractClassAttribute';
 import { z } from 'zod';
 import { StudentOrderByEnum } from '../../../enums/orderByEnum';
 import { OrderDirEnum } from '../../../enums/orderDirEnum';
 import { PrismaClientType } from '../../db';
-import { protectedProcedure, publicProcedure } from '../../trpc';
+import { protectedProcedure } from '../../trpc';
 
 const PAGE_SIZE = 10;
 
@@ -63,9 +64,16 @@ export const getStudentsPageableProcedure = protectedProcedure
   .input(getStudentsSchema)
   .query(async ({ input, ctx }) => {
     if (!input.page) input.page = 1;
-    if (!input.searchKey) input.searchKey = '';
     if (!input.orderBy) input.orderBy = StudentOrderByEnum.NAME;
     if (!input.orderDir) input.orderDir = OrderDirEnum.ASC;
+    let className = '';
+    let classGrade = NaN;
+    if (!input.searchKey) input.searchKey = '';
+    else {
+      const classIdentifiers = extractClassAttribute(input.searchKey);
+      className = classIdentifiers.name;
+      classGrade = classIdentifiers.grade;
+    }
 
     let orderByClause: any;
     switch (input.orderBy) {
@@ -118,35 +126,70 @@ export const getStudentsPageableProcedure = protectedProcedure
     }
 
     const allRecords = await getAllStudents({ input, prisma: ctx.prisma });
-    const pageableRecords = await ctx.prisma.student.findMany({
-      where: {
-        OR: [
-          {
-            name: {
-              contains: input.searchKey,
-            },
-          },
-          {
-            uid: {
-              contains: input.searchKey,
-            },
-          },
-          {
-            studentClass: {
-              name: {
-                contains: input.searchKey,
+    const pageableRecords = isNaN(classGrade)
+      ? await ctx.prisma.student.findMany({
+          where: {
+            OR: [
+              {
+                name: {
+                  contains: input.searchKey,
+                },
               },
-            },
+              {
+                uid: {
+                  contains: input.searchKey,
+                },
+              },
+              {
+                studentClass: {
+                  name: {
+                    contains: input.searchKey,
+                  },
+                },
+              },
+            ],
           },
-        ],
-      },
-      include: {
-        studentClass: true,
-      },
-      orderBy: orderByClause,
-      skip: (input.page - 1) * PAGE_SIZE,
-      take: PAGE_SIZE,
-    });
+          include: {
+            studentClass: true,
+          },
+          orderBy: orderByClause,
+          skip: (input.page - 1) * PAGE_SIZE,
+          take: PAGE_SIZE,
+        })
+      : await ctx.prisma.student.findMany({
+          where: {
+            OR: [
+              {
+                name: {
+                  contains: input.searchKey,
+                },
+              },
+              {
+                uid: {
+                  contains: input.searchKey,
+                },
+              },
+              {
+                studentClass: {
+                  AND: [
+                    {
+                      name: className,
+                    },
+                    {
+                      grade: classGrade,
+                    },
+                  ],
+                },
+              },
+            ],
+          },
+          include: {
+            studentClass: true,
+          },
+          orderBy: orderByClause,
+          skip: (input.page - 1) * PAGE_SIZE,
+          take: PAGE_SIZE,
+        });
     return {
       pageCount: input.page,
       pageTotal: Math.ceil(allRecords.length / PAGE_SIZE),

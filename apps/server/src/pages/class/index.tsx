@@ -137,7 +137,7 @@ export default function StudentClassPage() {
               });
               setSearchKey(e.target.value);
             }}
-            placeholder='Search class name'
+            placeholder='Search class'
             radius='md'
             size='sm'
           />
