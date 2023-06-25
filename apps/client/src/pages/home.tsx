@@ -82,6 +82,7 @@ function App() {
                         .includes(classIdentifiers.name) &&
                         log.student.studentClass.grade === classIdentifiers.grade;
                 })}
+                onDelete={refetch}
               />
             </Card>
           ) : (

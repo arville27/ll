@@ -3,6 +3,7 @@ import {
   addAttendanceLogProcedure,
   getAttendanceLogPerStudentProcedure,
   getAttendanceLogProcedure,
+  deleteAttendanceLogProcedure,
 } from './attendance';
 import { loginProcedure, logoutProcedure } from './auth';
 import {
@@ -26,6 +27,7 @@ export const appRouter = router({
   addAttendanceLog: addAttendanceLogProcedure,
   getAttendanceLogPerStudent: getAttendanceLogPerStudentProcedure,
   getAttendanceLog: getAttendanceLogProcedure,
+  deleteAttendanceLog: deleteAttendanceLogProcedure,
   // StudentProcedure
   addStudent: addStudentProcedure,
   deleteStudent: deleteStudentProcedure,

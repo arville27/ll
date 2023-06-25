@@ -1,6 +1,7 @@
 import MainLayout from '@/components/MainLayout';
 import { TableAttendance } from '@/components/TableAttendance';
 import { trpc } from '@/hooks/trpc';
+import { extractClassAttribute } from '@ll/common/src/utils/extractClassAttribute';
 import {
   Card,
   Group,
@@ -16,13 +17,12 @@ import * as dfs from 'date-fns';
 import { withIronSessionSsr } from 'iron-session/next';
 import { InferGetServerSidePropsType } from 'next';
 import { useState } from 'react';
-import { User, sessionOptions } from '../server/sessionOptions';
-import { extractClassAttribute } from '@ll/common/src/utils/extractClassAttribute';
+import { sessionOptions } from '../server/sessionOptions';
 
 export default function AttendancePage({}: InferGetServerSidePropsType<
   typeof getServerSideProps
 >) {
-  const { data } = trpc.getAttendanceLog.useQuery();
+  const { data, refetch } = trpc.getAttendanceLog.useQuery();
   const theme = useMantineTheme();
   const [filterKeyword, setFilterKeyword] = useState('');
   const [filterKeywordDebounced] = useDebouncedValue(filterKeyword.toLowerCase(), 300);
@@ -63,6 +63,7 @@ export default function AttendancePage({}: InferGetServerSidePropsType<
           {data && data.length > 0 ? (
             <TableAttendance
               tableHeight='fit'
+              onDelete={refetch}
               data={data.filter((log) => {
                 const classIdentifiers = extractClassAttribute(filterKeywordDebounced);
                 return log.student.name.toLowerCase().includes(filterKeywordDebounced) ||

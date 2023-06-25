@@ -1,5 +1,5 @@
-import CustomConfirmation from '@/components/CustomConfirmation';
-import CustomModal from '@/components/CustomModal';
+import CustomConfirmation from '@ll/common/src/CustomConfirmation';
+import CustomModal from '@ll/common/src/CustomModal';
 import MainLayout from '@/components/MainLayout';
 import { StudentOrderByEnum } from '@/enums/orderByEnum';
 import { OrderDirEnum } from '@/enums/orderDirEnum';

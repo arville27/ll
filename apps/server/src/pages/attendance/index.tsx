@@ -1,4 +1,4 @@
-import CustomModal from '@/components/CustomModal';
+import CustomModal from '@ll/common/src/CustomModal';
 import MainLayout from '@/components/MainLayout';
 import { trpc } from '@/hooks/trpc';
 import {
