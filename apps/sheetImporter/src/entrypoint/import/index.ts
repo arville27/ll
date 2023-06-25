@@ -39,7 +39,7 @@ export default async (filepath: string) => {
         .map((studentClass) => {
           const classIdentifiers = extractClassAttribute(studentClass.trim());
           if (isNaN(classIdentifiers.grade))
-            console.log(`Invalid class name format: ${classIdentifiers.name}`);
+            console.log(`Added class without grade: ${classIdentifiers.name}`);
           return classIdentifiers;
         })
         .filter(
