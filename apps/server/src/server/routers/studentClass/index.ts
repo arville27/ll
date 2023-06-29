@@ -6,3 +6,4 @@ export {
   getStudentClassesProcedure,
 } from './getStudentClasses';
 export { upgradeStudentClassesProcedure } from './upgradeStudentClasses';
+export { getStudentClassCountProcedure } from './getStudentClassCount';

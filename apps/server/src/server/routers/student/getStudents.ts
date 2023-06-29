@@ -28,19 +28,12 @@ async function getAllStudents({
       OR: [
         {
           name: {
-            contains: input.searchKey,
+            startsWith: input.searchKey,
           },
         },
         {
           uid: {
-            contains: input.searchKey,
-          },
-        },
-        {
-          studentClass: {
-            name: {
-              contains: input.searchKey,
-            },
+            startsWith: input.searchKey,
           },
         },
       ],

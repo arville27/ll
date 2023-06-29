@@ -10,6 +10,7 @@ import {
   addStudentProcedure,
   deleteStudentProcedure,
   editStudentProcedure,
+  getStudentsCountProcedure,
   getStudentsPageableProcedure,
   getStudentsProcedure,
 } from './student';
@@ -17,6 +18,7 @@ import {
   addStudentClassProcedure,
   deleteStudentClassProcedure,
   editStudentClassProcedure,
+  getStudentClassCountProcedure,
   getStudentClassesPageableProcedure,
   getStudentClassesProcedure,
   upgradeStudentClassesProcedure,
@@ -34,6 +36,7 @@ export const appRouter = router({
   editStudent: editStudentProcedure,
   getStudentsPageable: getStudentsPageableProcedure,
   getStudents: getStudentsProcedure,
+  getStudentsCount: getStudentsCountProcedure,
   // StudentClassProcedute
   addStudentClass: addStudentClassProcedure,
   deleteStudentClass: deleteStudentClassProcedure,
@@ -41,6 +44,7 @@ export const appRouter = router({
   getStudentClassesPageable: getStudentClassesPageableProcedure,
   getStudentClasses: getStudentClassesProcedure,
   upgradeStudentClasses: upgradeStudentClassesProcedure,
+  getStudentClassCount: getStudentClassCountProcedure,
   // AuthProcedure
   login: loginProcedure,
   logout: logoutProcedure,

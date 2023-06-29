@@ -194,24 +194,12 @@ export default function SaveStudentForm({
           icon={<IconChalkboard size={18} />}
           label='Class'
           data={classOptions}
-          placeholder='Example: LL 1'
+          placeholder='Input class'
           searchable
           creatable
           getCreateLabel={(query) => `+ Create ${query}`}
           onCreate={(query) => {
             const classIdentifiers = extractClassAttribute(query.trim());
-            // if (isNaN(classIdentifiers.grade)) {
-            //   notifications.show({
-            //     title: <span className='text-red-6'>Invalid class name format</span>,
-            //     message: 'Class name format: { text } { number }',
-            //     color: 'red',
-            //     bg:
-            //       theme.colorScheme === 'dark'
-            //         ? theme.colors.dark[9]
-            //         : theme.colors.red[0],
-            //   });
-            //   return;
-            // }
             addStudentClassMutation.mutate(classIdentifiers, {
               onSuccess: (res) => {
                 setInput({ ...input, studentClassId: String(res.id) });

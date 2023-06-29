@@ -43,6 +43,8 @@ export default function StudentPage() {
   const [openedModal, disclosureModal] = useDisclosure(false);
   const [openedDeleteConfirm, disclosureDeleteConfirm] = useDisclosure(false);
 
+  const { data: studentsCount } = trpc.getStudentsCount.useQuery();
+
   const { data: students, refetch } = trpc.getStudentsPageable.useQuery(
     {
       searchKey: debouncedSearchKey,
@@ -73,9 +75,14 @@ export default function StudentPage() {
         <Group position='apart'>
           <Group>
             <IconSchool />
-            <Text fz='xl' fw={500} className='leading-none'>
-              Student List
-            </Text>
+            <div>
+              <Text fz='xl' fw={500} className='leading-none'>
+                Student List
+              </Text>
+              <Text fz='xs' c='dimmed'>
+                {studentsCount ?? 0} student(s)
+              </Text>
+            </div>
           </Group>
           <Button
             className='hidden sm:block'

@@ -27,6 +27,7 @@ const useStyles = createStyles((theme) => ({
     'top': 0,
     'backgroundColor':
       theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.colors.gray[0],
+    'zIndex': 1,
     'transition': 'box-shadow 150ms ease',
 
     '&::after': {

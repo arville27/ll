@@ -72,6 +72,7 @@ export default function StudentClassPage() {
   const upgradeStudentClassesMutation = trpc.upgradeStudentClasses.useMutation({
     onSettled: () => refetch(),
   });
+  const { data: classesCount } = trpc.getStudentClassCount.useQuery();
 
   return (
     <MainLayout className='relative h-full w-full pt-12'>
@@ -81,9 +82,14 @@ export default function StudentClassPage() {
           <Group position='apart'>
             <Group>
               <IconChalkboard />
-              <Text fz='xl' fw={500} className='leading-none'>
-                Class List
-              </Text>
+              <div>
+                <Text fz='xl' fw={500} className='leading-none'>
+                  Class List
+                </Text>
+                <Text fz='xs' c='dimmed'>
+                  {classesCount ?? 0} class(es)
+                </Text>
+              </div>
             </Group>
             <Group spacing='sm'>
               <Button
@@ -301,7 +307,7 @@ export default function StudentClassPage() {
         <CustomConfirmation
           displayValue={upgradeClassDisplay}
           title='Warning Upgrade All Classes'
-          message={`Upgrade class will increase grade by one to every class without exception and can't be revert. Proceed to upgrade student class as shown in the page?`}
+          message="This will upgrade each class and can't be reverted. Proceed to upgrade all classes as shown on the page?"
           closeAction={() => {
             upgradeClassDisclosure.close();
             setIsUpgrade(false);
