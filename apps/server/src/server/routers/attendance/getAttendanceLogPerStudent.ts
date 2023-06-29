@@ -56,6 +56,9 @@ export async function getAttendanceLogPerStudent({
             lt: endDateInit,
           },
         },
+        orderBy: {
+          date: 'desc',
+        },
       },
       studentClass: true,
     },

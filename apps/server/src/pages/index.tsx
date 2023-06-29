@@ -14,14 +14,9 @@ import {
 import { useDebouncedValue } from '@mantine/hooks';
 import { Icon24Hours, IconSearch } from '@tabler/icons-react';
 import * as dfs from 'date-fns';
-import { withIronSessionSsr } from 'iron-session/next';
-import { InferGetServerSidePropsType } from 'next';
 import { useState } from 'react';
-import { sessionOptions } from '../server/sessionOptions';
 
-export default function AttendancePage({}: InferGetServerSidePropsType<
-  typeof getServerSideProps
->) {
+export default function AttendancePage() {
   const { data, refetch } = trpc.getAttendanceLog.useQuery();
   const theme = useMantineTheme();
   const [filterKeyword, setFilterKeyword] = useState('');
@@ -63,7 +58,7 @@ export default function AttendancePage({}: InferGetServerSidePropsType<
           {data && data.length > 0 ? (
             <TableAttendance
               tableHeight='fit'
-              onDelete={refetch}
+              refetch={refetch}
               data={data.filter((log) => {
                 const classIdentifiers = extractClassAttribute(filterKeywordDebounced);
                 const isValidClass = isNaN(classIdentifiers.grade)
@@ -89,20 +84,3 @@ export default function AttendancePage({}: InferGetServerSidePropsType<
     </MainLayout>
   );
 }
-
-export const getServerSideProps = withIronSessionSsr(async ({ req, res }) => {
-  const user = req.session.user;
-
-  if (user === undefined) {
-    return {
-      redirect: {
-        destination: '/login',
-        permanent: false,
-      },
-    };
-  }
-
-  return {
-    props: { user },
-  };
-}, sessionOptions);

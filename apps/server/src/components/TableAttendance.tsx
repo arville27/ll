@@ -1,27 +1,35 @@
+import { trpc } from '@/hooks/trpc';
+import CustomConfirmation from '@ll/common/src/CustomConfirmation';
+import CustomModal from '@ll/common/src/CustomModal';
 import {
+  Autocomplete,
+  Badge,
+  Box,
   Button,
+  Group,
   ScrollArea,
+  SelectItemProps,
+  Stack,
   Table,
   Text,
   Tooltip,
   createStyles,
   useMantineTheme,
 } from '@mantine/core';
-import { useDisclosure } from '@mantine/hooks';
-import { AttendanceLog, Student, StudentClass } from '@prisma/client';
-import { IconTrash } from '@tabler/icons-react';
-import * as dfs from 'date-fns';
-import { useState } from 'react';
-import CustomConfirmation from '@ll/common/src/CustomConfirmation';
+import { TimeInput } from '@mantine/dates';
+import { useDebouncedValue, useDisclosure } from '@mantine/hooks';
 import { notifications } from '@mantine/notifications';
-import { trpc } from '@/hooks/trpc';
+import { AttendanceLog, Student, StudentClass } from '@prisma/client';
+import { IconClock, IconHash, IconId, IconPencil, IconTrash } from '@tabler/icons-react';
+import * as dfs from 'date-fns';
+import { forwardRef, useState } from 'react';
 
 interface TableAttendanceProps {
   data: (AttendanceLog & { student: Student & { studentClass: StudentClass } })[];
   showDate?: boolean;
   tableWidth?: number | string;
   tableHeight?: number | string;
-  onDelete: () => void;
+  refetch: () => void;
 }
 
 const useStyles = createStyles((theme) => ({
@@ -47,21 +55,171 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
+interface ItemProps extends SelectItemProps {
+  student: Student & { studentClass: StudentClass };
+}
+
+// eslint-disable-next-line react/display-name
+const AutoCompleteItem = forwardRef<HTMLDivElement, ItemProps>(
+  ({ student, ...other }, ref) => {
+    return (
+      <div
+        ref={ref}
+        {...other}
+        className={`${other.className} flex justify-between py-2`}>
+        <Stack spacing='none'>
+          <Text className='truncate max-w-[16.5rem]'>{student.name}</Text>
+          <Box className='text-sm flex items-center gap-1'>
+            <IconHash size={12} />
+            <Text c='dimmed' fz='xs' className='truncate max-w-[15rem]'>
+              {student.uid}
+            </Text>
+          </Box>
+        </Stack>
+        <Badge>
+          {student.studentClass.name} {student.studentClass.grade}
+        </Badge>
+      </div>
+    );
+  }
+);
+
+function EditAttendanceLog({
+  attendanceLog,
+  onSuccess,
+}: {
+  attendanceLog: AttendanceLog & { student: Student };
+  onSuccess: () => void;
+}) {
+  const theme = useMantineTheme();
+  const [logTime, setLogTime] = useState(dfs.format(attendanceLog.date, 'HH:mm'));
+  const [studentUid, setStudentUid] = useState(attendanceLog.student.uid);
+  const [debouncedKeyword] = useDebouncedValue(studentUid, 300);
+  const { data: autocompleteData } = trpc.getStudents.useQuery(
+    { searchKey: debouncedKeyword },
+    {
+      enabled: Boolean(debouncedKeyword),
+    }
+  );
+
+  const editAttendanceLogMutation = trpc.editAttendanceLog.useMutation();
+
+  return (
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+        console.log({
+          attendanceLog,
+          newTime: dfs.parse(logTime, 'HH:mm', new Date()),
+          studentUid,
+        });
+
+        const studentId = autocompleteData?.find(
+          (student) => student.uid === studentUid
+        )?.id;
+
+        if (!studentId) return;
+
+        editAttendanceLogMutation.mutate(
+          {
+            id: attendanceLog.id,
+            date: dfs.parse(logTime, 'HH:mm', new Date()),
+            studentId,
+          },
+          {
+            onSuccess: (res) => {
+              notifications.show({
+                title: <span className='text-green-6'>Success</span>,
+                message: `Saved log changes: "${res!.student.name}" on ${dfs.format(
+                  res.date,
+                  'hh:mm'
+                )}`,
+                color: 'green',
+                bg:
+                  theme.colorScheme === 'dark'
+                    ? theme.colors.dark[9]
+                    : theme.colors.green[0],
+              });
+              onSuccess();
+            },
+            onError: (e) => {
+              notifications.show({
+                title: <span className='text-red-6'>Failed to Edit Attendance Log</span>,
+                message: e.message,
+                color: 'red',
+                bg:
+                  theme.colorScheme === 'dark'
+                    ? theme.colors.dark[9]
+                    : theme.colors.red[0],
+              });
+            },
+          }
+        );
+      }}>
+      <Group className='gap-2 items-center p-1' noWrap>
+        <Autocomplete
+          label="Student's name"
+          required
+          value={studentUid}
+          onChange={setStudentUid}
+          radius='md'
+          size='xs'
+          limit={4}
+          icon={<IconId size={18} />}
+          data={
+            autocompleteData
+              ? autocompleteData.map((item) => ({
+                  student: item,
+                  value: item.uid,
+                }))
+              : []
+          }
+          itemComponent={AutoCompleteItem}
+          placeholder='Student ID'
+          dropdownPosition='bottom'
+          className='break-words w-full'
+        />
+        <TimeInput
+          value={logTime}
+          icon={<IconClock size={18} />}
+          label='Attend Time'
+          onChange={(e) => setLogTime(e.target.value)}
+          placeholder='Select birth date'
+          radius='md'
+          required
+          size='xs'
+          w={150}
+        />
+        <Button
+          gradient={{ from: 'indigo', to: 'cyan' }}
+          size='xs'
+          variant='gradient'
+          w={110}
+          type='submit'
+          className='self-end'>
+          Submit
+        </Button>
+      </Group>
+    </form>
+  );
+}
+
 export function TableAttendance({
   tableWidth = '100%',
   tableHeight = '70vh',
   data,
   showDate,
-  onDelete,
+  refetch,
 }: TableAttendanceProps) {
   const { classes, cx } = useStyles();
   const theme = useMantineTheme();
   const [scrolled, setScrolled] = useState(false);
   const [selectedLog, setSelectedLog] = useState<AttendanceLog & { student: Student }>();
   const [deleteConfrimationDisplay, deleteConfirmationDisclosure] = useDisclosure(false);
+  const [editLogDisplay, editLogDisclosure] = useDisclosure(false);
 
   const deleteAttendanceLogMutation = trpc.deleteAttendanceLog.useMutation({
-    onSettled: () => onDelete(),
+    onSettled: () => refetch(),
   });
 
   const rows = data.map((row, index) => {
@@ -100,6 +258,17 @@ export function TableAttendance({
             variant='subtle'
             compact
             size='xs'
+            onClick={() => {
+              setSelectedLog(row);
+              editLogDisclosure.open();
+            }}>
+            <IconPencil size={14} className='mr-2' />
+            <Text>Edit</Text>
+          </Button>
+          <Button
+            variant='subtle'
+            compact
+            size='xs'
             color='red'
             onClick={() => {
               setSelectedLog(row);
@@ -133,6 +302,20 @@ export function TableAttendance({
           <tbody>{rows}</tbody>
         </Table>
       </ScrollArea>
+      {selectedLog && (
+        <CustomModal
+          modalTitle='Edit attendance log'
+          displayValue={editLogDisplay}
+          closeAction={editLogDisclosure.close}>
+          <EditAttendanceLog
+            attendanceLog={selectedLog}
+            onSuccess={() => {
+              refetch();
+              editLogDisclosure.close();
+            }}
+          />
+        </CustomModal>
+      )}
       {selectedLog && (
         <CustomConfirmation
           displayValue={deleteConfrimationDisplay}

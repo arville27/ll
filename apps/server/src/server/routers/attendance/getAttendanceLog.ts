@@ -49,6 +49,9 @@ export async function getAttendanceLog({
         },
       },
     },
+    orderBy: {
+      date: 'desc',
+    },
   });
 }
 
