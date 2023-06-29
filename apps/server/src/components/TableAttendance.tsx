@@ -158,7 +158,7 @@ function EditAttendanceLog({
       }}>
       <Group className='gap-2 items-center p-1' noWrap>
         <Autocomplete
-          label="Student's name"
+          label="Student's ID"
           required
           value={studentUid}
           onChange={setStudentUid}
@@ -253,7 +253,7 @@ export function TableAttendance({
           {row.student.studentClass.name} {row.student.studentClass.grade}
         </td>
         {showDate && <td className='w-fit'>{dfs.format(row.date, 'HH:mm')}</td>}
-        <td>
+        <td className='space-x-2'>
           <Button
             variant='subtle'
             compact
