@@ -10,7 +10,6 @@ import { useRouter } from 'next/router';
 import { useState } from 'react';
 
 function App() {
-  const router = useRouter();
   const [keyword, setKeyword] = useState('');
   const [filterKeyword, setFilterKeyword] = useState('');
   const [filterKeywordDebounced] = useDebouncedValue(filterKeyword.toLowerCase(), 300);
@@ -20,7 +19,7 @@ function App() {
   return (
     <Layout navbarProp={{ links: [] }}>
       <div className='grid grid-rows-2 lg:grid-rows-none lg:grid-cols-[1fr_0.6fr] h-full'>
-        <Stack align='center' className='mt-52'>
+        <Stack align='center' className='mt-36'>
           <IconScan size={192} />
           <ScanInput keyword={keyword} setKeyword={setKeyword} refetch={refetch} />
         </Stack>

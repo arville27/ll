@@ -22,8 +22,11 @@ const AutoCompleteItem = forwardRef<HTMLDivElement, ItemProps>(
   ({ student, ...other }, ref) => {
     console.log(student);
     return (
-      <div ref={ref} {...other} className={`${other.className} flex justify-between`}>
-        <Stack className='gap-1'>
+      <div
+        ref={ref}
+        {...other}
+        className={`${other.className} flex justify-between py-2`}>
+        <Stack spacing='none'>
           <Text className='truncate max-w-[16.5rem]'>{student.name}</Text>
           <Box className='text-sm flex items-center gap-1'>
             <IconHash size={12} />
