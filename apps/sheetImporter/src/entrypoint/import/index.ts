@@ -44,10 +44,10 @@ export default async (filepath: string) => {
         })
         .filter(
           (studentClass) =>
-            studentClasses.find((i) =>
-              i.name === studentClass.name && isNaN(studentClass.grade)
-                ? !i.grade
-                : i.grade === studentClass.grade
+            studentClasses.find(
+              (i) =>
+                i.name === studentClass.name &&
+                (isNaN(studentClass.grade) ? !i.grade : i.grade === studentClass.grade)
             ) === undefined
         )
         .map(async (studentClass) => await trpc.addStudentClass.mutate(studentClass))
@@ -71,10 +71,12 @@ export default async (filepath: string) => {
             birthDate: row.birthDate.getTime(),
             name: row.name,
             uid: row.studentUid,
-            studentClassId: studentClasses.find((i) =>
-              i.name === classIdentifiers.name && isNaN(classIdentifiers.grade)
-                ? !i.grade
-                : i.grade === classIdentifiers.grade
+            studentClassId: studentClasses.find(
+              (i) =>
+                i.name === classIdentifiers.name &&
+                (isNaN(classIdentifiers.grade)
+                  ? !i.grade
+                  : i.grade === classIdentifiers.grade)
             )?.id!,
           }));
         })
