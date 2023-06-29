@@ -91,6 +91,7 @@ export function TableStudents({ data, onDelete }: TableStudentsProps) {
         <td className='text-center'>
           <Button
             color='red'
+            variant='subtle'
             size='xs'
             compact
             onClick={() => {

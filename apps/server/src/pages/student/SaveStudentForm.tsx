@@ -194,7 +194,7 @@ export default function SaveStudentForm({
           icon={<IconChalkboard size={18} />}
           label='Class'
           data={classOptions}
-          placeholder='Exp: LL 1'
+          placeholder='Example: LL 1'
           searchable
           creatable
           getCreateLabel={(query) => `+ Create ${query}`}

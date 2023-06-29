@@ -60,7 +60,9 @@
     },
     "windows": [
       {
-        "fullscreen": true,
+        "minHeight": 730,
+        "minWidth": 1280,
+        "resizable": true,
         "title": "Little Learners Attendance System"
       }
     ]

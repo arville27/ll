@@ -20,6 +20,7 @@ interface ItemProps extends SelectItemProps {
 
 const AutoCompleteItem = forwardRef<HTMLDivElement, ItemProps>(
   ({ student, ...other }, ref) => {
+    console.log(student);
     return (
       <div ref={ref} {...other} className={`${other.className} flex justify-between`}>
         <Stack className='gap-1'>

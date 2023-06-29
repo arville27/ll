@@ -22,7 +22,7 @@ export const editStudentProcedure = protectedProcedure
     });
 
     if (existedStudent && existedStudent.id !== input.id)
-      throw new TRPCError({ code: 'BAD_REQUEST', message: 'Student UID already used' });
+      throw new TRPCError({ code: 'BAD_REQUEST', message: 'Student ID already used' });
 
     const { id, uid, name, birthDate, studentClassId } = input;
     return await ctx.prisma.student.update({

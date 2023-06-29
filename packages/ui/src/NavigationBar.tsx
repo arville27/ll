@@ -52,7 +52,7 @@ const useStyles = createStyles((theme) => ({
 
 export interface NavigationBarProps {
   links: { link: string; label: string; icon?: ReactNode }[];
-  logout: ReactNode;
+  logout?: ReactNode;
 }
 
 export function NavigationBar({ links, logout }: NavigationBarProps) {

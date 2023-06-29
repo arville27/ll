@@ -10,7 +10,7 @@ export const loginProcedure = publicProcedure
     })
   )
   .mutation(async ({ ctx, input }) => {
-    if (input.username !== 'admin' || input.password !== 'menitsekarang')
+    if (input.username.toLowerCase() !== 'll' || input.password !== '080808')
       throw new TRPCError({ code: 'UNAUTHORIZED', message: 'Bad credentials' });
 
     ctx.session.user = {

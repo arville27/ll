@@ -1,7 +1,6 @@
+import Head from 'next/head';
 import { HTMLAttributes, PropsWithChildren, ReactNode } from 'react';
 import { NavigationBar, NavigationBarProps } from './NavigationBar';
-import { Notifications } from '@mantine/notifications';
-import Head from 'next/head';
 
 export interface LayoutProps extends HTMLAttributes<HTMLElement> {
   footer?: ReactNode;

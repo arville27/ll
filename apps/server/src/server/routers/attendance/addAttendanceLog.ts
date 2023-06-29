@@ -19,7 +19,7 @@ export async function addAttendanceLog({
   const isValidUid = await prisma.student.findUnique({ where: { uid: input.uid } });
 
   if (!isValidUid)
-    throw new TRPCError({ code: 'NOT_FOUND', message: 'Student UID not found' });
+    throw new TRPCError({ code: 'NOT_FOUND', message: 'Student ID not found' });
 
   const todayAttendanceLogs = await getAttendanceLog({ prisma });
   const isAlreadyAttended = todayAttendanceLogs.find(

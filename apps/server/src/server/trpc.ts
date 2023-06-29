@@ -33,12 +33,19 @@ import { NextApiRequest } from 'next';
 const t = initTRPC.context<typeof createTRPCContext>().create({
   transformer: superjson,
   errorFormatter({ shape, error }) {
+    let message = shape.message;
+    if (error.cause instanceof ZodError) {
+      const flatten = error.cause.flatten();
+      // prettier-ignore
+      message = Object.entries(flatten.fieldErrors).reduce(
+        (finalMessage, [field, messages]) => `${finalMessage}\n${field}: ${messages ? messages.join(', ') : String(messages)}`,
+        ''
+      );
+    }
+
     return {
       ...shape,
-      data: {
-        ...shape.data,
-        zodError: error.cause instanceof ZodError ? error.cause.flatten() : null,
-      },
+      message,
     };
   },
 });
