@@ -11,6 +11,7 @@ import {
   useMantineTheme,
 } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
+import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 
@@ -37,6 +38,9 @@ export default function LoginPage() {
 
   return (
     <>
+      <Head>
+        <title>Login</title>
+      </Head>
       <div className='flex justify-between px-10 py-4'>
         <Brand />
         <ThemeSwitch size='lg' />
