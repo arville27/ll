@@ -270,7 +270,7 @@ export default function AttendancePage() {
           ) : (
             <Box className='text-center'>
               <IconDeviceDesktopSearch color='gray' size={40} />
-              <Text>No students found</Text>
+              <Text color='dimmed'>No students found</Text>
             </Box>
           )}
         </Box>
