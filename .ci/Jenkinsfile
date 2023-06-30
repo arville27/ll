@@ -1,0 +1,80 @@
+pipeline {
+    agent any
+    environment {
+        DOCKER_REGISTRY = "ir.arv.cx"
+        DOCKER_IMAGE_NAME = "${DOCKER_REGISTRY}/arville27/ll"
+        WEBHOOK_URL = credentials('easybill-webhook-url');
+    }
+    stages {
+        stage("Project and build information") {
+            steps {
+                script {
+                    def projectMetadata = readJSON file: 'package.json'
+                    env.PACKAGE_VERSION = projectMetadata['version']
+                    echo "== LL Server =="
+                    echo "Project version: ${env.PACKAGE_VERSION}"
+                    echo "Branch: ${env.BRANCH_NAME}"
+                    echo "Building ${DOCKER_IMAGE_NAME}"
+                }
+            }
+        }
+        stage("Build image") {
+            steps {
+                script {
+                    image = docker.build(
+                        "${DOCKER_IMAGE_NAME}:${env.BUILD_ID}",
+                        "-f ./apps/server/Dockerfile ."
+                    )
+                }
+            }
+        }
+        stage("Push image") {
+            steps {
+                script {
+                    tags = []
+                    docker.withRegistry("https://${env.DOCKER_REGISTRY}", "private-image-registry") {
+                        if (env.BRANCH_NAME == "master"){
+                            tags.addAll("- `${PACKAGE_VERSION}`", "- `latest`")
+                            image.push("${PACKAGE_VERSION}")
+                            image.push("latest")
+                        } else if (env.BRANCH_NAME == "dev") {
+                            tags.addAll("- `dev-${PACKAGE_VERSION}`", "- `dev-latest`")
+                            image.push("dev-${PACKAGE_VERSION}")
+                            image.push("dev-latest")
+                        } else {
+                            def split = env.BRANCH_NAME.split("/");
+                            def sanitizeBranchName = split[split.length - 1]
+                            tags.addAll("- `${sanitizeBranchName}-${PACKAGE_VERSION}`", "- `${sanitizeBranchName}-latest`")
+                            image.push("${sanitizeBranchName}-${PACKAGE_VERSION}")
+                            image.push("${sanitizeBranchName}-latest")
+                        }
+                    }
+                }
+            }
+        }
+    }
+    post {
+        success {
+            script {
+                discordSend(
+                    webhookURL: WEBHOOK_URL,
+                    result: currentBuild.currentResult,
+                    showChangeset: true,
+                    description: "**Version**: ${env.PACKAGE_VERSION}\n**Branch:** ${env.BRANCH_NAME}\n**Image:** `${env.DOCKER_IMAGE_NAME}`\n**Tags:**\n${tags.join('\n')}\n",
+                    link: env.BUILD_URL, title: "${JOB_NAME} #${BUILD_NUMBER}"
+                )
+            }
+        }
+        failure {
+            script {
+                discordSend(
+                    webhookURL: WEBHOOK_URL,
+                    result: currentBuild.currentResult,
+                    showChangeset: true,
+                    description: "**Version**: ${env.PACKAGE_VERSION}\n**Branch:** ${env.BRANCH_NAME}\n",
+                    link: env.BUILD_URL, title: "${JOB_NAME} #${BUILD_NUMBER}"
+                )
+            }
+        }
+    }
+}
