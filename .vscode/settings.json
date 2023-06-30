@@ -6,5 +6,6 @@
   ],
   "rust-analyzer.linkedProjects": [
     "apps/client/src-tauri/Cargo.toml"
-  ]
+  ],
+  "typescript.tsdk": "node_modules\\typescript\\lib"
 }

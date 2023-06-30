@@ -79,9 +79,11 @@ export function NavigationBar({ links, logout }: NavigationBarProps) {
         <Brand />
         <Group spacing={8} className='hidden lg:flex'>
           {items}
-          <Button variant='subtle' onClick={logout.callback} className={classes.link}>
-            {logout.icon}
-          </Button>
+          {logout && (
+            <Button variant='subtle' onClick={logout.callback} className={classes.link}>
+              {logout.icon}
+            </Button>
+          )}
           <ThemeSwitch size='lg' />
         </Group>
 
@@ -93,13 +95,17 @@ export function NavigationBar({ links, logout }: NavigationBarProps) {
           <Menu.Dropdown>
             {items}
 
-            <Menu.Divider />
-            <Menu.Label
-              className={`${classes.link} cursor-pointer`}
-              onClick={logout.callback}>
-              {logout.icon}
-              {logout.label}
-            </Menu.Label>
+            {logout && (
+              <>
+                <Menu.Divider />
+                <Menu.Label
+                  className={`${classes.link} cursor-pointer`}
+                  onClick={logout.callback}>
+                  {logout.icon}
+                  {logout.label}
+                </Menu.Label>
+              </>
+            )}
             <Menu.Divider />
 
             <Menu.Label>Others</Menu.Label>
