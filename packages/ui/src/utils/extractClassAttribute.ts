@@ -5,7 +5,7 @@ export function extractClassAttribute(studentClass: string) {
   if (lastSpaceIndex == -1 || isNaN(grade) || grade === 0)
     return {
       name: studentClass,
-      grade: NaN,
+      grade: null,
     };
   return {
     name,

@@ -5,7 +5,7 @@ import { protectedProcedure } from '../../trpc';
 export const editStudentClassInputSchema = z.object({
   id: z.number(),
   name: z.string(),
-  grade: z.number(),
+  grade: z.number().nullable(),
 });
 
 export type editStudentClassInput = z.infer<typeof editStudentClassInputSchema>;
@@ -13,7 +13,7 @@ export type editStudentClassInput = z.infer<typeof editStudentClassInputSchema>;
 export const editStudentClassProcedure = protectedProcedure
   .input(editStudentClassInputSchema)
   .mutation(async ({ input, ctx }) => {
-    if (input.grade <= 0)
+    if (input.grade && input.grade <= 0)
       throw new TRPCError({
         code: 'BAD_REQUEST',
         message: 'Class grade must greater than 0',

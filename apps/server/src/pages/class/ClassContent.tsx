@@ -52,7 +52,6 @@ export default function ClassContent({
     onSettled: onEdit,
   });
   function submitEdit() {
-    if (!currentClass.grade) return;
     editStudentClassMutation.mutate(
       {
         id: currentClass.id,
@@ -73,7 +72,7 @@ export default function ClassContent({
         },
         onError: (e) => {
           notifications.show({
-            title: <span className='text-red-6'>Failed to Delete Student</span>,
+            title: <span className='text-red-6'>Failed to Saved Student</span>,
             message: e.message,
             color: 'red',
             bg: theme.colorScheme === 'dark' ? theme.colors.dark[9] : theme.colors.red[0],
@@ -132,17 +131,17 @@ export default function ClassContent({
                 className='text-xl'
                 defaultValue={currentClass.grade ?? undefined}
                 label='Grade'
-                onChange={(e) => {
-                  if (e)
-                    setCurrentClass({
-                      ...currentClass,
-                      grade: e,
-                    });
-                }}
+                onChange={(e) =>
+                  setCurrentClass({
+                    ...currentClass,
+                    grade: e == '' ? null : e,
+                  })
+                }
                 onClick={(e) => e.stopPropagation()}
                 radius='md'
                 size='xs'
                 w={70}
+                min={1}
               />
             </Group>
             <Group spacing='none' className='self-end'>

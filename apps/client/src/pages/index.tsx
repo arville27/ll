@@ -56,7 +56,7 @@ function App() {
               <TableStudents
                 data={todayAttendanceLog.filter((log) => {
                   const classIdentifiers = extractClassAttribute(filterKeywordDebounced);
-                  const isValidClass = isNaN(classIdentifiers.grade)
+                  const isValidClass = !classIdentifiers.grade
                     ? log.student.studentClass.name
                         .toLowerCase()
                         .includes(filterKeywordDebounced)

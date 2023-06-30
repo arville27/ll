@@ -1,4 +1,5 @@
 import { extractClassAttribute } from '@ll/common/src/utils/extractClassAttribute';
+import { StudentClass } from '@prisma/client';
 import { z } from 'zod';
 import { StudentOrderByEnum } from '../../../enums/orderByEnum';
 import { OrderDirEnum } from '../../../enums/orderDirEnum';
@@ -59,15 +60,12 @@ export const getStudentsPageableProcedure = protectedProcedure
     if (!input.page) input.page = 1;
     if (!input.orderBy) input.orderBy = StudentOrderByEnum.NAME;
     if (!input.orderDir) input.orderDir = OrderDirEnum.ASC;
-    let className = '';
-    let classGrade = NaN;
+    let classIdentifiers: Pick<StudentClass, 'name' | 'grade'> = {
+      name: '',
+      grade: null,
+    };
     if (!input.searchKey) input.searchKey = '';
-    else {
-      const classIdentifiers = extractClassAttribute(input.searchKey);
-      className = classIdentifiers.name;
-      classGrade = classIdentifiers.grade;
-    }
-
+    else classIdentifiers = extractClassAttribute(input.searchKey);
     let orderByClause: any;
     switch (input.orderBy) {
       case StudentOrderByEnum.NAME:
@@ -119,7 +117,7 @@ export const getStudentsPageableProcedure = protectedProcedure
     }
 
     const allRecords = await getAllStudents({ input, prisma: ctx.prisma });
-    const pageableRecords = isNaN(classGrade)
+    const pageableRecords = !classIdentifiers.grade
       ? await ctx.prisma.student.findMany({
           where: {
             OR: [
@@ -166,10 +164,10 @@ export const getStudentsPageableProcedure = protectedProcedure
                 studentClass: {
                   AND: [
                     {
-                      name: className,
+                      name: classIdentifiers.name,
                     },
                     {
-                      grade: classGrade,
+                      grade: classIdentifiers.grade,
                     },
                   ],
                 },

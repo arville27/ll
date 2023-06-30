@@ -68,7 +68,11 @@ export default function SaveStudentForm({
   const classOptions = classes
     ? classes.map((studentClass) => ({
         value: studentClass.id + '',
-        label: `${studentClass.name} ${studentClass.grade ?? ''}`,
+        label: `${
+          studentClass.grade
+            ? studentClass.name + ' ' + studentClass.grade
+            : studentClass.name
+        }`,
       }))
     : [];
 
@@ -214,6 +218,7 @@ export default function SaveStudentForm({
                 });
               },
               onError: (e) => {
+                console.log('masuk');
                 const errMsg = JSON.parse(e.message).at(0);
                 notifications.show({
                   title: <span className='text-red-6'>Failed to add class</span>,

@@ -13,7 +13,7 @@ export default function AddStudentClassForm({
 }) {
   const theme = useMantineTheme();
   const [name, setName] = useState('');
-  const [grade, setGrade] = useState(1);
+  const [grade, setGrade] = useState<number | null>(null);
   const addStudentClassMutation = trpc.addStudentClass.useMutation({
     onSettled: () => {
       submitAction();
@@ -64,15 +64,12 @@ export default function AddStudentClassForm({
         />
         <NumberInput
           icon={<Icon123 />}
-          value={grade}
+          value={grade ?? undefined}
           onKeyDown={(e) => {
             const regexr = /^[A-z]$/;
             if (regexr.test(e.key)) e.preventDefault();
           }}
-          onChange={(e) => {
-            if (e) setGrade(e);
-            else setGrade(NaN);
-          }}
+          onChange={(e) => setGrade(e == '' ? null : e)}
           placeholder='Grade'
           w={100}
           min={1}

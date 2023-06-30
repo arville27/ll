@@ -38,7 +38,7 @@ export default async (filepath: string) => {
       necessaryClasses
         .map((studentClass) => {
           const classIdentifiers = extractClassAttribute(studentClass.trim());
-          if (isNaN(classIdentifiers.grade))
+          if (!classIdentifiers.grade)
             console.log(`Added class without grade: ${classIdentifiers.name}`);
           return classIdentifiers;
         })
@@ -47,7 +47,7 @@ export default async (filepath: string) => {
             studentClasses.find(
               (i) =>
                 i.name === studentClass.name &&
-                (isNaN(studentClass.grade) ? !i.grade : i.grade === studentClass.grade)
+                (!studentClass.grade ? !i.grade : i.grade === studentClass.grade)
             ) === undefined
         )
         .map(async (studentClass) => await trpc.addStudentClass.mutate(studentClass))
@@ -74,9 +74,7 @@ export default async (filepath: string) => {
             studentClassId: studentClasses.find(
               (i) =>
                 i.name === classIdentifiers.name &&
-                (isNaN(classIdentifiers.grade)
-                  ? !i.grade
-                  : i.grade === classIdentifiers.grade)
+                (!classIdentifiers.grade ? !i.grade : i.grade === classIdentifiers.grade)
             )?.id!,
           }));
         })

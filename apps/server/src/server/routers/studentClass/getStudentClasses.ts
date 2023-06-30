@@ -2,6 +2,7 @@ import { z } from 'zod';
 import { PrismaClientType } from '../../db';
 import { protectedProcedure, publicProcedure } from '../../trpc';
 import { extractClassAttribute } from '@ll/common/src/utils/extractClassAttribute';
+import { StudentClass } from '@prisma/client';
 
 const PAGE_SIZE = 8;
 
@@ -19,12 +20,9 @@ export async function getAllClasses({
 }: {
   input: GetStudentClassInput;
   prisma: PrismaClientType;
-  classIdentifiers: {
-    className: string;
-    classGrade: number;
-  };
+  classIdentifiers: Pick<StudentClass, 'name' | 'grade'>;
 }) {
-  return isNaN(classIdentifiers.classGrade)
+  return !classIdentifiers.grade
     ? await prisma.studentClass.findMany({
         where: {
           name: {
@@ -48,11 +46,11 @@ export async function getAllClasses({
           AND: [
             {
               name: {
-                contains: classIdentifiers.className,
+                contains: classIdentifiers.name,
               },
             },
             {
-              grade: classIdentifiers.classGrade,
+              grade: classIdentifiers.grade,
             },
           ],
         },
@@ -73,16 +71,12 @@ export async function getAllClasses({
 export const getStudentClassesProcedure = protectedProcedure
   .input(getStudentClassesSchema)
   .query(({ input, ctx }) => {
-    const classIdentifiers = {
-      className: '',
-      classGrade: NaN,
+    let classIdentifiers: Pick<StudentClass, 'name' | 'grade'> = {
+      name: '',
+      grade: null,
     };
     if (!input.searchKey) input.searchKey = '';
-    else {
-      const classData = extractClassAttribute(input.searchKey);
-      classIdentifiers.className = classData.name;
-      classIdentifiers.classGrade = classData.grade;
-    }
+    else classIdentifiers = extractClassAttribute(input.searchKey);
     return getAllClasses({ input, prisma: ctx.prisma, classIdentifiers });
   });
 
@@ -90,22 +84,18 @@ export const getStudentClassesPageableProcedure = publicProcedure
   .input(getStudentClassesSchema)
   .query(async ({ input, ctx }) => {
     if (!input.page) input.page = 1;
-    const classIdentifiers = {
-      className: '',
-      classGrade: NaN,
+    let classIdentifiers: Pick<StudentClass, 'name' | 'grade'> = {
+      name: '',
+      grade: null,
     };
     if (!input.searchKey) input.searchKey = '';
-    else {
-      const classData = extractClassAttribute(input.searchKey);
-      classIdentifiers.className = classData.name;
-      classIdentifiers.classGrade = classData.grade;
-    }
+    else classIdentifiers = extractClassAttribute(input.searchKey);
     const allRecords = await getAllClasses({
       input,
       prisma: ctx.prisma,
       classIdentifiers,
     });
-    const pageableRecords = isNaN(classIdentifiers.classGrade)
+    const pageableRecords = !classIdentifiers.grade
       ? await ctx.prisma.studentClass.findMany({
           where: {
             name: {
@@ -123,10 +113,10 @@ export const getStudentClassesPageableProcedure = publicProcedure
           where: {
             AND: [
               {
-                name: classIdentifiers.className,
+                name: classIdentifiers.name,
               },
               {
-                grade: classIdentifiers.classGrade,
+                grade: classIdentifiers.grade,
               },
             ],
           },
