@@ -9,7 +9,7 @@ pipeline {
         stage("Project and build information") {
             steps {
                 script {
-                    def projectMetadata = readJSON file: 'package.json'
+                    def projectMetadata = readJSON file: './apps/server/package.json'
                     env.PACKAGE_VERSION = projectMetadata['version']
                     echo "== LL Server =="
                     echo "Project version: ${env.PACKAGE_VERSION}"
