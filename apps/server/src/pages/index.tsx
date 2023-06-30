@@ -33,7 +33,7 @@ export default function AttendancePage() {
               <Text fz='xl' fw={500} className='leading-none'>
                 {"Today's attendance"}
               </Text>
-              <Text fs='sm' c='dimmed'>
+              <Text fz='xs' c='dimmed'>
                 {dfs.format(new Date(), 'EEEE, dd MMM yyyy')}
               </Text>
             </Stack>
@@ -54,7 +54,7 @@ export default function AttendancePage() {
             backgroundColor:
               theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.white,
           }}
-          className='shadow-md self-center w-full max-w-full mb-12'>
+          className='shadow-sm self-center w-full max-w-full mb-12'>
           {data && data.length > 0 ? (
             <TableAttendance
               tableHeight='fit'

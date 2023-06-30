@@ -1,5 +1,6 @@
 import {
   Burger,
+  Button,
   Container,
   Group,
   Header,
@@ -52,7 +53,7 @@ const useStyles = createStyles((theme) => ({
 
 export interface NavigationBarProps {
   links: { link: string; label: string; icon?: ReactNode }[];
-  logout?: ReactNode;
+  logout?: { icon: ReactNode; label: string; callback: () => void };
 }
 
 export function NavigationBar({ links, logout }: NavigationBarProps) {
@@ -78,7 +79,9 @@ export function NavigationBar({ links, logout }: NavigationBarProps) {
         <Brand />
         <Group spacing={8} className='hidden lg:flex'>
           {items}
-          {logout}
+          <Button variant='subtle' onClick={logout.callback} className={classes.link}>
+            {logout.icon}
+          </Button>
           <ThemeSwitch size='lg' />
         </Group>
 
@@ -90,6 +93,13 @@ export function NavigationBar({ links, logout }: NavigationBarProps) {
           <Menu.Dropdown>
             {items}
 
+            <Menu.Divider />
+            <Menu.Label
+              className={`${classes.link} cursor-pointer`}
+              onClick={logout.callback}>
+              {logout.icon}
+              {logout.label}
+            </Menu.Label>
             <Menu.Divider />
 
             <Menu.Label>Others</Menu.Label>

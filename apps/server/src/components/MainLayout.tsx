@@ -1,5 +1,6 @@
 import { trpc } from '@/hooks/trpc';
 import { Layout } from '@ll/common';
+import { useMantineTheme } from '@mantine/core';
 import {
   IconHome,
   IconSchool,
@@ -15,6 +16,7 @@ const MainLayout: React.FC<PropsWithChildren<HTMLAttributes<HTMLElement>>> = ({
   ...layoutAttribute
 }) => {
   const router = useRouter();
+  const theme = useMantineTheme();
   const logoutMutation = trpc.logout.useMutation({
     onSuccess() {
       router.push('/login');
@@ -41,12 +43,11 @@ const MainLayout: React.FC<PropsWithChildren<HTMLAttributes<HTMLElement>>> = ({
             icon: <IconArticle size={20} />,
           },
         ],
-        logout: (
-          <IconLogout
-            className='cursor-pointer'
-            onClick={() => logoutMutation.mutate()}
-          />
-        ),
+        logout: {
+          icon: <IconLogout size={20} />,
+          callback: () => logoutMutation.mutate(),
+          label: 'Log out',
+        },
       }}
       {...layoutAttribute}>
       {children}
