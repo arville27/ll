@@ -19,7 +19,7 @@ export const addStudentClassProcedure = protectedProcedure
       });
     const existedClass = await ctx.prisma.studentClass.findFirst({
       where: {
-        name: input.name,
+        name: input.name.trim(),
         grade: input.grade,
       },
     });
@@ -29,7 +29,7 @@ export const addStudentClassProcedure = protectedProcedure
 
     return await ctx.prisma.studentClass.create({
       data: {
-        name: input.name,
+        name: input.name.trim(),
         grade: input.grade,
       },
     });
